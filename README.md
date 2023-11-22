@@ -1,6 +1,6 @@
 # AfkPlus Fabric Mod for Minecraft
 
-![Example](afkplus.jpg)
+![Example](https://sakuraryoko.bandzoogle.com/files/1260026/afkplus.jpg)
 
 ## Basic Description:
 - A forked project based upon AfkDisplay by beabfc
