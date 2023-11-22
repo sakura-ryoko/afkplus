@@ -59,19 +59,22 @@ resetOnLook = false
 
 [PlaceholderOptions]
 # This will be the value of the placeholder %afkplus:afk% if a player is AFK, option accepts full formatting nodes (Default: "<i><gray>[AFK]<r>")
-#   -- note; *DOES NOT* place an "<r>" at the end in the code (trying not to modify its default behavior)
+# -- note; *DOES NOT* place an "<r>" at the end in the code (trying not to modify its default behavior)
 afkPlaceholder = "<i><gray>[AFK]<r>"
 # Placeholder %afkplus:name% for backporting the entire %displayname% for use in other Mods, such as Styled Playerlist (Default: "<i><gray>[AFK] %player:displayname_unformatted%<r>")
-#   -- note; *DOES NOT* places an "<r>" at the end in the code (trying not to modify its default behavior)
+# -- note; *DOES NOT* places an "<r>" at the end in the code (trying not to modify its default behavior)
 afkPlusNamePlaceholderAfk = "<i><gray>[AFK] %player:displayname_unformatted%<r>"
 # Value for when player is NOT AFK, (ie. the default "%player:displayname%")
-#   -- note; *DOES NOT* places an "<r>" at the end in the code (trying not to modify its default behavior)
+# -- note; *DOES NOT* places an "<r>" at the end in the code (trying not to modify its default behavior)
 afkPlusNamePlaceholder = "%player:displayname%"
-# Adds a formatting prefix node for %afkplus:duration% (default: <green>) -- note; places an "<r>" at the end in the code.
+# Adds a formatting prefix node for %afkplus:duration% (default: <green>)
+# -- note; places an "<r>" at the end in the code.
 afkDurationPlaceholderFormatting = "<green>"
-# Adds a formatting prefix node for %afkplus:time% (default: <green>) -- note; places an "<r>" at the end in the code.
+# Adds a formatting prefix node for %afkplus:time% (default: <green>)
+# -- note; places an "<r>" at the end in the code.
 afkTimePlaceholderFormatting = "<green>"
-# Adds a formatting prefix node for %afkplus:reason% (default: none) -- note; places an "<r>" at the end in the code.
+# Adds a formatting prefix node for %afkplus:reason% (default: none)
+# -- note; places an "<r>" at the end in the code.
 afkReasonPlaceholderFormatting = ""
 # Adds an option for using the "pretty" human readable output for the %duration% placeholder.  This might cause an issue depending on where you use it. (Default: false)
 afkDurationPretty=false
@@ -79,15 +82,16 @@ afkDurationPretty=false
 [playerListOptions]
 # Change the playerlist name for players who are AFK (Default: true)
 enableListDisplay = true
-# The name that is shown in the playerlist if a player is AFK, [ENHANCEMENT] now accepts formatting nodes (Default: "<i><gray>[AFK] %player:displayname%<r>") *NOTE that this function works when not using Player List mods!*
+# The name that is shown in the playerlist if a player is AFK, and accepts formatting nodes (Default: "<i><gray>[AFK] %player:displayname%<r>")
+# -- note; This function works best when not using Player List mods!*
 afkPlayerName = "<i><gray>[AFK] %player:displayname%<r>"
 
 [messageOptions]
 # Enabled chat messages when a player goes AFk or returns. (Default: true)
 enableMessages = true
-# The message content when a player goes AFK [ENHANCEMENT] now accepts formatting nodes (Default: "%player:displayname% <yellow>is now AFK<r>")
+# The message content when a player goes AFK, and accepts formatting nodes (Default: "%player:displayname% <yellow>is now AFK<r>")
 whenAfk = "%player:displayname% <yellow>is now AFK<r>"
-# The messages content when a player returns from AFK [ENHANCEMENT] now accepts formatting nodes. (Default: "%player:displayname% <yellow>is no longer AFK<r>")
+# The messages content when a player returns from AFK, and accepts formatting nodes. (Default: "%player:displayname% <yellow>is no longer AFK<r>")
 whenReturn = "%player:displayname% <yellow>is no longer AFK<r>"
 # Re-Formats the "duration" in chat messages and /afkinfo to a more human legible format. (Default: true)
 prettyDuration=true
