@@ -31,7 +31,7 @@ public class AfkInfoCommand {
                         CommandContext<ServerCommandSource> context) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getEntityName();
+                String target = player.getNameForScoreboard();
                 String AfkStatus = AfkPlayerInfo.getString(afkPlayer, user, target);
                 context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
                 return 1;
