@@ -4,6 +4,7 @@
 - A forked project based upon AfkDisplay by beabfc
 - Show which players are AFK in the player list, see the Reasons, Durations, and Times.
 - Fully configurable and with [Placeholder API](https://placeholders.pb4.eu/user/general/), which includes all Placeholder API formatting nodes such as: yellow or bold natively. (You can even include a URL in your AFK Reason!)
+- Mod can now be used on Single Player, and Integrated Servers (Open to LAN).
 
 ## Features :blush:
 - '**/afkplus reload**' command.  This allows an Administrator to reload the configuration while the server is running. (Permission: afkplus.afkplus.reload)
