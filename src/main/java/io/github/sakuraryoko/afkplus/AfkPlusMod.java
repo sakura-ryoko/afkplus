@@ -1,9 +1,8 @@
 package io.github.sakuraryoko.afkplus;
 
-import java.util.Collection;
-
 import io.github.sakuraryoko.afkplus.commands.CommandManagerServer;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
+import io.github.sakuraryoko.afkplus.events.ServerEvents;
 import io.github.sakuraryoko.afkplus.placeholders.PlaceholderManager;
 import io.github.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
@@ -11,13 +10,15 @@ import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class AfkPlusMod {
-    static private Collection<String> dpCollection;
 
-    // Dedicated Server
-    public static void initServer() {
+    // Generic Mod
+    public static void initMain() {
         AfkPlusLogger.initLogger();
         AfkPlusInfo.initModInfo();
         AfkPlusInfo.displayModInfo();
+        if (AfkPlusInfo.isClient()) {
+            AfkPlusLogger.info("MOD is running in a CLIENT Environment.");
+        }
         AfkPlusConflicts.checkMods();
         AfkPlusLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
@@ -27,46 +28,21 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("Command registrations done, registering placeholders.");
         PlaceholderManager.register();
         AfkPlusLogger.debug("All Placeholders registered, checking datapacks.");
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            ServerEvents.starting(server);
+        });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            dpCollection = server.getDataPackManager().getEnabledNames();
-            AfkPlusConflicts.checkDatapacks(dpCollection);
+            ServerEvents.started(server);
         });
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
-            dpCollection = server.getDataPackManager().getEnabledNames();
-            AfkPlusConflicts.checkDatapacks(dpCollection);
+            ServerEvents.dpReload(server);
+        });
+        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
+            ServerEvents.stopping(server);
+        });
+        ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
+            ServerEvents.stopped(server);
         });
     }
 
-    // Generic Mod
-    public static void initMain() {
-        AfkPlusLogger.initLogger();
-        AfkPlusInfo.initModInfo();
-        AfkPlusInfo.displayModInfo();
-        if (AfkPlusInfo.isServer()) {
-            AfkPlusConflicts.checkMods();
-            AfkPlusLogger.debug("Config Initializing.");
-            ConfigManager.initConfig();
-            ConfigManager.loadConfig();
-            AfkPlusLogger.debug("Config successful, registering commands.");
-            CommandManagerServer.register();
-            AfkPlusLogger.debug("Command registrations done, registering placeholders.");
-            PlaceholderManager.register();
-            AfkPlusLogger.debug("All Placeholders registered, checking datapacks.");
-            ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-                dpCollection = server.getDataPackManager().getEnabledNames();
-                AfkPlusConflicts.checkDatapacks(dpCollection);
-            });
-            ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
-                dpCollection = server.getDataPackManager().getEnabledNames();
-                AfkPlusConflicts.checkDatapacks(dpCollection);
-            });
-        } else {
-            AfkPlusLogger.warn("MOD running in a CLIENT Environment.  Disabling.");
-        }
-    }
-
-    // Integrated server launch
-    public static void startServer() {
-        AfkPlusLogger.debug("Integrated server launched.  Do something here.");
-    }
 }

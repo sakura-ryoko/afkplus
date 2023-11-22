@@ -1,25 +1,34 @@
 package io.github.sakuraryoko.afkplus.mixin;
 
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import io.github.sakuraryoko.afkplus.AfkPlusMod;
+import io.github.sakuraryoko.afkplus.events.ServerEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.GameMode;
 
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
-    @Inject(method = "openToLan", at = @At("RETURN"))
-    private void startLAN(@Nullable GameMode gameMode, boolean cheatsAllowed, int port,
-            CallbackInfoReturnable<Boolean> ci) {
-        if (!ci.getReturnValue()) {
+    private MinecraftClient cli = MinecraftClient.getInstance();
+    private IntegratedServer s;
+
+    @Inject(method = "setupServer", at = @At("TAIL"))
+    private void startServer(CallbackInfoReturnable<Boolean> ci) {
+        if (ci.isCancelled())
             return;
-        } else {
-            AfkPlusMod.startServer();
-        }
+        s = cli.isIntegratedServerRunning() ? cli.getServer() : null;
+        ServerEvents.integratedServerStart(s);
+    }
+
+    @Inject(method = "stop", at = @At("HEAD"))
+    private void stopServer(CallbackInfo ci) {
+        if (ci.isCancelled())
+            return;
+        s = cli.isIntegratedServerRunning() ? cli.getServer() : null;
+        ServerEvents.integratedServerStopping(s);
     }
 
 }

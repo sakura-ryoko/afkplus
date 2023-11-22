@@ -37,12 +37,12 @@ public class AfkPlusInfo {
     }
 
     public static void displayModInfo() {
-        AfkPlusLogger.info(AFK_MOD_ID + "-" + AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION);
+        AfkPlusLogger.info(AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION);
         AfkPlusLogger.info("Author: " + AFK_AUTHO_STRING);
     }
 
     public static Text getModInfoText() {
-        String modInfo1 = AFK_MOD_ID + "-" + AFK_MC_VERSION + "-" + AFK_VERSION;
+        String modInfo1 = AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION;
         String modInfo2 = "Author: <light_purple>" + AFK_AUTHO_STRING + "</light_purple>";
         String modInfo3 = "License: <yellow>" + AFK_LICENSES_STRING + "</yellow>";
         String modInfo4 = "Homepage: <aqua><url:'" + AFK_HOMEPAGE_STRING + "'>" + AFK_HOMEPAGE_STRING + "</url></aqua>";

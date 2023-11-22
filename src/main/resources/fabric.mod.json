@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "afkplus",
   "version": "${version}",
-
   "name": "AfkPlus",
   "description": "Show which players are afk in the player list",
   "authors": [
@@ -13,23 +12,21 @@
     "homepage": "https://github.com/sakura-ryoko/afkplus",
     "sources": "https://github.com/sakura-ryoko/afkplus"
   },
-
   "license": "MIT",
   "icon": "assets/afkplus/icon.png",
-
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
-    "server": [
-      "io.github.sakuraryoko.afkplus.AfkPlusServer"
-    ],
-    "main": []
+    "server": [],
+    "client": [],
+    "main": [
+      "io.github.sakuraryoko.afkplus.AfkPlusMain"
+    ]
   },
   "mixins": [
     "afkplus.mixins.json"
   ],
-
   "depends": {
-    "fabricloader": ">=0.14.24",
+    "fabricloader": ">=0.14.23",
     "fabric": ">=0.90.0",
     "minecraft": "1.20.2",
     "java": ">=17"
