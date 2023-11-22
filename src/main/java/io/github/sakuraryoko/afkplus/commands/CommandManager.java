@@ -2,12 +2,9 @@ package io.github.sakuraryoko.afkplus.commands;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
-import io.github.sakuraryoko.afkplus.commands.server.AfkCommand;
-import io.github.sakuraryoko.afkplus.commands.server.AfkInfoCommand;
-import io.github.sakuraryoko.afkplus.commands.server.AfkPlusCommand;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-public class CommandManagerServer {
+public class CommandManager {
     public static void register() {
         if (CONFIG.afkPlusOptions.enableAfkCommand) {
             CommandRegistrationCallback.EVENT

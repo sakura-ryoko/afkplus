@@ -1,4 +1,4 @@
-package io.github.sakuraryoko.afkplus.commands.server;
+package io.github.sakuraryoko.afkplus.commands;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 import static net.minecraft.server.command.CommandManager.*;

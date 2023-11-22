@@ -1,6 +1,6 @@
 package io.github.sakuraryoko.afkplus;
 
-import io.github.sakuraryoko.afkplus.commands.CommandManagerServer;
+import io.github.sakuraryoko.afkplus.commands.CommandManager;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
 import io.github.sakuraryoko.afkplus.events.ServerEvents;
 import io.github.sakuraryoko.afkplus.placeholders.PlaceholderManager;
@@ -24,7 +24,7 @@ public class AfkPlusMod {
         ConfigManager.initConfig();
         ConfigManager.loadConfig();
         AfkPlusLogger.debug("Config successful, registering commands.");
-        CommandManagerServer.register();
+        CommandManager.register();
         AfkPlusLogger.debug("Command registrations done, registering placeholders.");
         PlaceholderManager.register();
         AfkPlusLogger.debug("All Placeholders registered, checking datapacks.");
