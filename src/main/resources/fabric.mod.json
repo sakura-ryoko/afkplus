@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://github.com/sakura-ryoko/afkplus",
-    "sources": "https://github.com/sakura-ryoko/afkplus"
+    "sources": "https://github.com/sakura-ryoko/afkplus",
+    "issues": "https://github.com/sakura-ryoko/afkplus/issues"
   },
   "license": "MIT",
   "icon": "assets/afkplus/icon.png",
