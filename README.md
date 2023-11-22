@@ -1,4 +1,5 @@
-## AfkPlus (A fork based upon AfkDisplay by beabfc)
+## AfkPlus
+- A forked project based upon AfkDisplay by beabfc
 
 # Features :blush:
 - '**/afkplus reload**' command.  This allows an Administrator to reload the configuration while the server is running. (Permission: afkplus.afkplus.reload)
