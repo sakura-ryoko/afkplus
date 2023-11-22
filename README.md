@@ -1,5 +1,7 @@
 # AfkPlus Fabric Mod for Minecraft
 
+![Example](afkplus.jpg)
+
 ## Basic Description:
 - A forked project based upon AfkDisplay by beabfc
 - Show which players are AFK in the player list, see the Reasons, Durations, and Times.
