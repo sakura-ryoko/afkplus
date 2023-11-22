@@ -1,4 +1,4 @@
-# AfkPlus
+# AfkPlus Fabric Mod for Minecraft
 
 ## Basic Description:
 - A forked project based upon AfkDisplay by beabfc
