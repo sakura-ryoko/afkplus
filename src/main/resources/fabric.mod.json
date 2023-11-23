@@ -17,11 +17,13 @@
   "icon": "assets/afkplus/icon.png",
   "environment": "*",
   "entrypoints": {
-    "server": [],
-    "client": [],
-    "main": [
-      "io.github.sakuraryoko.afkplus.AfkPlusMain"
-    ]
+    "server": [
+      "io.github.sakuraryoko.afkplus.AfkPlusServer"
+    ],
+    "client": [
+      "io.github.sakuraryoko.afkplus.AfkPlusClient"
+    ],
+    "main": []
   },
   "mixins": [
     "afkplus.mixins.json"

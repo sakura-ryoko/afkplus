@@ -25,4 +25,5 @@ public class ModData {
     public static String AFK_SOURCES_STRING;
     public static String AFK_LICENSES_STRING;
     public static boolean AFK_DEBUG;
+    public static boolean AFK_INIT;
 }

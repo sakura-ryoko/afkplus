@@ -11,8 +11,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class AfkPlusMod {
 
-    // Generic Mod
-    public static void initMain() {
+    // Generic Mod init
+    public static void init() {
         AfkPlusLogger.initLogger();
         AfkPlusInfo.initModInfo();
         AfkPlusInfo.displayModInfo();
