@@ -4,11 +4,14 @@ import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import net.fabricmc.api.ModInitializer;
 
-public class AfkPlusMain implements ModInitializer {
+public class AfkPlusClient implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        AFK_DEBUG = true;
-        AfkPlusMod.initMain();
+        if (!AFK_INIT) {
+            // AFK_DEBUG = true;
+            AFK_INIT = true;
+            AfkPlusMod.init();
+        }
     }
 }

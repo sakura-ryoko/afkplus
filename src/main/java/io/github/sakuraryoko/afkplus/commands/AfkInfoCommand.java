@@ -6,6 +6,8 @@ import static net.minecraft.server.command.CommandManager.*;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
@@ -33,7 +35,8 @@ public class AfkInfoCommand {
                 String user = src.getName();
                 String target = player.getName().toString();
                 String AfkStatus = AfkPlayerInfo.getString(afkPlayer, user, target);
-                context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
+                context.getSource().sendFeedback(() -> Placeholders.parseText(TextParserUtils.formatTextSafe(AfkStatus),
+                                PlaceholderContext.of(src)), false);
                 return 1;
         }
 }
