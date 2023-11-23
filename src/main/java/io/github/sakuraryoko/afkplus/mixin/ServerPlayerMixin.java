@@ -66,14 +66,19 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             setAfkReason("<red>none");
         } else if (reason == null || reason == "") {
             setAfkReason("<red>none");
-            sendAfkMessage(Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
-                    PlaceholderContext.of(this)));
+            Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
+                    PlaceholderContext.of(this));
+            AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
+            sendAfkMessage(mess);
         } else {
             setAfkReason(reason);
-            sendAfkMessage(
-                    Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk
-                            + "<yellow>,<r> " + reason),
-                            PlaceholderContext.of(this)));
+            String input = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
+            AfkPlusLogger.debug("registerafk-input: " + input);
+            Text mess1 = TextParserUtils.formatTextSafe(input);
+            AfkPlusLogger.debug("registerafk-mess1().toString(): " + mess1.toString());
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            AfkPlusLogger.debug("registerafk-mess2().toString(): " + mess2.toString());
+            sendAfkMessage(mess2);
         }
         setAfk(true);
     }
@@ -85,12 +90,22 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
-            sendAfkMessage(Placeholders.parseText(TextParserUtils.formatTextSafe(ret), PlaceholderContext.of(this)));
+            AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+            sendAfkMessage(mess2);
         } else {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
-            sendAfkMessage(Placeholders.parseText(TextParserUtils.formatTextSafe(ret), PlaceholderContext.of(this)));
+            AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+            sendAfkMessage(mess2);
         }
         setAfk(false);
         clearAfkTime();
@@ -161,6 +176,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             Text listEntry = Placeholders.parseText(
                     TextParserUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
                     PlaceholderContext.of(this));
+            AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
             cir.setReturnValue(listEntry.copy());
         }
     }
