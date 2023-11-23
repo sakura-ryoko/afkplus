@@ -23,8 +23,8 @@ public class AfkPlusCommand {
         public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
                 dispatcher.register(
                                 literal("afkplus")
-                                                .requires(Permissions.require("afkplus.afkplus",
-                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                // .requires(Permissions.require("afkplus.afkplus",
+                                                // CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                                 .executes(ctx -> afkAbout(ctx.getSource(), ctx))
                                                 .then(literal("reload")
                                                                 .requires(Permissions.require(
@@ -90,7 +90,10 @@ public class AfkPlusCommand {
 
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
+                String user = src.getName();
+                AfkPlusLogger.debug(user + " has executed /afkplus .");
                 context.getSource().sendFeedback(() -> ModInfo, false);
+                context.getSource().sendFeedback(() -> Text.of("testing"), false);
                 return 1;
         }
 

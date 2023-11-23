@@ -52,6 +52,8 @@ public class AfkPlusInfo {
         Text info = TextParserUtils
                 .formatText(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
                         + modInfo6);
+        AfkPlusLogger.debug(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
+                + modInfo6);
         return info;
 
     }
