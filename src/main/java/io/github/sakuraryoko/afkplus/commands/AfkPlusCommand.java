@@ -7,6 +7,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
@@ -133,7 +135,8 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 String target = player.getEntityName();
                 String AfkStatus = AfkPlayerInfo.getString(afkPlayer, user, target);
-                context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
+                context.getSource().sendFeedback(() -> Placeholders.parseText(TextParserUtils.formatTextSafe(AfkStatus),
+                                PlaceholderContext.of(src)), false);
                 return 1;
         }
 
