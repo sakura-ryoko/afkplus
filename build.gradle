@@ -19,11 +19,11 @@ repositories {
 	maven {
 		name "Nucleoid"
 		url "https://maven.nucleoid.xyz/"
-		mavenLocal()
+		//mavenLocal()
 	}
-	flatDir {
-       dirs 'libs'
-   }
+	//flatDir {
+    //   dirs 'libs'
+   //}
 }
 
 dependencies {
