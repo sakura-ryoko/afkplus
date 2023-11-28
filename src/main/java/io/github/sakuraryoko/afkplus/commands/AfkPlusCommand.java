@@ -25,8 +25,8 @@ public class AfkPlusCommand {
         public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
                 dispatcher.register(
                                 literal("afkplus")
-                                                .requires(Permissions.require("afkplus.afkplus",
-                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                // .requires(Permissions.require("afkplus.afkplus",
+                                                // CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                                 .executes(ctx -> afkAbout(ctx.getSource(), ctx))
                                                 .then(literal("reload")
                                                                 .requires(Permissions.require(
@@ -92,7 +92,10 @@ public class AfkPlusCommand {
 
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
+                String user = src.getName();
+                AfkPlusLogger.debug(user + " has executed /afkplus .");
                 context.getSource().sendFeedback(() -> ModInfo, false);
+                context.getSource().sendFeedback(() -> Text.of("testing"), false);
                 return 1;
         }
 
@@ -105,7 +108,7 @@ public class AfkPlusCommand {
         private static int setAfk(ServerCommandSource src, ServerPlayerEntity player, String reason) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getEntityName();
+                String target = player.getName().toString();
                 if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                         afkPlayer.registerAfk("via /afkplus set");
                         AfkPlusLogger.info(user + " set player " + target + " as AFK");
@@ -123,7 +126,7 @@ public class AfkPlusCommand {
         private static int clearAfk(ServerCommandSource src, ServerPlayerEntity player) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getEntityName();
+                String target = player.getName().toString();
                 afkPlayer.unregisterAfk();
                 AfkPlusLogger.info(user + " cleared player " + target + " from AFK");
                 return 1;
@@ -133,7 +136,7 @@ public class AfkPlusCommand {
                         CommandContext<ServerCommandSource> context) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getEntityName();
+                String target = player.getName().toString();
                 String AfkStatus = AfkPlayerInfo.getString(afkPlayer, user, target);
                 context.getSource().sendFeedback(() -> Placeholders.parseText(TextParserUtils.formatTextSafe(AfkStatus),
                                 PlaceholderContext.of(src)), false);
@@ -143,7 +146,7 @@ public class AfkPlusCommand {
         private static int updatePlayer(ServerCommandSource src, ServerPlayerEntity player,
                         CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
-                String target = player.getEntityName();
+                String target = player.getName().toString();
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 afkPlayer.updatePlayerList();
                 context.getSource().sendFeedback(() -> Text.literal("Updating player list entry for " + target + ""),

@@ -19,10 +19,15 @@ repositories {
 	maven {
 		name "Nucleoid"
 		url "https://maven.nucleoid.xyz/"
+		mavenLocal()
 	}
+	flatDir {
+       dirs 'libs'
+   }
 }
 
 dependencies {
+	//implementation fileTree(dir: 'libs', includes: ['*.jar'])
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"

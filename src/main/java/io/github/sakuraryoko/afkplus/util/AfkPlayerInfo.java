@@ -54,6 +54,7 @@ public class AfkPlayerInfo {
                             + afkPlayer.getAfkReason();
                 }
             }
+            AfkPlusLogger.debug("AkfStatus: " + AfkStatus);
             AfkPlusLogger.info(user + " displayed " + target + "'s AFK info.");
         } else {
             AfkStatus = "Player: " + target + "<r>\n ... is not marked as AFK.";

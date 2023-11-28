@@ -40,5 +40,9 @@ public class AfkPlusName {
                             ctx);
             return PlaceholderResult.value(result);
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 060a092f001962960314c7e284424479e63b6687
     };
 }
