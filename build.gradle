@@ -21,6 +21,7 @@ repositories {
 		url "https://maven.nucleoid.xyz/"
 		//mavenLocal()
 	}
+	// Only for a local maven repo for deps
 	//flatDir {
     //   dirs 'libs'
    //}
