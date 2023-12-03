@@ -21,14 +21,14 @@ public class AfkPlayerInfo {
             duration = Util.getMeasuringTimeMs() - afkPlayer.getAfkTimeMs();
             if (CONFIG.messageOptions.prettyDuration) {
                 AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getLiteralString()
+                        + "<r>\nPlayer: " + target.getString()
                         + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                         + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
                         + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
                         + DurationFormatUtils.formatDurationWords(duration, true, true);
             } else {
                 AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getLiteralString()
+                        + "<r>\nPlayer: " + target.getString()
                         + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                         + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
                         + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
@@ -37,7 +37,7 @@ public class AfkPlayerInfo {
             }
             AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
         } else {
-            AfkStatus = "";
+            AfkStatus = "Player: " + target.getString() + "<r>\n ... is not marked as AFK.";
         }
         return AfkStatus;
     }
@@ -57,7 +57,7 @@ public class AfkPlayerInfo {
             }
             AfkPlusLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
         } else {
-            afkReason = Text.of("");
+            afkReason = Text.of("Player: " + target.getString() + "<r>\n ... is not marked as AFK.");
         }
         return afkReason;
     }
