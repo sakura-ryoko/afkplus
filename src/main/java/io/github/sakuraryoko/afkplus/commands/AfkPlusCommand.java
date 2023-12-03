@@ -7,8 +7,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
@@ -93,32 +91,34 @@ public class AfkPlusCommand {
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
                 String user = src.getName();
-                AfkPlusLogger.debug(user + " has executed /afkplus .");
                 context.getSource().sendFeedback(() -> ModInfo, false);
-                context.getSource().sendFeedback(() -> Text.of("testing"), false);
+                AfkPlusLogger.debug(user + " has executed /afkplus .");
                 return 1;
         }
 
         private static int afkReload(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+                String user = src.getName();
                 ConfigManager.reloadConfig();
-                context.getSource().sendFeedback(() -> Text.literal("Reloaded config!"), false);
+                context.getSource().sendFeedback(() -> Text.of("Reloaded config!"), false);
+                AfkPlusLogger.info(user + " has reloaded the configuration.");
                 return 1;
         }
 
         private static int setAfk(ServerCommandSource src, ServerPlayerEntity player, String reason) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getName().toString();
+                Text target = player.getName();
                 if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                         afkPlayer.registerAfk("via /afkplus set");
-                        AfkPlusLogger.info(user + " set player " + target + " as AFK");
+                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
                 } else if (reason == null || reason == "") {
                         afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
-                        AfkPlusLogger.info(user + " set player " + target + " as AFK for reason: "
+                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK for reason: "
                                         + CONFIG.messageOptions.defaultReason);
                 } else {
                         afkPlayer.registerAfk(reason);
-                        AfkPlusLogger.info(user + " set player " + target + " as AFK for reason: " + reason);
+                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK for reason: "
+                                        + reason);
                 }
                 return 1;
         }
@@ -126,9 +126,9 @@ public class AfkPlusCommand {
         private static int clearAfk(ServerCommandSource src, ServerPlayerEntity player) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getName().toString();
+                Text target = player.getName();
                 afkPlayer.unregisterAfk();
-                AfkPlusLogger.info(user + " cleared player " + target + " from AFK");
+                AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
                 return 1;
         }
 
@@ -136,22 +136,23 @@ public class AfkPlusCommand {
                         CommandContext<ServerCommandSource> context) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
-                String target = player.getName().toString();
-                String AfkStatus = AfkPlayerInfo.getString(afkPlayer, user, target);
-                context.getSource().sendFeedback(() -> Placeholders.parseText(TextParserUtils.formatTextSafe(AfkStatus),
-                                PlaceholderContext.of(src)), false);
+                Text target = player.getName();
+                String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+                context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
+                AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
                 return 1;
         }
 
         private static int updatePlayer(ServerCommandSource src, ServerPlayerEntity player,
                         CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
-                String target = player.getName().toString();
+                Text target = player.getName();
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 afkPlayer.updatePlayerList();
-                context.getSource().sendFeedback(() -> Text.literal("Updating player list entry for " + target + ""),
+                context.getSource().sendFeedback(
+                                () -> Text.of("Updating player list entry for " + target.getLiteralString() + ""),
                                 false);
-                AfkPlusLogger.info(user + " updated player list entry for " + target + "");
+                AfkPlusLogger.info(user + " updated player list entry for " + target.getLiteralString() + "");
                 return 1;
         }
 }
