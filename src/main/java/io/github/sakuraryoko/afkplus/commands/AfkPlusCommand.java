@@ -40,7 +40,7 @@ public class AfkPlusCommand {
                                                                                                 ctx.getSource(),
                                                                                                 EntityArgumentType
                                                                                                                 .getPlayer(ctx, "player"),
-                                                                                                ""))
+                                                                                                "", ctx))
                                                                                 .then(argument("reason",
                                                                                                 StringArgumentType
                                                                                                                 .greedyString())
@@ -53,7 +53,8 @@ public class AfkPlusCommand {
                                                                                                                 EntityArgumentType
                                                                                                                                 .getPlayer(ctx, "player"),
                                                                                                                 StringArgumentType
-                                                                                                                                .getString(ctx, "reason"))))))
+                                                                                                                                .getString(ctx, "reason"),
+                                                                                                                ctx)))))
                                                 .then(literal("clear")
                                                                 .requires(Permissions.require(
                                                                                 "afkplus.afkplus.clear",
@@ -63,7 +64,8 @@ public class AfkPlusCommand {
                                                                                                 ctx.getSource(),
                                                                                                 EntityArgumentType
                                                                                                                 .getPlayer(ctx,
-                                                                                                                                "player")))))
+                                                                                                                                "player"),
+                                                                                                ctx))))
                                                 .then(literal("info")
                                                                 .requires(Permissions.require(
                                                                                 "afkplus.afkplus.info",
@@ -104,31 +106,46 @@ public class AfkPlusCommand {
                 return 1;
         }
 
-        private static int setAfk(ServerCommandSource src, ServerPlayerEntity player, String reason) {
+        private static int setAfk(ServerCommandSource src, ServerPlayerEntity player, String reason,
+                        CommandContext<ServerCommandSource> context) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
                 Text target = player.getName();
-                if (reason == null && CONFIG.messageOptions.defaultReason == null) {
-                        afkPlayer.registerAfk("via /afkplus set");
-                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
-                } else if (reason == null || reason == "") {
-                        afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
-                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK for reason: "
-                                        + CONFIG.messageOptions.defaultReason);
+                if (afkPlayer.isAfk()) {
+                        context.getSource().sendFeedback(
+                                        () -> Text.of(target.getLiteralString() + " is already marked as AFK."), false);
                 } else {
-                        afkPlayer.registerAfk(reason);
-                        AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK for reason: "
-                                        + reason);
+                        if (reason == null && CONFIG.messageOptions.defaultReason == null) {
+                                afkPlayer.registerAfk("via /afkplus set");
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
+                        } else if (reason == null || reason == "") {
+                                afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                                + " as AFK for reason: "
+                                                + CONFIG.messageOptions.defaultReason);
+                        } else {
+                                afkPlayer.registerAfk(reason);
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                                + " as AFK for reason: "
+                                                + reason);
+                        }
                 }
                 return 1;
         }
 
-        private static int clearAfk(ServerCommandSource src, ServerPlayerEntity player) {
+        private static int clearAfk(ServerCommandSource src, ServerPlayerEntity player,
+                        CommandContext<ServerCommandSource> context) {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
                 Text target = player.getName();
-                afkPlayer.unregisterAfk();
-                AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
+                if (afkPlayer.isAfk()) {
+                        afkPlayer.unregisterAfk();
+                        AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
+                } else {
+                        context.getSource().sendFeedback(
+                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."),
+                                        false);
+                }
                 return 1;
         }
 
@@ -137,9 +154,16 @@ public class AfkPlusCommand {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
                 Text target = player.getName();
-                String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
-                AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+                if (afkPlayer.isAfk()) {
+                        String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+                        Text AfkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
+                        context.getSource().sendFeedback(() -> AfkReason, false);
+                        AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+                } else {
+                        context.getSource().sendFeedback(
+                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
+                }
                 return 1;
         }
 

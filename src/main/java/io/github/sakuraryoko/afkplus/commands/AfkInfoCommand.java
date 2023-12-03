@@ -34,9 +34,16 @@ public class AfkInfoCommand {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 String user = src.getName();
                 Text target = player.getName();
-                String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
-                AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+                if (afkPlayer.isAfk()) {
+                        String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+                        Text AfkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
+                        context.getSource().sendFeedback(() -> AfkReason, false);
+                        AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+                } else {
+                        context.getSource().sendFeedback(
+                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
+                }
                 return 1;
         }
 }
