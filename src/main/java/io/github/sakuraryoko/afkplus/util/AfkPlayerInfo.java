@@ -37,7 +37,7 @@ public class AfkPlayerInfo {
             }
             AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
         } else {
-            AfkStatus = "Player: " + target.getString() + "<r>\n ... is not marked as AFK.";
+            AfkStatus = "";
         }
         return AfkStatus;
     }
@@ -57,7 +57,7 @@ public class AfkPlayerInfo {
             }
             AfkPlusLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
         } else {
-            afkReason = Text.of("Player: " + target.getString() + "<r>\n ... is not marked as AFK.");
+            afkReason = Text.of("");
         }
         return afkReason;
     }
