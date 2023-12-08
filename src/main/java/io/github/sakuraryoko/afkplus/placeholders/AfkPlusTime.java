@@ -15,16 +15,18 @@ public class AfkPlusTime {
         Placeholders.register(new Identifier(AFK_MOD_ID, "time"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
+            } else {
+                AfkPlayerData player = (AfkPlayerData) ctx.player();
+                assert player != null;
+                Text result = player.isAfk()
+                        ? TextParserUtils
+                                .formatTextSafe(
+                                        CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
+                                                + player.getAfkTimeString()
+                                                + "<r>")
+                        : TextParserUtils.formatTextSafe("");
+                return PlaceholderResult.value(result);
             }
-            AfkPlayerData player = (AfkPlayerData) ctx.player();
-            assert player != null;
-            Text result = player.isAfk()
-                    ? TextParserUtils
-                            .formatTextSafe(
-                                    CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.getAfkTimeString()
-                                            + "<r>")
-                    : TextParserUtils.formatTextSafe("");
-            return PlaceholderResult.value(result);
         });
     };
 

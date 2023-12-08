@@ -25,8 +25,8 @@ public class AfkPlusCommand {
                 CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
                         dispatcher.register(
                                         literal("afkplus")
-                                                        // .requires(Permissions.require("afkplus.afkplus",
-                                                        // CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                        .requires(Permissions.require("afkplus.afkplus",
+                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                                         .executes(ctx -> afkAbout(ctx.getSource(), ctx))
                                                         .then(literal("reload")
                                                                         .requires(Permissions.require(

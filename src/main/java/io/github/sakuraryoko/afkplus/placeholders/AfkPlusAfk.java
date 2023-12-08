@@ -15,14 +15,16 @@ public class AfkPlusAfk {
         Placeholders.register(new Identifier(AFK_MOD_ID, "afk"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
+            } else {
+                AfkPlayerData player = (AfkPlayerData) ctx.player();
+                assert player != null;
+                Text result = player.isAfk()
+                        ? Placeholders.parseText(
+                                TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder),
+                                ctx)
+                        : Text.of("");
+                return PlaceholderResult.value(result);
             }
-            AfkPlayerData player = (AfkPlayerData) ctx.player();
-            assert player != null;
-            Text result = player.isAfk()
-                    ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder),
-                            ctx)
-                    : Text.of("");
-            return PlaceholderResult.value(result);
         });
     };
 

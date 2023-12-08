@@ -2,7 +2,6 @@ package io.github.sakuraryoko.afkplus.events;
 
 import java.util.Collection;
 
-import io.github.sakuraryoko.afkplus.AfkPlusMod;
 import io.github.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.server.MinecraftServer;
@@ -12,7 +11,6 @@ public class ServerEvents {
 
     public static void starting(MinecraftServer server) {
         AfkPlusLogger.debug("Server is starting. " + server.getName());
-        AfkPlusMod.register();
     }
 
     public static void started(MinecraftServer server) {

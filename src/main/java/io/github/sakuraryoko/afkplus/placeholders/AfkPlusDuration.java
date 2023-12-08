@@ -18,26 +18,27 @@ public class AfkPlusDuration {
         Placeholders.register(new Identifier(AFK_MOD_ID, "duration"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
-            }
-            AfkPlayerData player = (AfkPlayerData) ctx.player();
-            assert player != null;
-            if (CONFIG.PlaceholderOptions.afkDurationPretty) {
-                Text result = player.isAfk()
-                        ? TextParserUtils.formatTextSafe(
-                                CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                                        + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
-                                                player.getAfkTimeMs(), true, true)
-                                        + "<r>")
-                        : TextParserUtils.formatTextSafe("");
-                return PlaceholderResult.value(result);
             } else {
-                Text result = player.isAfk()
-                        ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                                + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
-                                        player.getAfkTimeMs())
-                                + "<r>")
-                        : TextParserUtils.formatTextSafe("");
-                return PlaceholderResult.value(result);
+                AfkPlayerData player = (AfkPlayerData) ctx.player();
+                assert player != null;
+                if (CONFIG.PlaceholderOptions.afkDurationPretty) {
+                    Text result = player.isAfk()
+                            ? TextParserUtils.formatTextSafe(
+                                    CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
+                                            + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
+                                                    player.getAfkTimeMs(), true, true)
+                                            + "<r>")
+                            : TextParserUtils.formatTextSafe("");
+                    return PlaceholderResult.value(result);
+                } else {
+                    Text result = player.isAfk()
+                            ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
+                                    + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
+                                            player.getAfkTimeMs())
+                                    + "<r>")
+                            : TextParserUtils.formatTextSafe("");
+                    return PlaceholderResult.value(result);
+                }
             }
         });
     };

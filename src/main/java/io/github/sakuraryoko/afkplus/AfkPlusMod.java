@@ -8,10 +8,8 @@ import io.github.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 public class AfkPlusMod {
-
     // Generic Mod init
     public static void init() {
         AfkPlusLogger.initLogger();
@@ -24,14 +22,19 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
         ConfigManager.loadConfig();
-        AfkPlusLogger.debug("Config successful, waiting for server start.");
+        AfkPlusLogger.debug("Config successful, registerring Placeholders.");
+        PlaceholderManager.register();
+        AfkPlusLogger.debug("All Placeholders registered, registerring commands.");
+        CommandManager.register();
+        AfkPlusLogger.debug("Done registerring commands.");
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             ServerEvents.starting(server);
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             ServerEvents.started(server);
         });
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server,
+                serverResourceManager, success) -> {
             ServerEvents.dpReload(server);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
@@ -40,14 +43,5 @@ public class AfkPlusMod {
         ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
             ServerEvents.stopped(server);
         });
-    }
-
-    public static void register() {
-        if (AFK_INIT) {
-            CommandManager.register();
-            AfkPlusLogger.debug("Command registrations done, registering placeholders.");
-            PlaceholderManager.register();
-            AfkPlusLogger.debug("All Placeholders registered.");
-        }
     }
 }
