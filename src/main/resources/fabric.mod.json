@@ -29,6 +29,7 @@
     "afkplus.mixins.json"
   ],
   "depends": {
+    "placeholder-api": "*",
     "fabricloader": ">=0.14.24",
     "fabric": ">=0.90.0",
     "minecraft": ">=1.20.2",
