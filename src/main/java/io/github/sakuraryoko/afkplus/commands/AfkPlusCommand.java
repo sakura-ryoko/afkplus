@@ -91,9 +91,9 @@ public class AfkPlusCommand {
         }
 
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
-                Text ModInfo = AfkPlusInfo.getModInfoText();
+                Text modInfo = AfkPlusInfo.getModInfoText();
                 String user = src.getName();
-                context.getSource().sendFeedback(ModInfo, false);
+                context.getSource().sendFeedback(modInfo, false);
                 AfkPlusLogger.debug(user + " has executed /afkplus .");
                 return 1;
         }
@@ -154,10 +154,10 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 Text target = player.getName();
                 if (afkPlayer.isAfk()) {
-                        String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                        Text AfkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
-                        context.getSource().sendFeedback(TextParserUtils.formatTextSafe(AfkStatus), false);
-                        context.getSource().sendFeedback(AfkReason, false);
+                        String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+                        Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+                        context.getSource().sendFeedback(TextParserUtils.formatTextSafe(afkStatus), false);
+                        context.getSource().sendFeedback(afkReason, false);
                         AfkPlusLogger.info(user + " displayed " + target.getString() + "'s AFK info.");
                 } else {
                         context.getSource().sendFeedback(Text.of(target.getString() + " is not marked as AFK."), false);
