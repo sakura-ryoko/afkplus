@@ -11,6 +11,7 @@ import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,15 +19,18 @@ import net.minecraft.text.Text;
 
 public class AfkInfoCommand {
         public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-                dispatcher.register(
-                                literal("afkinfo")
-                                                .requires(Permissions.require("afkplus.afkinfo",
-                                                                CONFIG.afkPlusOptions.afkInfoCommandPermissions))
-                                                .then(argument("player", EntityArgumentType.player())
-                                                                .executes(ctx -> infoAfkPlayer(ctx.getSource(),
-                                                                                EntityArgumentType.getPlayer(ctx,
-                                                                                                "player"),
-                                                                                ctx))));
+                CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+                        dispatcher.register(
+                                        literal("afkinfo")
+                                                        .requires(Permissions.require("afkplus.afkinfo",
+                                                                        CONFIG.afkPlusOptions.afkInfoCommandPermissions))
+                                                        .then(argument("player", EntityArgumentType.player())
+                                                                        .executes(ctx -> infoAfkPlayer(ctx.getSource(),
+                                                                                        EntityArgumentType.getPlayer(
+                                                                                                        ctx,
+                                                                                                        "player"),
+                                                                                        ctx))));
+                });
         }
 
         private static int infoAfkPlayer(ServerCommandSource src, ServerPlayerEntity player,
