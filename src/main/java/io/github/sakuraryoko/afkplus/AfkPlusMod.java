@@ -8,6 +8,7 @@ import io.github.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 public class AfkPlusMod {
 
@@ -23,11 +24,7 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
         ConfigManager.loadConfig();
-        AfkPlusLogger.debug("Config successful, registering commands.");
-        CommandManager.register();
-        AfkPlusLogger.debug("Command registrations done, registering placeholders.");
-        PlaceholderManager.register();
-        AfkPlusLogger.debug("All Placeholders registered, checking datapacks.");
+        AfkPlusLogger.debug("Config successful, waiting for server start.");
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             ServerEvents.starting(server);
         });
@@ -45,4 +42,12 @@ public class AfkPlusMod {
         });
     }
 
+    public static void register() {
+        if (AFK_INIT) {
+            CommandManager.register();
+            AfkPlusLogger.debug("Command registrations done, registering placeholders.");
+            PlaceholderManager.register();
+            AfkPlusLogger.debug("All Placeholders registered.");
+        }
+    }
 }
