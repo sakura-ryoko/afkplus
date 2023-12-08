@@ -10,7 +10,6 @@ import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class AfkPlusMod {
-
     // Generic Mod init
     public static void init() {
         AfkPlusLogger.initLogger();
@@ -44,5 +43,4 @@ public class AfkPlusMod {
             ServerEvents.stopped(server);
         });
     }
-
 }

@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.commands;
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 import static net.minecraft.server.command.CommandManager.*;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -13,7 +12,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class AfkCommand {
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(
                     literal("afk")
@@ -25,6 +24,7 @@ public class AfkCommand {
                                             ctx -> setAfk(ctx.getSource(),
                                                     StringArgumentType.getString(ctx, "reason")))));
         });
+    }
 
     private static int setAfk(ServerCommandSource src, String reason) throws CommandSyntaxException {
         AfkPlayerData player = (AfkPlayerData) src.getPlayerOrThrow();

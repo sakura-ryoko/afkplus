@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.commands;
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 import static net.minecraft.server.command.CommandManager.*;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 
 import eu.pb4.placeholders.api.TextParserUtils;
@@ -18,7 +17,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class AfkInfoCommand {
-        public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        public static void register() {
                 CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
                         dispatcher.register(
                                         literal("afkinfo")
