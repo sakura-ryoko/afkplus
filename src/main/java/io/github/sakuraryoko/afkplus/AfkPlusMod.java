@@ -23,11 +23,11 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
         ConfigManager.loadConfig();
-        AfkPlusLogger.debug("Config successful, registering commands.");
-        CommandManager.register();
-        AfkPlusLogger.debug("Command registrations done, registering placeholders.");
+        AfkPlusLogger.debug("Config successful, registerring Placeholders.");
         PlaceholderManager.register();
-        AfkPlusLogger.debug("All Placeholders registered, checking datapacks.");
+        AfkPlusLogger.debug("All Placeholders registered, registerring commands.");
+        CommandManager.register();
+        AfkPlusLogger.debug("Done registerring commands.");
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             ServerEvents.starting(server);
         });
