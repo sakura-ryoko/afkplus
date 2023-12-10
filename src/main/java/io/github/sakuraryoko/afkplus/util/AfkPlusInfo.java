@@ -4,7 +4,7 @@ import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.util.Iterator;
 
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.TextParser;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -49,8 +49,8 @@ public class AfkPlusInfo {
         String modInfo5 = "Source: <aqua><url:'" + AFK_SOURCES_STRING + "'>" + AFK_SOURCES_STRING + "</url></aqua>";
         String modInfo6 = "Description: " + AFK_DESC;
 
-        Text info = TextParserUtils
-                .formatText(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
+        Text info = TextParser
+                .parse(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
                         + modInfo6);
         AfkPlusLogger.debug(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
                 + modInfo6);

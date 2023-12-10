@@ -4,9 +4,8 @@ import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.TextParser;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -21,14 +20,14 @@ public class AfkPlayerInfo {
             duration = Util.getMeasuringTimeMs() - afkPlayer.getAfkTimeMs();
             if (CONFIG.messageOptions.prettyDuration) {
                 AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getLiteralString()
+                        + "<r>\nPlayer: " + target.getString()
                         + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                         + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
                         + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
                         + DurationFormatUtils.formatDurationWords(duration, true, true);
             } else {
                 AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getLiteralString()
+                        + "<r>\nPlayer: " + target.getString()
                         + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                         + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
                         + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
@@ -49,11 +48,11 @@ public class AfkPlayerInfo {
         if (afkPlayer.isAfk()) {
             reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
             if (afkPlayer.getAfkReason() == "") {
-                afkReason = TextParserUtils.formatTextSafe(reasonFormat + "none");
+                afkReason = TextParser.parse(reasonFormat + "none");
             } else {
-                afkReason = Placeholders.parseText(
-                        TextParserUtils.formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
-                        PlaceholderContext.of(src));
+                afkReason = PlaceholderAPI.parseText(
+                        TextParser.parse(reasonFormat + afkPlayer.getAfkReason()),
+                        src.getServer());
             }
             AfkPlusLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
         } else {

@@ -5,9 +5,9 @@ import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import eu.pb4.placeholders.api.PlaceholderResult;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.PlaceholderResult;
+import eu.pb4.placeholders.TextParser;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -15,28 +15,28 @@ import net.minecraft.util.Util;
 
 public class AfkPlusDuration {
     public static void register() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "duration"), (ctx, arg) -> {
+        PlaceholderAPI.register(new Identifier(AFK_MOD_ID, "duration"), (ctx) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
-            AfkPlayerData player = (AfkPlayerData) ctx.player();
+            AfkPlayerData player = (AfkPlayerData) ctx.getPlayer();
             assert player != null;
             if (CONFIG.PlaceholderOptions.afkDurationPretty) {
                 Text result = player.isAfk()
-                        ? TextParserUtils.formatTextSafe(
+                        ? TextParser.parse(
                                 CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
                                         + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
                                                 player.getAfkTimeMs(), true, true)
                                         + "<r>")
-                        : TextParserUtils.formatTextSafe("");
+                        : TextParser.parse("");
                 return PlaceholderResult.value(result);
             } else {
                 Text result = player.isAfk()
-                        ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
+                        ? TextParser.parse(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
                                 + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
                                         player.getAfkTimeMs())
                                 + "<r>")
-                        : TextParserUtils.formatTextSafe("");
+                        : TextParser.parse("");
                 return PlaceholderResult.value(result);
             }
         });

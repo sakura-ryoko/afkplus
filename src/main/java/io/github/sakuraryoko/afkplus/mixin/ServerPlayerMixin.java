@@ -2,6 +2,10 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
+//import eu.pb4.placeholders.api.Placeholders;
+import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.TextParser;
 import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.entity.Entity;
@@ -66,17 +70,17 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             setAfkReason("<red>none");
         } else if (reason == null || reason == "") {
             setAfkReason("<red>none");
-            Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
-                    PlaceholderContext.of(this));
+            Text mess = PlaceholderAPI.parseText(TextParser.parse(CONFIG.messageOptions.whenAfk),
+                    this.player);
             AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             sendAfkMessage(mess);
         } else {
             setAfkReason(reason);
             String input = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
             AfkPlusLogger.debug("registerafk-input: " + input);
-            Text mess1 = TextParserUtils.formatTextSafe(input);
+            Text mess1 = TextParser.parse(input);
             AfkPlusLogger.debug("registerafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.player);
             AfkPlusLogger.debug("registerafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         }
@@ -91,9 +95,9 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
             AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess1 = TextParser.parse(ret);
             AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.player);
             AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         } else {
@@ -101,9 +105,9 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
             AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess1 = TextParser.parse(ret);
             AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.player);
             AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         }
@@ -123,9 +127,10 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
     private void sendAfkMessage(Text text) {
         if (!CONFIG.messageOptions.enableMessages || text.getString().trim().length() == 0)
             return;
-        server.sendMessage(text);
+        // server.sendMessage(text);
+        server.sendSystemMessage(text, uuid);
         for (ServerPlayerEntity player : this.server.getPlayerManager().getPlayerList()) {
-            player.sendMessage(text);
+            player.sendMessage(text, true);
         }
     }
 
@@ -138,7 +143,8 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
 
     private void setAfkTime() {
         this.afkTimeMs = Util.getMeasuringTimeMs();
-        this.afkTimeString = Util.getFormattedCurrentTime();
+        this.afkTimeString = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT)
+                .format(ZonedDateTime.now());
     }
 
     private void clearAfkTime() {
@@ -173,9 +179,9 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
     @Inject(method = "getPlayerListName", at = @At("RETURN"), cancellable = true)
     private void replacePlayerListName(CallbackInfoReturnable<Text> cir) {
         if (CONFIG.playerListOptions.enableListDisplay && isAfk) {
-            Text listEntry = Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
-                    PlaceholderContext.of(this));
+            Text listEntry = PlaceholderAPI.parseText(
+                    TextParser.parse(CONFIG.playerListOptions.afkPlayerName),
+                    this.player);
             AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
             cir.setReturnValue(listEntry.copy());
         }

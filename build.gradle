@@ -14,10 +14,10 @@ repositories {
 	maven {
 		name "Nucleoid"
 		url "https://maven.nucleoid.xyz/"
-		//mavenLocal()
+		mavenLocal()
 	}
 	// Only for a local maven repo for deps
-	//flatDir { dirs 'libs' }
+	flatDir { dirs 'libs' }
 }
 
 dependencies {
