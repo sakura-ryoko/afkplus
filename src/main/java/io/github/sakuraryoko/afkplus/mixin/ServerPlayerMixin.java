@@ -130,7 +130,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         // server.sendMessage(text);
         server.sendSystemMessage(text, uuid);
         for (ServerPlayerEntity player : this.server.getPlayerManager().getPlayerList()) {
-            player.sendMessage(text, true);
+            player.sendMessage(text, false);
         }
     }
 
