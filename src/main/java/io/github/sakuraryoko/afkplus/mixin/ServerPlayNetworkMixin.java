@@ -42,7 +42,6 @@ public abstract class ServerPlayNetworkMixin {
 
     @Inject(method = "onPlayerMove", at = @At("HEAD"))
     private void checkPlayerLook(PlayerMoveC2SPacket packet, CallbackInfo ci) {
-        // just checking for changesLook on the packet doesn't work
         if (CONFIG.packetOptions.resetOnLook && packet.changesLook()) {
             float yaw = player.getYaw();
             float pitch = player.getPitch();
