@@ -159,10 +159,10 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 Text target = player.getName();
                 if (afkPlayer.isAfk()) {
-                        String AfkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                        Text AfkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
-                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(AfkStatus), false);
-                        context.getSource().sendFeedback(() -> AfkReason, false);
+                        String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+                        Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
+                        context.getSource().sendFeedback(() -> afkReason, false);
                         AfkPlusLogger.info(user + " displayed " + target.getString() + "'s AFK info.");
                 } else {
                         context.getSource().sendFeedback(
