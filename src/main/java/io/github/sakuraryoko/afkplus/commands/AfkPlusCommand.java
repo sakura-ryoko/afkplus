@@ -12,6 +12,7 @@ import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
+import io.github.sakuraryoko.afkplus.util.FormattingTest;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -82,6 +83,13 @@ public class AfkPlusCommand {
                                                                                                                         .getPlayer(ctx,
                                                                                                                                         "player"),
                                                                                                         ctx))))
+                                                        .then(literal("test")
+                                                                        .requires(Permissions.require(
+                                                                                        "afkplus.afkplus.test",
+                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                        .executes(ctx -> testCmd(
+                                                                                        ctx.getSource(),
+                                                                                        ctx)))
                                                         .then(literal("update")
                                                                         .requires(Permissions.require(
                                                                                         "afkplus.afkplus.update",
@@ -95,6 +103,14 @@ public class AfkPlusCommand {
                                                                                                                                         "player"),
                                                                                                         ctx)))));
                 });
+        }
+
+        private static int testCmd(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+                String user = src.getName();
+                context.getSource().sendFeedback(() -> Text.of("Test Command:"), false);
+                context.getSource().sendFeedback(() -> FormattingTest.runTest(), false);
+                AfkPlusLogger.debug(user + " has executed /afkplus test.");
+                return 1;
         }
 
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
