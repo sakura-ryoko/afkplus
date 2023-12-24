@@ -3,6 +3,7 @@ package io.github.sakuraryoko.afkplus.util;
 import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 import eu.pb4.placeholders.api.TextParserUtils;
 import net.fabricmc.api.EnvType;
@@ -15,13 +16,12 @@ import net.minecraft.text.Text;
 public class AfkPlusInfo {
     private static final FabricLoader AFK_INST = FabricLoader.getInstance();
     private static final ModContainer AFK_CONTAINER = AFK_INST.getModContainer(AFK_MOD_ID).get();
-    private static ModMetadata AFK_METADATA;
 
     public static void initModInfo() {
         AFK_MC_VERSION = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion()
                 .getFriendlyString();
         AFK_ENV = AFK_INST.getEnvironmentType();
-        AFK_METADATA = AFK_CONTAINER.getMetadata();
+        ModMetadata AFK_METADATA = AFK_CONTAINER.getMetadata();
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
         AFK_NAME = AFK_METADATA.getName();
         AFK_DESC = AFK_METADATA.getDescription();
@@ -49,46 +49,36 @@ public class AfkPlusInfo {
         String modInfo5 = "Source: <aqua><url:'" + AFK_SOURCES_STRING + "'>" + AFK_SOURCES_STRING + "</url></aqua>";
         String modInfo6 = "Description: " + AFK_DESC;
 
+        String text = modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
+                + modInfo6;
         Text info = TextParserUtils
-                .formatText(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
-                        + modInfo6);
-        AfkPlusLogger.debug(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
-                + modInfo6);
+                .formatText(text);
+        AfkPlusLogger.debug(text);
         return info;
 
     }
 
     public static boolean isServer() {
-        if (AFK_ENV == EnvType.SERVER) {
-            return true;
-        } else {
-            return false;
-        }
+        return AFK_ENV == EnvType.SERVER;
     }
 
     public static boolean isClient() {
-        if (AFK_ENV == EnvType.CLIENT) {
-            return true;
-        } else {
-            return false;
-        }
+        return AFK_ENV == EnvType.CLIENT;
     }
 
     private static String getAuthoString() {
         String authoString = "";
-        if (AFK_AUTHO.isEmpty()) {
-            return authoString;
-        } else {
+        if (!AFK_AUTHO.isEmpty()) {
             final Iterator<Person> iterator = AFK_AUTHO.iterator();
-            for (; iterator.hasNext();) {
-                if (authoString == "") {
+            while (iterator.hasNext()) {
+                if (Objects.equals(authoString, "")) {
                     authoString = iterator.next().getName();
                 } else {
                     authoString = authoString + ", " + iterator.next().getName();
                 }
             }
-            return authoString;
         }
+        return authoString;
     }
 
     private static String getContribString() {
@@ -97,8 +87,8 @@ public class AfkPlusInfo {
             return contribString;
         } else {
             final Iterator<Person> iterator = AFK_CONTRIB.iterator();
-            for (; iterator.hasNext();) {
-                if (contribString == "") {
+            while (iterator.hasNext()) {
+                if (Objects.equals(contribString, "")) {
                     contribString = iterator.next().getName();
                 } else {
                     contribString = contribString + ", " + iterator.next().getName();
@@ -110,24 +100,22 @@ public class AfkPlusInfo {
 
     private static String getLicenseString() {
         String licsenseString = "";
-        if (AFK_LICENSES.isEmpty()) {
-            return licsenseString;
-        } else {
+        if (!AFK_LICENSES.isEmpty()) {
             final Iterator<String> iterator = AFK_LICENSES.iterator();
-            for (; iterator.hasNext();) {
-                if (licsenseString == "") {
+            while (iterator.hasNext()) {
+                if (Objects.equals(licsenseString, "")) {
                     licsenseString = iterator.next();
                 } else {
                     licsenseString = licsenseString + ", " + iterator.next();
                 }
             }
-            return licsenseString;
         }
+        return licsenseString;
     }
 
     private static String getHomepageString() {
         String homepageString = AFK_CONTACTS.asMap().get("homepage");
-        if (homepageString == "" || homepageString == null) {
+        if (Objects.equals(homepageString, "") || homepageString == null) {
             return "";
         } else {
             return homepageString;
@@ -136,7 +124,7 @@ public class AfkPlusInfo {
 
     private static String getSourcesString() {
         String sourcesString = AFK_CONTACTS.asMap().get("sources");
-        if (sourcesString == "" || sourcesString == null) {
+        if (Objects.equals(sourcesString, "") || sourcesString == null) {
             return "";
         } else {
             return sourcesString;

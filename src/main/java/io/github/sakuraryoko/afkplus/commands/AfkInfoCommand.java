@@ -17,36 +17,36 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 public class AfkInfoCommand {
-        public static void register() {
-                CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-                        dispatcher.register(
-                                        literal("afkinfo")
-                                                        .requires(Permissions.require("afkplus.afkinfo",
-                                                                        CONFIG.afkPlusOptions.afkInfoCommandPermissions))
-                                                        .then(argument("player", EntityArgumentType.player())
-                                                                        .executes(ctx -> infoAfkPlayer(ctx.getSource(),
-                                                                                        EntityArgumentType.getPlayer(
-                                                                                                        ctx,
-                                                                                                        "player"),
-                                                                                        ctx))));
-                });
-        }
+    public static void register() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            dispatcher.register(
+                    literal("afkinfo")
+                            .requires(Permissions.require("afkplus.afkinfo",
+                                    CONFIG.afkPlusOptions.afkInfoCommandPermissions))
+                            .then(argument("player", EntityArgumentType.player())
+                                    .executes(ctx -> infoAfkPlayer(ctx.getSource(),
+                                            EntityArgumentType.getPlayer(
+                                                    ctx,
+                                                    "player"),
+                                            ctx))));
+        });
+    }
 
-        private static int infoAfkPlayer(ServerCommandSource src, ServerPlayerEntity player,
-                        CommandContext<ServerCommandSource> context) {
-                AfkPlayerData afkPlayer = (AfkPlayerData) player;
-                String user = src.getName();
-                Text target = player.getName();
-                if (afkPlayer.isAfk()) {
-                        String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                        Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
-                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
-                        context.getSource().sendFeedback(() -> afkReason, false);
-                        AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
-                } else {
-                        context.getSource().sendFeedback(
-                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
-                }
-                return 1;
+    private static int infoAfkPlayer(ServerCommandSource src, ServerPlayerEntity player,
+                                     CommandContext<ServerCommandSource> context) {
+        AfkPlayerData afkPlayer = (AfkPlayerData) player;
+        String user = src.getName();
+        Text target = player.getName();
+        if (afkPlayer.isAfk()) {
+            String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
+            Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+            context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
+            context.getSource().sendFeedback(() -> afkReason, false);
+            AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+        } else {
+            context.getSource().sendFeedback(
+                    () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
         }
+        return 1;
+    }
 }

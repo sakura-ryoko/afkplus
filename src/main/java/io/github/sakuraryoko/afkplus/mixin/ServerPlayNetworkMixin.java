@@ -15,6 +15,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Util;
 
+import java.util.Objects;
+
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkMixin {
     @Shadow
@@ -26,10 +28,9 @@ public abstract class ServerPlayNetworkMixin {
         int timeoutSeconds = CONFIG.packetOptions.timeoutSeconds;
         long afkDuration = Util.getMeasuringTimeMs() - this.player.getLastActionTime();
         if (afkPlayer.isAfk() || timeoutSeconds <= 0) {
-            return;
         } else {
             if (afkDuration > timeoutSeconds * 1000L) {
-                if (CONFIG.afkPlusOptions.afkTimeoutString == ""
+                if (Objects.equals(CONFIG.afkPlusOptions.afkTimeoutString, "")
                         || CONFIG.afkPlusOptions.afkTimeoutString == null) {
                     afkPlayer.registerAfk("timeout");
                 } else {

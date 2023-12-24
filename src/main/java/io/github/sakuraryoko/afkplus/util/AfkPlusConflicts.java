@@ -78,9 +78,7 @@ public class AfkPlusConflicts {
         boolean dpCheck = true;
         // Check for any datapacks matching with "afk"
         AfkPlusLogger.debug("Datapack reload detected.  Checking for conflicting data packs.");
-        final Iterator<String> iterator = dpCollection.iterator();
-        for (; iterator.hasNext();) {
-            String dpString = iterator.next();
+        for (String dpString : dpCollection) {
             if (dpString.contains("afk") || dpString.contains("Afk") || dpString.contains("AFK")) {
                 AfkPlusLogger.warn(
                         "Possible conflict found with datapack: " + dpString + " -- please remove/disable it.");

@@ -30,7 +30,7 @@ public class AfkCommand {
         AfkPlayerData player = (AfkPlayerData) src.getPlayerOrThrow();
         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
             player.registerAfk("via /afk");
-        } else if (reason == null || reason == "") {
+        } else if (reason == null || reason.isEmpty()) {
             player.registerAfk(CONFIG.messageOptions.defaultReason);
         } else {
             player.registerAfk(reason);

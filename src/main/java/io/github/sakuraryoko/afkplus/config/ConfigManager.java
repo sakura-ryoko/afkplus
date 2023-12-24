@@ -3,6 +3,7 @@ package io.github.sakuraryoko.afkplus.config;
 import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
@@ -38,7 +39,7 @@ public class ConfigManager {
         CONFIG.messageOptions.whenReturn = "%player:displayname% <yellow>is no longer AFK<r>";
         CONFIG.messageOptions.prettyDuration = true;
         CONFIG.messageOptions.defaultReason = "<gray>poof!<r>";
-        AfkPlusLogger.debug("Default config initalized.");
+        AfkPlusLogger.debug("Default config initialized.");
     }
 
     public static void loadConfig() {
@@ -49,7 +50,13 @@ public class ConfigManager {
             } else {
                 AfkPlusLogger.info("Config " + AFK_MOD_ID + ".toml not found, creating new file.");
                 initConfig();
-                conf.createNewFile();
+                try {
+                    if (!conf.createNewFile()) {
+                        AfkPlusLogger.error("Config " + AFK_MOD_ID + ".toml failed to be created.");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
             new TomlWriter().write(CONFIG, conf);
         } catch (Exception ex) {

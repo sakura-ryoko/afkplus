@@ -64,7 +64,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         setAfkTime();
         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
             setAfkReason("<red>none");
-        } else if (reason == null || reason == "") {
+        } else if (reason == null || reason.isEmpty()) {
             setAfkReason("<red>none");
             Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
                     PlaceholderContext.of(this));
@@ -121,7 +121,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
     }
 
     private void sendAfkMessage(Text text) {
-        if (!CONFIG.messageOptions.enableMessages || text.getString().trim().length() == 0)
+        if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
             return;
         server.sendMessage(text);
         for (ServerPlayerEntity player : this.server.getPlayerManager().getPlayerList()) {
@@ -147,7 +147,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
     }
 
     private void setAfkReason(String reason) {
-        if (reason == null || reason == "") {
+        if (reason == null || reason.isEmpty()) {
             this.afkReason = "<red>none";
         } else {
             this.afkReason = reason;

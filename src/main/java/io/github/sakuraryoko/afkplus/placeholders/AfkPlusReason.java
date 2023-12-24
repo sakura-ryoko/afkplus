@@ -20,11 +20,11 @@ public class AfkPlusReason {
             assert player != null;
             Text result = player.isAfk()
                     ? TextParserUtils
-                            .formatTextSafe(
-                                    CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.getAfkReason()
-                                            + "<r>")
+                    .formatTextSafe(
+                            CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.getAfkReason()
+                                    + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);
         });
-    };
+    }
 }
