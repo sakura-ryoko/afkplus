@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.util;
 import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import eu.pb4.placeholders.api.TextParserUtils;
 import net.fabricmc.api.EnvType;
@@ -16,13 +15,12 @@ import net.minecraft.text.Text;
 public class AfkPlusInfo {
     private static final FabricLoader AFK_INST = FabricLoader.getInstance();
     private static final ModContainer AFK_CONTAINER = AFK_INST.getModContainer(AFK_MOD_ID).get();
-    private static ModMetadata AFK_METADATA;
 
     public static void initModInfo() {
         AFK_MC_VERSION = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion()
                 .getFriendlyString();
         AFK_ENV = AFK_INST.getEnvironmentType();
-        AFK_METADATA = AFK_CONTAINER.getMetadata();
+        ModMetadata AFK_METADATA = AFK_CONTAINER.getMetadata();
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
         AFK_NAME = AFK_METADATA.getName();
         AFK_DESC = AFK_METADATA.getDescription();
@@ -60,19 +58,11 @@ public class AfkPlusInfo {
     }
 
     public static boolean isServer() {
-        if (AFK_ENV == EnvType.SERVER) {
-            return true;
-        } else {
-            return false;
-        }
+        return AFK_ENV == EnvType.SERVER;
     }
 
     public static boolean isClient() {
-        if (AFK_ENV == EnvType.CLIENT) {
-            return true;
-        } else {
-            return false;
-        }
+        return AFK_ENV == EnvType.CLIENT;
     }
 
     private static String getAuthoString() {

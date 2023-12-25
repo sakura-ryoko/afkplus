@@ -29,9 +29,7 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("Done registerring commands.");
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
         ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
-            ServerEvents.dpReload(server);
-        });
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
     }
