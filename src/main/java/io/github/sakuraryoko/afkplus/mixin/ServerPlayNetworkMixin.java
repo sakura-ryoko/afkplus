@@ -29,8 +29,7 @@ public abstract class ServerPlayNetworkMixin {
             return;
         } else {
             if (afkDuration > timeoutSeconds * 1000L) {
-                if (CONFIG.afkPlusOptions.afkTimeoutString == ""
-                        || CONFIG.afkPlusOptions.afkTimeoutString == null) {
+                if (CONFIG.afkPlusOptions.afkTimeoutString.isEmpty()) {
                     afkPlayer.registerAfk("timeout");
                 } else {
                     afkPlayer.registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);

@@ -125,7 +125,7 @@ public class AfkPlusCommand {
                         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                                 afkPlayer.registerAfk("via /afkplus set");
                                 AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
-                        } else if (reason == null || reason == "") {
+                        } else if (reason == null || reason.isEmpty()) {
                                 afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
                                 AfkPlusLogger.info(user + " set player " + target.getLiteralString()
                                                 + " as AFK for reason: "
@@ -181,9 +181,9 @@ public class AfkPlusCommand {
                 AfkPlayerData afkPlayer = (AfkPlayerData) player;
                 afkPlayer.updatePlayerList();
                 context.getSource().sendFeedback(
-                                () -> Text.of("Updating player list entry for " + target.getLiteralString() + ""),
+                                () -> Text.of("Updating player list entry for " + target.getLiteralString()),
                                 false);
-                AfkPlusLogger.info(user + " updated player list entry for " + target.getLiteralString() + "");
+                AfkPlusLogger.info(user + " updated player list entry for " + target.getLiteralString());
                 return 1;
         }
 }
