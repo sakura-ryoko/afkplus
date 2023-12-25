@@ -49,7 +49,13 @@ public class ConfigManager {
             } else {
                 AfkPlusLogger.info("Config " + AFK_MOD_ID + ".toml not found, creating new file.");
                 initConfig();
-                conf.createNewFile();
+                try {
+                    if (!conf.createNewFile()) {
+                        AfkPlusLogger.error("Failed to create a new " + AFK_MOD_ID + ".toml file.");
+                    }
+                } catch (Exception ignored) {
+
+                }
             }
             new TomlWriter().write(CONFIG, conf);
         } catch (Exception ex) {

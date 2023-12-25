@@ -27,20 +27,12 @@ public class AfkPlusMod {
         AfkPlusLogger.debug("All Placeholders registered, registerring commands.");
         CommandManager.register();
         AfkPlusLogger.debug("Done registerring commands.");
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            ServerEvents.starting(server);
-        });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            ServerEvents.started(server);
-        });
+        ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
+        ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
             ServerEvents.dpReload(server);
         });
-        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
-            ServerEvents.stopping(server);
-        });
-        ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
-            ServerEvents.stopped(server);
-        });
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
+        ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
     }
 }

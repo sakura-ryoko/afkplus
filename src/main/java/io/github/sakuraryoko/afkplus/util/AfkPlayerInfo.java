@@ -12,6 +12,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
+import java.util.Objects;
+
 public class AfkPlayerInfo {
     public static String getString(AfkPlayerData afkPlayer, Text target,
             ServerCommandSource src) {
@@ -48,7 +50,7 @@ public class AfkPlayerInfo {
         Text afkReason;
         if (afkPlayer.isAfk()) {
             reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
-            if (afkPlayer.getAfkReason() == "") {
+            if (Objects.equals(afkPlayer.getAfkReason(), "")) {
                 afkReason = TextParserUtils.formatTextSafe(reasonFormat + "none");
             } else {
                 afkReason = Placeholders.parseText(
