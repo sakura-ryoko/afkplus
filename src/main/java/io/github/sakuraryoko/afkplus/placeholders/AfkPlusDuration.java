@@ -24,22 +24,24 @@ public class AfkPlusDuration {
             if (CONFIG.PlaceholderOptions.afkDurationPretty) {
                 Text result = player.isAfk()
                         ? TextParserUtils.formatTextSafe(
-                                CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                                        + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
-                                                player.getAfkTimeMs(), true, true)
-                                        + "<r>")
+                        CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
+                                + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
+                                player.getAfkTimeMs(), true, true)
+                                + "<r>")
                         : TextParserUtils.formatTextSafe("");
                 return PlaceholderResult.value(result);
             } else {
                 Text result = player.isAfk()
                         ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                                + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
-                                        player.getAfkTimeMs())
-                                + "<r>")
+                        + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
+                        player.getAfkTimeMs())
+                        + "<r>")
                         : TextParserUtils.formatTextSafe("");
                 return PlaceholderResult.value(result);
             }
         });
-    };
+    }
+
+    ;
 
 }

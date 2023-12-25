@@ -20,10 +20,12 @@ public class AfkPlusAfk {
             assert player != null;
             Text result = player.isAfk()
                     ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder),
-                            ctx)
+                    ctx)
                     : Text.of("");
             return PlaceholderResult.value(result);
         });
-    };
+    }
+
+    ;
 
 }

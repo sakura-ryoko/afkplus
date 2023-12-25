@@ -20,12 +20,14 @@ public class AfkPlusTime {
             assert player != null;
             Text result = player.isAfk()
                     ? TextParserUtils
-                            .formatTextSafe(
-                                    CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.getAfkTimeString()
-                                            + "<r>")
+                    .formatTextSafe(
+                            CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.getAfkTimeString()
+                                    + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);
         });
-    };
+    }
+
+    ;
 
 }

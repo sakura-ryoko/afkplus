@@ -20,10 +20,10 @@ public class AfkPlusName {
             assert player != null;
             Text result = player.isAfk()
                     ? Placeholders.parseText(
-                            TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
+                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
                     : Placeholders.parseText(
-                            TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
-                            ctx);
+                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
+                    ctx);
             return PlaceholderResult.value(result);
         });
         Placeholders.register(new Identifier(AFK_MOD_ID, "display_name"), (ctx, arg) -> {
@@ -34,11 +34,13 @@ public class AfkPlusName {
             assert player != null;
             Text result = player.isAfk()
                     ? Placeholders.parseText(
-                            TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
+                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
                     : Placeholders.parseText(
-                            TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
-                            ctx);
+                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
+                    ctx);
             return PlaceholderResult.value(result);
         });
-    };
+    }
+
+    ;
 }
