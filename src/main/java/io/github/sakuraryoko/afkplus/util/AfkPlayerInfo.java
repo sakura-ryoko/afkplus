@@ -48,7 +48,7 @@ public class AfkPlayerInfo {
         Text afkReason;
         if (afkPlayer.isAfk()) {
             reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
-            if (afkPlayer.getAfkReason() == "") {
+            if (afkPlayer.getAfkReason().isEmpty()) {
                 afkReason = TextParserUtils.formatTextSafe(reasonFormat + "none");
             } else {
                 afkReason = Placeholders.parseText(

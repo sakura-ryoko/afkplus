@@ -41,6 +41,4 @@ public class AfkPlusName {
             return PlaceholderResult.value(result);
         });
     }
-
-    ;
 }

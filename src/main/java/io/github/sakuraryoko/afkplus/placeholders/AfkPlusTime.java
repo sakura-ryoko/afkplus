@@ -27,7 +27,4 @@ public class AfkPlusTime {
             return PlaceholderResult.value(result);
         });
     }
-
-    ;
-
 }

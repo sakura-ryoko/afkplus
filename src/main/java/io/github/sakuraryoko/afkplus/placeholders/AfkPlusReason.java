@@ -27,6 +27,4 @@ public class AfkPlusReason {
             return PlaceholderResult.value(result);
         });
     }
-
-    ;
 }

@@ -25,7 +25,4 @@ public class AfkPlusAfk {
             return PlaceholderResult.value(result);
         });
     }
-
-    ;
-
 }
