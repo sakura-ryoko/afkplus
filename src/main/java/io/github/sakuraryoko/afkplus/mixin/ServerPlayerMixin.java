@@ -26,11 +26,14 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.world.World;
 
+import java.util.concurrent.TimeUnit;
+
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData {
     @Shadow
     @Final
     public MinecraftServer server;
+    @Unique
     public ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
     @Unique
     private boolean isAfk;
@@ -45,24 +48,28 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         super(type, world);
     }
 
-    public boolean isAfk() {
+    @Unique
+    public boolean afkplus$isAfk() {
         return this.isAfk;
     }
 
-    public long getAfkTimeMs() {
+    @Unique
+    public long afkplus$getAfkTimeMs() {
         return this.afkTimeMs;
     }
 
-    public String getAfkTimeString() {
+    @Unique
+    public String afkplus$getAfkTimeString() {
         return this.afkTimeString;
     }
 
-    public String getAfkReason() {
+    @Unique
+    public String afkplus$getAfkReason() {
         return this.afkReason;
     }
 
-    public void registerAfk(String reason) {
-        if (isAfk())
+    public void afkplus$registerAfk(String reason) {
+        if (afkplus$isAfk())
             return;
         setAfkTime();
         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
@@ -86,7 +93,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         setAfk(true);
     }
 
-    public void unregisterAfk() {
+    public void afkplus$unregisterAfk() {
         if (!isAfk)
             return;
         if (CONFIG.messageOptions.prettyDuration) {
@@ -115,7 +122,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         clearAfkReason();
     }
 
-    public void updatePlayerList() {
+    public void afkplus$updatePlayerList() {
         this.server
                 .getPlayerManager()
                 .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
@@ -123,6 +130,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
 
     }
 
+    @Unique
     private void sendAfkMessage(Text text) {
         if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
             return;
@@ -132,6 +140,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         }
     }
 
+    @Unique
     private void setAfk(boolean isAfk) {
         this.isAfk = isAfk;
         this.server
@@ -139,16 +148,19 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
                 .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
     }
 
+    @Unique
     private void setAfkTime() {
         this.afkTimeMs = Util.getMeasuringTimeMs();
         this.afkTimeString = Util.getFormattedCurrentTime();
     }
 
+    @Unique
     private void clearAfkTime() {
         this.afkTimeMs = 0;
         this.afkTimeString = "";
     }
 
+    @Unique
     private void setAfkReason(String reason) {
         if (reason == null || reason.isEmpty()) {
             this.afkReason = "<red>none";
@@ -157,13 +169,14 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         }
     }
 
+    @Unique
     private void clearAfkReason() {
         this.afkReason = "";
     }
 
     @Inject(method = "updateLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci) {
-        unregisterAfk();
+        afkplus$unregisterAfk();
     }
 
     public void setPosition(double x, double y, double z) {
@@ -181,6 +194,21 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
                     PlaceholderContext.of(this));
             AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
             cir.setReturnValue(listEntry.copy());
+        }
+    }
+
+    @Inject(method = "playerTick", at = @At("TAIL"))
+    private void checkAfk(CallbackInfo ci) {
+        if (this.isAfk && CONFIG.packetOptions.cancelDamage) {
+            if (!this.isInvulnerable()) {
+                // Stop people from abusing the /afk command for 15 seconds to get out of a "sticky situation"
+                long diff = TimeUnit.MILLISECONDS.toSeconds(Util.getMeasuringTimeMs() - this.afkTimeMs);
+                if (diff > 15)
+                    this.setInvulnerable(true);
+            }
+        } else {
+            if (this.isInvulnerable())
+                this.setInvulnerable(false);
         }
     }
 }

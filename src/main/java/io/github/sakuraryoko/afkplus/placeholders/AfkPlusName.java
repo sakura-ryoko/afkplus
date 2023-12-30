@@ -18,7 +18,7 @@ public class AfkPlusName {
             }
             AfkPlayerData player = (AfkPlayerData) ctx.player();
             assert player != null;
-            Text result = player.isAfk()
+            Text result = player.afkplus$isAfk()
                     ? Placeholders.parseText(
                     TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
                     : Placeholders.parseText(
@@ -32,7 +32,7 @@ public class AfkPlusName {
             }
             AfkPlayerData player = (AfkPlayerData) ctx.player();
             assert player != null;
-            Text result = player.isAfk()
+            Text result = player.afkplus$isAfk()
                     ? Placeholders.parseText(
                     TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
                     : Placeholders.parseText(

@@ -18,10 +18,10 @@ public class AfkPlusReason {
             }
             AfkPlayerData player = (AfkPlayerData) ctx.player();
             assert player != null;
-            Text result = player.isAfk()
+            Text result = player.afkplus$isAfk()
                     ? TextParserUtils
                     .formatTextSafe(
-                            CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.getAfkReason()
+                            CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.afkplus$getAfkReason()
                                     + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);

@@ -18,10 +18,10 @@ public class AfkPlusTime {
             }
             AfkPlayerData player = (AfkPlayerData) ctx.player();
             assert player != null;
-            Text result = player.isAfk()
+            Text result = player.afkplus$isAfk()
                     ? TextParserUtils
                     .formatTextSafe(
-                            CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.getAfkTimeString()
+                            CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.afkplus$getAfkTimeString()
                                     + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);

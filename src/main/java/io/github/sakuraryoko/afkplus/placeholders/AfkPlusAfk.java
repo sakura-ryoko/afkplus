@@ -18,7 +18,7 @@ public class AfkPlusAfk {
             }
             AfkPlayerData player = (AfkPlayerData) ctx.player();
             assert player != null;
-            Text result = player.isAfk()
+            Text result = player.afkplus$isAfk()
                     ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder),
                     ctx)
                     : Text.of("");

@@ -1,17 +1,17 @@
 package io.github.sakuraryoko.afkplus.data;
 
 public interface AfkPlayerData {
-    boolean isAfk();
+    boolean afkplus$isAfk();
 
-    void registerAfk(String reason);
+    void afkplus$registerAfk(String reason);
 
-    void unregisterAfk();
+    void afkplus$unregisterAfk();
 
-    long getAfkTimeMs();
+    long afkplus$getAfkTimeMs();
 
-    String getAfkTimeString();
+    String afkplus$getAfkTimeString();
 
-    String getAfkReason();
+    String afkplus$getAfkReason();
 
-    void updatePlayerList();
+    void afkplus$updatePlayerList();
 }

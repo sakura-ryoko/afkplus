@@ -116,20 +116,20 @@ public class AfkPlusCommand {
         AfkPlayerData afkPlayer = (AfkPlayerData) player;
         String user = src.getName();
         Text target = player.getName();
-        if (afkPlayer.isAfk()) {
+        if (afkPlayer.afkplus$isAfk()) {
             context.getSource().sendFeedback(
                     () -> Text.of(target.getLiteralString() + " is already marked as AFK."), false);
         } else {
             if (reason == null && CONFIG.messageOptions.defaultReason == null) {
-                afkPlayer.registerAfk("via /afkplus set");
+                afkPlayer.afkplus$registerAfk("via /afkplus set");
                 AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
             } else if (reason == null || reason.isEmpty()) {
-                afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
+                afkPlayer.afkplus$registerAfk(CONFIG.messageOptions.defaultReason);
                 AfkPlusLogger.info(user + " set player " + target.getLiteralString()
                         + " as AFK for reason: "
                         + CONFIG.messageOptions.defaultReason);
             } else {
-                afkPlayer.registerAfk(reason);
+                afkPlayer.afkplus$registerAfk(reason);
                 AfkPlusLogger.info(user + " set player " + target.getLiteralString()
                         + " as AFK for reason: "
                         + reason);
@@ -143,8 +143,8 @@ public class AfkPlusCommand {
         AfkPlayerData afkPlayer = (AfkPlayerData) player;
         String user = src.getName();
         Text target = player.getName();
-        if (afkPlayer.isAfk()) {
-            afkPlayer.unregisterAfk();
+        if (afkPlayer.afkplus$isAfk()) {
+            afkPlayer.afkplus$unregisterAfk();
             AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
         } else {
             context.getSource().sendFeedback(
@@ -159,9 +159,9 @@ public class AfkPlusCommand {
         AfkPlayerData afkPlayer = (AfkPlayerData) player;
         String user = src.getName();
         Text target = player.getName();
-        if (afkPlayer.isAfk()) {
-            String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-            Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+        if (afkPlayer.afkplus$isAfk()) {
+            String afkStatus = AfkPlayerInfo.getString(afkPlayer, target);
+            Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendFeedback(() -> afkReason, false);
             AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
@@ -177,7 +177,7 @@ public class AfkPlusCommand {
         String user = src.getName();
         Text target = player.getName();
         AfkPlayerData afkPlayer = (AfkPlayerData) player;
-        afkPlayer.updatePlayerList();
+        afkPlayer.afkplus$updatePlayerList();
         context.getSource().sendFeedback(
                 () -> Text.of("Updating player list entry for " + target.getLiteralString()),
                 false);
