@@ -201,9 +201,9 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
     private void checkAfk(CallbackInfo ci) {
         if (this.isAfk && CONFIG.packetOptions.cancelDamage) {
             if (!this.isInvulnerable()) {
-                // Stop people from abusing the /afk command for 15 seconds to get out of a "sticky situation"
+                // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
                 long diff = TimeUnit.MILLISECONDS.toSeconds(Util.getMeasuringTimeMs() - this.afkTimeMs);
-                if (diff > 15)
+                if (diff > 20)
                     this.setInvulnerable(true);
             }
         } else {
