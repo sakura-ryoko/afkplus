@@ -199,7 +199,7 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
 
     @Inject(method = "playerTick", at = @At("TAIL"))
     private void checkAfk(CallbackInfo ci) {
-        if (this.isAfk && CONFIG.packetOptions.cancelDamage) {
+        if (this.isAfk && CONFIG.packetOptions.disableDamage) {
             if (!this.isInvulnerable()) {
                 // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
                 long diff = TimeUnit.MILLISECONDS.toSeconds(Util.getMeasuringTimeMs() - this.afkTimeMs);

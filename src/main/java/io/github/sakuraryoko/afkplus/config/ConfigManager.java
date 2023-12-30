@@ -24,7 +24,7 @@ public class ConfigManager {
         CONFIG.packetOptions.resetOnLook = false;
         CONFIG.packetOptions.resetOnMovement = true;
         CONFIG.packetOptions.timeoutSeconds = 240;
-        CONFIG.packetOptions.cancelDamage = false;
+        CONFIG.packetOptions.disableDamage = false;
         CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK]<r>";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholder = "%player:displayname%";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk = "<i><gray>[AFK] %player:displayname_unformatted%<r>";
@@ -57,7 +57,7 @@ public class ConfigManager {
         //CONFIG.packetOptions.resetOnMovement = true;
         if (CONFIG.packetOptions.timeoutSeconds < -1 || CONFIG.packetOptions.timeoutSeconds > 3600)
             CONFIG.packetOptions.timeoutSeconds = 240;
-        //CONFIG.packetOptions.cancelDamage = false;
+        //CONFIG.packetOptions.disableDamage = false;
         if (CONFIG.PlaceholderOptions.afkPlaceholder == null)
             CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK]<r>";
         if (CONFIG.PlaceholderOptions.afkPlusNamePlaceholder == null)

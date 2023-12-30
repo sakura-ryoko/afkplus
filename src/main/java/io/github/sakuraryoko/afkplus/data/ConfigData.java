@@ -25,7 +25,7 @@ public class ConfigData {
         public int timeoutSeconds;
         public Boolean resetOnMovement;
         public Boolean resetOnLook;
-        public Boolean cancelDamage;
+        public Boolean disableDamage;
     }
 
     @NotNull
