@@ -24,7 +24,7 @@ public class AfkPlusInfo {
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
         AFK_NAME = AFK_METADATA.getName();
         AFK_DESC = AFK_METADATA.getDescription();
-        AFK_AUTHO = AFK_METADATA.getAuthors();
+        AFK_AUTHOR = AFK_METADATA.getAuthors();
         AFK_CONTRIB = AFK_METADATA.getContributors();
         AFK_CONTACTS = AFK_METADATA.getContact();
         AFK_LICENSES = AFK_METADATA.getLicense();
@@ -48,11 +48,11 @@ public class AfkPlusInfo {
         String modInfo5 = "Source: <aqua><url:'" + AFK_SOURCES_STRING + "'>" + AFK_SOURCES_STRING + "</url></aqua>";
         String modInfo6 = "Description: " + AFK_DESC;
 
+        String text = modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
+                + modInfo6;
         Text info = TextParserUtils
-                .formatText(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
-                        + modInfo6);
-        AfkPlusLogger.debug(modInfo1 + "\n" + modInfo2 + "\n" + modInfo3 + "\n" + modInfo4 + "\n" + modInfo5 + "\n"
-                        + modInfo6);
+                .formatText(text);
+        AfkPlusLogger.debug(text);
         return info;
 
     }
@@ -67,10 +67,10 @@ public class AfkPlusInfo {
 
     private static String getAuthoString() {
         StringBuilder authoString = new StringBuilder();
-        if (AFK_AUTHO.isEmpty()) {
+        if (AFK_AUTHOR.isEmpty()) {
             return authoString.toString();
         } else {
-            final Iterator<Person> iterator = AFK_AUTHO.iterator();
+            final Iterator<Person> iterator = AFK_AUTHOR.iterator();
             while (iterator.hasNext()) {
                 if (authoString.isEmpty()) {
                     authoString = new StringBuilder(iterator.next().getName());

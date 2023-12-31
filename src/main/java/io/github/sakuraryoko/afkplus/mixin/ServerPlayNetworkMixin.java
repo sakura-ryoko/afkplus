@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -22,17 +22,17 @@ public abstract class ServerPlayNetworkMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void updateAfkStatus(CallbackInfo ci) {
-        AfkPlayerData afkPlayer = (AfkPlayerData) player;
+        IAfkPlayer afkPlayer = (IAfkPlayer) player;
         int timeoutSeconds = CONFIG.packetOptions.timeoutSeconds;
         long afkDuration = Util.getMeasuringTimeMs() - this.player.getLastActionTime();
-        if (afkPlayer.isAfk() || timeoutSeconds <= 0) {
+        if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0) {
             return;
         } else {
             if (afkDuration > timeoutSeconds * 1000L) {
                 if (CONFIG.afkPlusOptions.afkTimeoutString.isEmpty()) {
-                    afkPlayer.registerAfk("timeout");
+                    afkPlayer.afkplus$registerAfk("timeout");
                 } else {
-                    afkPlayer.registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
+                    afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
                 AfkPlusLogger.debug("Setting player " + this.player.getName() + " as AFK (timeout)");
             }
