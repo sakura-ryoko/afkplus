@@ -6,7 +6,7 @@ import static net.minecraft.server.command.CommandManager.*;
 import com.mojang.brigadier.context.CommandContext;
 
 import eu.pb4.placeholders.api.TextParserUtils;
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -32,12 +32,12 @@ public class AfkInfoCommand {
 
     private static int infoAfkPlayer(ServerCommandSource src, ServerPlayerEntity player,
                                      CommandContext<ServerCommandSource> context) {
-        AfkPlayerData afkPlayer = (AfkPlayerData) player;
+        IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getName();
         Text target = player.getName();
-        if (afkPlayer.isAfk()) {
-            String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-            Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+        if (afkPlayer.afkplus$isAfk()) {
+            String afkStatus = AfkPlayerInfo.getString(afkPlayer, target);
+            Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendFeedback(() -> afkReason, false);
             AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");

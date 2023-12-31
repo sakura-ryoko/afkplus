@@ -8,7 +8,7 @@ public class AfkPlusClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         if (!AFK_INIT) {
-            // AFK_DEBUG = true;
+            //AFK_DEBUG = true;
             AFK_INIT = true;
             AfkPlusMod.init();
         }

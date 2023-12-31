@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.config;
 import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
@@ -23,8 +22,9 @@ public class ConfigManager {
         CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
         CONFIG.afkPlusOptions.afkTimeoutString = "<i><gray>timeout<r>";
         CONFIG.packetOptions.resetOnLook = false;
-        CONFIG.packetOptions.resetOnMovement = false;
-        CONFIG.packetOptions.timeoutSeconds = 180;
+        CONFIG.packetOptions.resetOnMovement = true;
+        CONFIG.packetOptions.timeoutSeconds = 240;
+        CONFIG.packetOptions.disableDamage = false;
         CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK]<r>";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholder = "%player:displayname%";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk = "<i><gray>[AFK] %player:displayname_unformatted%<r>";
@@ -41,6 +41,49 @@ public class ConfigManager {
         CONFIG.messageOptions.defaultReason = "<gray>poof!<r>";
         AfkPlusLogger.debug("Default config initialized.");
     }
+    public static void testConfig() {
+        // Checks for invalid values
+        if (CONFIG.afkPlusOptions.afkPlusCommandPermissions < 0 || CONFIG.afkPlusOptions.afkPlusCommandPermissions > 4)
+            CONFIG.afkPlusOptions.afkPlusCommandPermissions = 3;
+        //CONFIG.afkPlusOptions.enableAfkCommand = true;
+        //CONFIG.afkPlusOptions.enableAfkInfoCommand = true;
+        if (CONFIG.afkPlusOptions.afkCommandPermissions < 0 || CONFIG.afkPlusOptions.afkCommandPermissions > 4)
+            CONFIG.afkPlusOptions.afkCommandPermissions = 0;
+        if (CONFIG.afkPlusOptions.afkInfoCommandPermissions < 0 || CONFIG.afkPlusOptions.afkInfoCommandPermissions > 4)
+            CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
+        if (CONFIG.afkPlusOptions.afkTimeoutString == null)
+            CONFIG.afkPlusOptions.afkTimeoutString = "<i><gray>timeout<r>";
+        //CONFIG.packetOptions.resetOnLook = false;
+        //CONFIG.packetOptions.resetOnMovement = true;
+        if (CONFIG.packetOptions.timeoutSeconds < -1 || CONFIG.packetOptions.timeoutSeconds > 3600)
+            CONFIG.packetOptions.timeoutSeconds = 240;
+        //CONFIG.packetOptions.disableDamage = false;
+        if (CONFIG.PlaceholderOptions.afkPlaceholder == null)
+            CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK]<r>";
+        if (CONFIG.PlaceholderOptions.afkPlusNamePlaceholder == null)
+            CONFIG.PlaceholderOptions.afkPlusNamePlaceholder = "%player:displayname%";
+        if (CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk == null)
+            CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk = "<i><gray>[AFK] %player:displayname_unformatted%<r>";
+        if (CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting == null)
+            CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting = "<green>";
+        if (CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting == null)
+            CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting = "<green>";
+        if (CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting == null)
+            CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting = "";
+        //CONFIG.PlaceholderOptions.afkDurationPretty = false;
+        if (CONFIG.playerListOptions.afkPlayerName == null)
+            CONFIG.playerListOptions.afkPlayerName = "<i><gray>[AFK] %player:displayname%<r>";
+        //CONFIG.playerListOptions.enableListDisplay = true;
+        //CONFIG.messageOptions.enableMessages = true;
+        if (CONFIG.messageOptions.whenAfk == null)
+            CONFIG.messageOptions.whenAfk = "%player:displayname% <yellow>is now AFK<r>";
+        if (CONFIG.messageOptions.whenReturn == null)
+            CONFIG.messageOptions.whenReturn = "%player:displayname% <yellow>is no longer AFK<r>";
+        //CONFIG.messageOptions.prettyDuration = true;
+        if (CONFIG.messageOptions.defaultReason == null)
+            CONFIG.messageOptions.defaultReason = "<gray>poof!<r>";
+        AfkPlusLogger.debug("Config checked for null values.");
+    }
 
     public static void loadConfig() {
         File conf = FabricLoader.getInstance().getConfigDir().resolve(AFK_MOD_ID + ".toml").toFile();
@@ -52,12 +95,13 @@ public class ConfigManager {
                 initConfig();
                 try {
                     if (!conf.createNewFile()) {
-                        AfkPlusLogger.error("Config " + AFK_MOD_ID + ".toml failed to be created.");
+                        AfkPlusLogger.error("Error creating config file " + AFK_MOD_ID + ".toml .");
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception ignored) {
+
                 }
             }
+            testConfig();
             new TomlWriter().write(CONFIG, conf);
         } catch (Exception ex) {
             throw new RuntimeException(ex);

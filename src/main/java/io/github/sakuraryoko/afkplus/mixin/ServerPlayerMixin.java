@@ -1,6 +1,6 @@
 package io.github.sakuraryoko.afkplus.mixin;
 
-import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
+import static io.github.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.spongepowered.asm.mixin.Final;
@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -26,40 +26,52 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.world.World;
 
+import java.util.concurrent.TimeUnit;
+
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData {
+public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     @Shadow
     @Final
     public MinecraftServer server;
-    public ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+
     @Unique
-    private boolean isAfk;
-    private long afkTimeMs;
-    private String afkTimeString;
-    private String afkReason;
+    public ServerPlayerEntity afkplus$player = (ServerPlayerEntity) (Object) this;
+    @Unique
+    private boolean afkplus$isAfk;
+    @Unique
+    private long afkplus$afkTimeMs;
+    @Unique
+    private String afkplus$afkTimeString;
+    @Unique
+    private String afkplus$afkReason;
 
     public ServerPlayerMixin(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    public boolean isAfk() {
-        return this.isAfk;
+    @Unique
+    public boolean afkplus$isAfk() {
+        return this.afkplus$isAfk;
     }
 
-    public long getAfkTimeMs() {
-        return this.afkTimeMs;
+    @Unique
+    public long afkplus$getAfkTimeMs() {
+        return this.afkplus$afkTimeMs;
     }
 
-    public String getAfkTimeString() {
-        return this.afkTimeString;
+    @Unique
+    public String afkplus$getAfkTimeString() {
+        return this.afkplus$afkTimeString;
     }
 
-    public String getAfkReason() {
-        return this.afkReason;
+    @Unique
+    public String afkplus$getAfkReason() {
+        return this.afkplus$afkReason;
     }
 
-    public void registerAfk(String reason) {
-        if (isAfk())
+    @Unique
+    public void afkplus$registerAfk(String reason) {
+        if (afkplus$isAfk())
             return;
         setAfkTime();
         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
@@ -68,58 +80,65 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
             setAfkReason("<red>none");
             Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
                     PlaceholderContext.of(this));
-            AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
+            //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             sendAfkMessage(mess);
         } else {
             setAfkReason(reason);
             String input = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
-            AfkPlusLogger.debug("registerafk-input: " + input);
-            Text mess1 = TextParserUtils.formatTextSafe(input);
-            AfkPlusLogger.debug("registerafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
-            AfkPlusLogger.debug("registerafk-mess2().toString(): " + mess2.toString());
+            //AfkPlusLogger.debug("registerafk-input: " + input);
+            //Text mess1 = TextParserUtils.formatTextSafe(input);
+            //AfkPlusLogger.debug("registerafk-mess1().toString(): " + mess1.toString());
+            Text mess2 = Placeholders.parseText(TextParserUtils.formatTextSafe(input), PlaceholderContext.of(this));
+            //AfkPlusLogger.debug("registerafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         }
         setAfk(true);
+//        if (CONFIG.packetOptions.disableDamage)
+//            this.afkplus$disableDamage = true;
     }
 
-    public void unregisterAfk() {
-        if (!isAfk)
+    @Unique
+    public void afkplus$unregisterAfk() {
+        if (!afkplus$isAfk)
             return;
         if (CONFIG.messageOptions.prettyDuration) {
-            long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
+            long duration = Util.getMeasuringTimeMs() - (this.afkplus$afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
-            AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
             Text mess1 = TextParserUtils.formatTextSafe(ret);
-            AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
+            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
             Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
-            AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         } else {
-            long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
+            long duration = Util.getMeasuringTimeMs() - (this.afkplus$afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
-            AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
             Text mess1 = TextParserUtils.formatTextSafe(ret);
-            AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
+            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
             Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
-            AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
         }
         setAfk(false);
         clearAfkTime();
         clearAfkReason();
+//        if (afkplus$disableDamage)
+//            this.afkplus$disableDamage = false;
     }
 
-    public void updatePlayerList() {
+    @Unique
+    public void afkplus$updatePlayerList() {
         this.server
                 .getPlayerManager()
-                .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
-        AfkPlusLogger.debug("sending player list update for " + player.getName());
+                .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, afkplus$player));
+        AfkPlusLogger.debug("sending player list update for " + afkplus$player.getName());
 
     }
 
+    @Unique
     private void sendAfkMessage(Text text) {
         if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
             return;
@@ -129,55 +148,80 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayerData 
         }
     }
 
+    @Unique
     private void setAfk(boolean isAfk) {
-        this.isAfk = isAfk;
+        this.afkplus$isAfk = isAfk;
         this.server
                 .getPlayerManager()
-                .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
+                .sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, afkplus$player));
     }
 
+    @Unique
     private void setAfkTime() {
-        this.afkTimeMs = Util.getMeasuringTimeMs();
-        this.afkTimeString = Util.getFormattedCurrentTime();
+        this.afkplus$afkTimeMs = Util.getMeasuringTimeMs();
+        this.afkplus$afkTimeString = Util.getFormattedCurrentTime();
     }
 
+    @Unique
     private void clearAfkTime() {
-        this.afkTimeMs = 0;
-        this.afkTimeString = "";
+        this.afkplus$afkTimeMs = 0;
+        this.afkplus$afkTimeString = "";
     }
 
+    @Unique
     private void setAfkReason(String reason) {
         if (reason == null || reason.isEmpty()) {
-            this.afkReason = "<red>none";
+            this.afkplus$afkReason = "<red>none";
         } else {
-            this.afkReason = reason;
+            this.afkplus$afkReason = reason;
         }
     }
 
+    @Unique
     private void clearAfkReason() {
-        this.afkReason = "";
+        this.afkplus$afkReason = "";
     }
 
     @Inject(method = "updateLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci) {
-        unregisterAfk();
+        afkplus$unregisterAfk();
     }
 
     public void setPosition(double x, double y, double z) {
         if (CONFIG.packetOptions.resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z)) {
-            player.updateLastActionTime();
+            afkplus$player.updateLastActionTime();
         }
         super.setPosition(x, y, z);
     }
 
     @Inject(method = "getPlayerListName", at = @At("RETURN"), cancellable = true)
     private void replacePlayerListName(CallbackInfoReturnable<Text> cir) {
-        if (CONFIG.playerListOptions.enableListDisplay && isAfk) {
+        if (CONFIG.playerListOptions.enableListDisplay && afkplus$isAfk) {
             Text listEntry = Placeholders.parseText(
                     TextParserUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
                     PlaceholderContext.of(this));
-            AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
+            //AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
             cir.setReturnValue(listEntry.copy());
+        }
+    }
+
+    @Inject(method = "playerTick", at = @At("HEAD"))
+    private void checkAfk(CallbackInfo ci) {
+        try {
+            if (this.afkplus$isAfk && CONFIG.packetOptions.disableDamage) {
+                if (!this.isInvulnerable()) {
+                    // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
+                    long diff = TimeUnit.MILLISECONDS.toSeconds(Util.getMeasuringTimeMs() - this.afkplus$afkTimeMs);
+                    if (diff > 20)
+                        this.setInvulnerable(true);
+                }
+            } else {
+                if (this.isInvulnerable())
+                    this.setInvulnerable(false);
+            }
+        } catch (Exception e) {
+            // Sometimes the values are null, so offer a catch
+            return;
         }
     }
 }

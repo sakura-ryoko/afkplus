@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.util;
 import static io.github.sakuraryoko.afkplus.data.ModData.*;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import eu.pb4.placeholders.api.TextParserUtils;
 import net.fabricmc.api.EnvType;
@@ -25,7 +24,7 @@ public class AfkPlusInfo {
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
         AFK_NAME = AFK_METADATA.getName();
         AFK_DESC = AFK_METADATA.getDescription();
-        AFK_AUTHO = AFK_METADATA.getAuthors();
+        AFK_AUTHOR = AFK_METADATA.getAuthors();
         AFK_CONTRIB = AFK_METADATA.getContributors();
         AFK_CONTACTS = AFK_METADATA.getContact();
         AFK_LICENSES = AFK_METADATA.getLicense();
@@ -67,55 +66,59 @@ public class AfkPlusInfo {
     }
 
     private static String getAuthoString() {
-        String authoString = "";
-        if (!AFK_AUTHO.isEmpty()) {
-            final Iterator<Person> iterator = AFK_AUTHO.iterator();
+        StringBuilder authoString = new StringBuilder();
+        if (AFK_AUTHOR.isEmpty()) {
+            return authoString.toString();
+        } else {
+            final Iterator<Person> iterator = AFK_AUTHOR.iterator();
             while (iterator.hasNext()) {
-                if (Objects.equals(authoString, "")) {
-                    authoString = iterator.next().getName();
+                if (authoString.isEmpty()) {
+                    authoString = new StringBuilder(iterator.next().getName());
                 } else {
-                    authoString = authoString + ", " + iterator.next().getName();
+                    authoString.append(", ").append(iterator.next().getName());
                 }
             }
+            return authoString.toString();
         }
-        return authoString;
     }
 
     private static String getContribString() {
-        String contribString = "";
+        StringBuilder contribString = new StringBuilder();
         if (AFK_CONTRIB.isEmpty()) {
-            return contribString;
+            return contribString.toString();
         } else {
             final Iterator<Person> iterator = AFK_CONTRIB.iterator();
             while (iterator.hasNext()) {
-                if (Objects.equals(contribString, "")) {
-                    contribString = iterator.next().getName();
+                if (contribString.isEmpty()) {
+                    contribString = new StringBuilder(iterator.next().getName());
                 } else {
-                    contribString = contribString + ", " + iterator.next().getName();
+                    contribString.append(", ").append(iterator.next().getName());
                 }
             }
-            return contribString;
+            return contribString.toString();
         }
     }
 
     private static String getLicenseString() {
-        String licsenseString = "";
-        if (!AFK_LICENSES.isEmpty()) {
+        StringBuilder licsenseString = new StringBuilder();
+        if (AFK_LICENSES.isEmpty()) {
+            return licsenseString.toString();
+        } else {
             final Iterator<String> iterator = AFK_LICENSES.iterator();
             while (iterator.hasNext()) {
-                if (Objects.equals(licsenseString, "")) {
-                    licsenseString = iterator.next();
+                if (licsenseString.isEmpty()) {
+                    licsenseString = new StringBuilder(iterator.next());
                 } else {
-                    licsenseString = licsenseString + ", " + iterator.next();
+                    licsenseString.append(", ").append(iterator.next());
                 }
             }
+            return licsenseString.toString();
         }
-        return licsenseString;
     }
 
     private static String getHomepageString() {
         String homepageString = AFK_CONTACTS.asMap().get("homepage");
-        if (Objects.equals(homepageString, "") || homepageString == null) {
+        if (homepageString.isEmpty()) {
             return "";
         } else {
             return homepageString;
@@ -124,7 +127,7 @@ public class AfkPlusInfo {
 
     private static String getSourcesString() {
         String sourcesString = AFK_CONTACTS.asMap().get("sources");
-        if (Objects.equals(sourcesString, "") || sourcesString == null) {
+        if (sourcesString.isEmpty()) {
             return "";
         } else {
             return sourcesString;

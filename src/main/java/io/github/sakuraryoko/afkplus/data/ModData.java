@@ -14,7 +14,7 @@ public class ModData {
     public static EnvType AFK_ENV;
     public static String AFK_NAME;
     public static String AFK_DESC;
-    public static Collection<Person> AFK_AUTHO;
+    public static Collection<Person> AFK_AUTHOR;
     public static Collection<Person> AFK_CONTRIB;
     public static ContactInformation AFK_CONTACTS;
     public static Collection<String> AFK_LICENSES;
