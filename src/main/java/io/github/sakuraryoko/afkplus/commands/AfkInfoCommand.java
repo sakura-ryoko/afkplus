@@ -40,10 +40,10 @@ public class AfkInfoCommand {
             Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendFeedback(() -> afkReason, false);
-            AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+            AfkPlusLogger.info(user + " displayed " + target.getString() + "'s AFK info.");
         } else {
             context.getSource().sendFeedback(
-                    () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
+                    () -> Text.of(target.getString() + " is not marked as AFK."), false);
         }
         return 1;
     }
