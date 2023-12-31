@@ -1,7 +1,6 @@
 package io.github.sakuraryoko.afkplus.util;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -77,13 +76,11 @@ public class AfkPlusConflicts {
     public static boolean checkDatapacks(Collection<String> dpCollection) {
         boolean dpCheck = true;
         // Check for any datapacks matching with "afk"
-        AfkPlusLogger.debug("Datapack reload detected.  Checking for conflicting data packs.");
-        final Iterator<String> iterator = dpCollection.iterator();
-        for (; iterator.hasNext();) {
-            String dpString = iterator.next();
+        AfkPlusLogger.debug("Data pack reload detected.  Checking for conflicting data packs.");
+        for (String dpString : dpCollection) {
             if (dpString.contains("afk") || dpString.contains("Afk") || dpString.contains("AFK")) {
                 AfkPlusLogger.warn(
-                        "Possible conflict found with datapack: " + dpString + " -- please remove/disable it.");
+                        "Possible conflict found with data pack: " + dpString + " -- please remove/disable it.");
                 dpCheck = false;
             }
         }
