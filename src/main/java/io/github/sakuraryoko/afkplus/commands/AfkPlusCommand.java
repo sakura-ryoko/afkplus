@@ -87,13 +87,14 @@ public class AfkPlusCommand {
                                                                                                                                 .getPlayer(ctx,
                                                                                                                                                 "player"),
                                                                                                                 ctx))))
-                                                                .then(literal("test")
+                                                                /*.then(literal("test")
                                                                                 .requires(Permissions.require(
                                                                                                 "afkplus.afkplus.test",
                                                                                                 CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                                                                 .executes(ctx -> testCmd(
                                                                                                 ctx.getSource(),
                                                                                                 ctx)))
+                                                                 */
                                                                 .then(literal("update")
                                                                                 .requires(Permissions.require(
                                                                                                 "afkplus.afkplus.update",
@@ -109,7 +110,8 @@ public class AfkPlusCommand {
                                                                                                                 ctx))))));
         }
 
-        private static int testCmd(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+       /*
+       private static int testCmd(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
                 context.getSource().sendFeedback(() -> Text.of("Test Command:"), false);
                 context.getSource().sendFeedback(FormattingTest::runBuiltInTest, false);
@@ -117,7 +119,7 @@ public class AfkPlusCommand {
                 AfkPlusLogger.debug(user + " has executed /afkplus test.");
                 return 1;
         }
-
+        */
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
                 String user = src.getName();
