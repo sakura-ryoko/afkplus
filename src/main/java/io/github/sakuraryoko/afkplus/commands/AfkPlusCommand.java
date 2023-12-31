@@ -8,95 +8,118 @@ import com.mojang.brigadier.context.CommandContext;
 
 import eu.pb4.placeholders.api.TextParserUtils;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
+import io.github.sakuraryoko.afkplus.util.FormattingTest;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-
 public class AfkPlusCommand {
         public static void register() {
-                CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-                        dispatcher.register(
-                                        literal("afkplus")
-                                                        // .requires(Permissions.require("afkplus.afkplus",
-                                                        // CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                        .executes(ctx -> afkAbout(ctx.getSource(), ctx))
-                                                        .then(literal("reload")
-                                                                        .requires(Permissions.require(
-                                                                                        "afkplus.afkplus.reload",
-                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                        .executes(ctx -> afkReload(ctx.getSource(),
-                                                                                        ctx)))
-                                                        .then(literal("set")
-                                                                        .requires(Permissions.require(
-                                                                                        "afkplus.afkplus.set",
-                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                        .then(argument("player",
-                                                                                        EntityArgumentType.player())
-                                                                                        .executes((ctx) -> setAfk(
-                                                                                                        ctx.getSource(),
-                                                                                                        EntityArgumentType
-                                                                                                                        .getPlayer(ctx, "player"),
-                                                                                                        "", ctx))
-                                                                                        .then(argument("reason",
-                                                                                                        StringArgumentType
-                                                                                                                        .greedyString())
-                                                                                                        .requires(Permissions
-                                                                                                                        .require(
-                                                                                                                                        "afkplus.afkplus.set",
-                                                                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                                                        .executes((ctx) -> setAfk(
-                                                                                                                        ctx.getSource(),
-                                                                                                                        EntityArgumentType
-                                                                                                                                        .getPlayer(ctx, "player"),
-                                                                                                                        StringArgumentType
-                                                                                                                                        .getString(ctx, "reason"),
-                                                                                                                        ctx)))))
-                                                        .then(literal("clear")
-                                                                        .requires(Permissions.require(
-                                                                                        "afkplus.afkplus.clear",
-                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                        .then(argument("player",
-                                                                                        EntityArgumentType.player())
-                                                                                        .executes(ctx -> clearAfk(
-                                                                                                        ctx.getSource(),
-                                                                                                        EntityArgumentType
-                                                                                                                        .getPlayer(ctx,
-                                                                                                                                        "player"),
-                                                                                                        ctx))))
-                                                        .then(literal("info")
-                                                                        .requires(Permissions.require(
-                                                                                        "afkplus.afkplus.info",
-                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                        .then(argument("player",
-                                                                                        EntityArgumentType.player())
-                                                                                        .executes(ctx -> infoAfkPlayer(
-                                                                                                        ctx.getSource(),
-                                                                                                        EntityArgumentType
-                                                                                                                        .getPlayer(ctx,
-                                                                                                                                        "player"),
-                                                                                                        ctx))))
-                                                        .then(literal("update")
-                                                                        .requires(Permissions.require(
-                                                                                        "afkplus.afkplus.update",
-                                                                                        CONFIG.afkPlusOptions.afkPlusCommandPermissions))
-                                                                        .then(argument("player",
-                                                                                        EntityArgumentType.player())
-                                                                                        .executes(ctx -> updatePlayer(
-                                                                                                        ctx.getSource(),
-                                                                                                        EntityArgumentType
-                                                                                                                        .getPlayer(ctx,
-                                                                                                                                        "player"),
-                                                                                                        ctx)))));
-                });
+                CommandRegistrationCallback.EVENT
+                                .register((dispatcher, registryAccess, environment) -> dispatcher.register(
+                                                literal("afkplus")
+                                                                // .requires(Permissions.require("afkplus.afkplus",
+                                                                // CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                .executes(ctx -> afkAbout(ctx.getSource(), ctx))
+                                                                .then(literal("reload")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.reload",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .executes(ctx -> afkReload(
+                                                                                                ctx.getSource(),
+                                                                                                ctx)))
+                                                                .then(literal("set")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.set",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .then(argument("player",
+                                                                                                EntityArgumentType
+                                                                                                                .player())
+                                                                                                .executes((ctx) -> setAfk(
+                                                                                                                ctx.getSource(),
+                                                                                                                EntityArgumentType
+                                                                                                                                .getPlayer(ctx, "player"),
+                                                                                                                "",
+                                                                                                                ctx))
+                                                                                                .then(argument("reason",
+                                                                                                                StringArgumentType
+                                                                                                                                .greedyString())
+                                                                                                                .requires(Permissions
+                                                                                                                                .require(
+                                                                                                                                                "afkplus.afkplus.set",
+                                                                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                                                .executes((ctx) -> setAfk(
+                                                                                                                                ctx.getSource(),
+                                                                                                                                EntityArgumentType
+                                                                                                                                                .getPlayer(ctx, "player"),
+                                                                                                                                StringArgumentType
+                                                                                                                                                .getString(ctx, "reason"),
+                                                                                                                                ctx)))))
+                                                                .then(literal("clear")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.clear",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .then(argument("player",
+                                                                                                EntityArgumentType
+                                                                                                                .player())
+                                                                                                .executes(ctx -> clearAfk(
+                                                                                                                ctx.getSource(),
+                                                                                                                EntityArgumentType
+                                                                                                                                .getPlayer(ctx,
+                                                                                                                                                "player"),
+                                                                                                                ctx))))
+                                                                .then(literal("info")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.info",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .then(argument("player",
+                                                                                                EntityArgumentType
+                                                                                                                .player())
+                                                                                                .executes(ctx -> infoAfkPlayer(
+                                                                                                                ctx.getSource(),
+                                                                                                                EntityArgumentType
+                                                                                                                                .getPlayer(ctx,
+                                                                                                                                                "player"),
+                                                                                                                ctx))))
+                                                                /*.then(literal("test")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.test",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .executes(ctx -> testCmd(
+                                                                                                ctx.getSource(),
+                                                                                                ctx)))
+                                                                 */
+                                                                .then(literal("update")
+                                                                                .requires(Permissions.require(
+                                                                                                "afkplus.afkplus.update",
+                                                                                                CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                                .then(argument("player",
+                                                                                                EntityArgumentType
+                                                                                                                .player())
+                                                                                                .executes(ctx -> updatePlayer(
+                                                                                                                ctx.getSource(),
+                                                                                                                EntityArgumentType
+                                                                                                                                .getPlayer(ctx,
+                                                                                                                                                "player"),
+                                                                                                                ctx))))));
         }
 
+       /*
+       private static int testCmd(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+                String user = src.getName();
+                context.getSource().sendFeedback(() -> Text.of("Test Command:"), false);
+                context.getSource().sendFeedback(FormattingTest::runBuiltInTest, false);
+                context.getSource().sendFeedback(FormattingTest::runAliasTest, false);
+                AfkPlusLogger.debug(user + " has executed /afkplus test.");
+                return 1;
+        }
+        */
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
                 String user = src.getName();
@@ -115,23 +138,25 @@ public class AfkPlusCommand {
 
         private static int setAfk(ServerCommandSource src, ServerPlayerEntity player, String reason,
                         CommandContext<ServerCommandSource> context) {
-                AfkPlayerData afkPlayer = (AfkPlayerData) player;
+                IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 String user = src.getName();
                 Text target = player.getName();
-                if (afkPlayer.isAfk()) {
+                if (afkPlayer.afkplus$isAfk()) {
                         context.getSource().sendFeedback(
-                                        () -> Text.of(target.getString() + " is already marked as AFK."), false);
+                                        () -> Text.of(target.getLiteralString() + " is already marked as AFK."), false);
                 } else {
                         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
-                                afkPlayer.registerAfk("via /afkplus set");
-                                AfkPlusLogger.info(user + " set player " + target.getString() + " as AFK");
-                        } else if (reason == null || reason == "") {
-                                afkPlayer.registerAfk(CONFIG.messageOptions.defaultReason);
-                                AfkPlusLogger.info(user + " set player " + target.getString() + " as AFK for reason: "
+                                afkPlayer.afkplus$registerAfk("via /afkplus set");
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
+                        } else if (reason == null || reason.isEmpty()) {
+                                afkPlayer.afkplus$registerAfk(CONFIG.messageOptions.defaultReason);
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                                + " as AFK for reason: "
                                                 + CONFIG.messageOptions.defaultReason);
                         } else {
-                                afkPlayer.registerAfk(reason);
-                                AfkPlusLogger.info(user + " set player " + target.getString() + " as AFK for reason: "
+                                afkPlayer.afkplus$registerAfk(reason);
+                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                                + " as AFK for reason: "
                                                 + reason);
                         }
                 }
@@ -140,14 +165,15 @@ public class AfkPlusCommand {
 
         private static int clearAfk(ServerCommandSource src, ServerPlayerEntity player,
                         CommandContext<ServerCommandSource> context) {
-                AfkPlayerData afkPlayer = (AfkPlayerData) player;
+                IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 String user = src.getName();
                 Text target = player.getName();
-                if (afkPlayer.isAfk()) {
-                        afkPlayer.unregisterAfk();
-                        AfkPlusLogger.info(user + " cleared player " + target.getString() + " from AFK");
+                if (afkPlayer.afkplus$isAfk()) {
+                        afkPlayer.afkplus$unregisterAfk();
+                        AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
                 } else {
-                        context.getSource().sendFeedback(() -> Text.of(target.getString() + " is not marked as AFK."),
+                        context.getSource().sendFeedback(
+                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."),
                                         false);
                 }
                 return 1;
@@ -155,18 +181,18 @@ public class AfkPlusCommand {
 
         private static int infoAfkPlayer(ServerCommandSource src, ServerPlayerEntity player,
                         CommandContext<ServerCommandSource> context) {
-                AfkPlayerData afkPlayer = (AfkPlayerData) player;
+                IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 String user = src.getName();
                 Text target = player.getName();
-                if (afkPlayer.isAfk()) {
-                        String afkStatus = AfkPlayerInfo.getString(afkPlayer, target, src);
-                        Text afkReason = AfkPlayerInfo.getReason(afkPlayer, target, src);
+                if (afkPlayer.afkplus$isAfk()) {
+                        String afkStatus = AfkPlayerInfo.getString(afkPlayer, target);
+                        Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
                         context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
                         context.getSource().sendFeedback(() -> afkReason, false);
-                        AfkPlusLogger.info(user + " displayed " + target.getString() + "'s AFK info.");
+                        AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
                 } else {
                         context.getSource().sendFeedback(
-                                        () -> Text.of(target.getString() + " is not marked as AFK."), false);
+                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
                 }
                 return 1;
         }
@@ -175,12 +201,12 @@ public class AfkPlusCommand {
                         CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
                 Text target = player.getName();
-                AfkPlayerData afkPlayer = (AfkPlayerData) player;
-                afkPlayer.updatePlayerList();
+                IAfkPlayer afkPlayer = (IAfkPlayer) player;
+                afkPlayer.afkplus$updatePlayerList();
                 context.getSource().sendFeedback(
-                                () -> Text.of("Updating player list entry for " + target.getString() + ""),
+                                () -> Text.of("Updating player list entry for " + target.getLiteralString()),
                                 false);
-                AfkPlusLogger.info(user + " updated player list entry for " + target.getString() + "");
+                AfkPlusLogger.info(user + " updated player list entry for " + target.getLiteralString());
                 return 1;
         }
 }
