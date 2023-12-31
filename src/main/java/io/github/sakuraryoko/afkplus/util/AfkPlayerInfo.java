@@ -2,18 +2,18 @@ package io.github.sakuraryoko.afkplus.util;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import eu.pb4.placeholders.api.TextParserUtils;
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
 public class AfkPlayerInfo {
-    public static String getString(AfkPlayerData afkPlayer, Text target) {
+    public static String getString(IAfkPlayer afkPlayer, Text target) {
         String AfkStatus;
         long duration;
         if (afkPlayer.afkplus$isAfk()) {
@@ -41,7 +41,7 @@ public class AfkPlayerInfo {
         return AfkStatus;
     }
 
-    public static Text getReason(AfkPlayerData afkPlayer, ServerCommandSource src) {
+    public static Text getReason(IAfkPlayer afkPlayer, ServerCommandSource src) {
         String reasonFormat;
         Text afkReason;
         if (afkPlayer.afkplus$isAfk()) {
@@ -59,5 +59,4 @@ public class AfkPlayerInfo {
         }
         return afkReason;
     }
-
 }

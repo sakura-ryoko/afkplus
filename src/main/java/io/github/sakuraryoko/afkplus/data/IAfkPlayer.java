@@ -1,6 +1,6 @@
 package io.github.sakuraryoko.afkplus.data;
 
-public interface AfkPlayerData {
+public interface IAfkPlayer {
     boolean afkplus$isAfk();
 
     void afkplus$registerAfk(String reason);

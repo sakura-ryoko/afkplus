@@ -6,7 +6,7 @@ import static net.minecraft.server.command.CommandManager.*;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import io.github.sakuraryoko.afkplus.data.AfkPlayerData;
+import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
@@ -25,7 +25,7 @@ public class AfkCommand {
     }
 
     private static int setAfk(ServerCommandSource src, String reason) throws CommandSyntaxException {
-        AfkPlayerData player = (AfkPlayerData) src.getPlayerOrThrow();
+        IAfkPlayer player = (IAfkPlayer) src.getPlayerOrThrow();
         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
             player.afkplus$registerAfk("via /afk");
         } else if (reason == null || reason.isEmpty()) {

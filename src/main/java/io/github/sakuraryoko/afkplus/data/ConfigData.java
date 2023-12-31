@@ -23,9 +23,9 @@ public class ConfigData {
     @NotNull
     public static class PacketOptions {
         public int timeoutSeconds;
-        public Boolean resetOnMovement;
-        public Boolean resetOnLook;
-        public Boolean disableDamage;
+        public boolean resetOnMovement;
+        public boolean resetOnLook;
+        public boolean disableDamage;
     }
 
     @NotNull
