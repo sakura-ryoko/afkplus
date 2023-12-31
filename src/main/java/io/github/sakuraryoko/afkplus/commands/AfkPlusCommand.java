@@ -143,19 +143,19 @@ public class AfkPlusCommand {
                 Text target = player.getName();
                 if (afkPlayer.afkplus$isAfk()) {
                         context.getSource().sendFeedback(
-                                        () -> Text.of(target.getLiteralString() + " is already marked as AFK."), false);
+                                        () -> Text.of(target.getString() + " is already marked as AFK."), false);
                 } else {
                         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                                 afkPlayer.afkplus$registerAfk("via /afkplus set");
-                                AfkPlusLogger.info(user + " set player " + target.getLiteralString() + " as AFK");
+                                AfkPlusLogger.info(user + " set player " + target.getString() + " as AFK");
                         } else if (reason == null || reason.isEmpty()) {
                                 afkPlayer.afkplus$registerAfk(CONFIG.messageOptions.defaultReason);
-                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                AfkPlusLogger.info(user + " set player " + target.getString()
                                                 + " as AFK for reason: "
                                                 + CONFIG.messageOptions.defaultReason);
                         } else {
                                 afkPlayer.afkplus$registerAfk(reason);
-                                AfkPlusLogger.info(user + " set player " + target.getLiteralString()
+                                AfkPlusLogger.info(user + " set player " + target.getString()
                                                 + " as AFK for reason: "
                                                 + reason);
                         }
@@ -170,10 +170,10 @@ public class AfkPlusCommand {
                 Text target = player.getName();
                 if (afkPlayer.afkplus$isAfk()) {
                         afkPlayer.afkplus$unregisterAfk();
-                        AfkPlusLogger.info(user + " cleared player " + target.getLiteralString() + " from AFK");
+                        AfkPlusLogger.info(user + " cleared player " + target.getString() + " from AFK");
                 } else {
                         context.getSource().sendFeedback(
-                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."),
+                                        () -> Text.of(target.getString() + " is not marked as AFK."),
                                         false);
                 }
                 return 1;
@@ -189,10 +189,10 @@ public class AfkPlusCommand {
                         Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
                         context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
                         context.getSource().sendFeedback(() -> afkReason, false);
-                        AfkPlusLogger.info(user + " displayed " + target.getLiteralString() + "'s AFK info.");
+                        AfkPlusLogger.info(user + " displayed " + target.getString() + "'s AFK info.");
                 } else {
                         context.getSource().sendFeedback(
-                                        () -> Text.of(target.getLiteralString() + " is not marked as AFK."), false);
+                                        () -> Text.of(target.getString() + " is not marked as AFK."), false);
                 }
                 return 1;
         }
@@ -204,9 +204,9 @@ public class AfkPlusCommand {
                 IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 afkPlayer.afkplus$updatePlayerList();
                 context.getSource().sendFeedback(
-                                () -> Text.of("Updating player list entry for " + target.getLiteralString()),
+                                () -> Text.of("Updating player list entry for " + target.getString()),
                                 false);
-                AfkPlusLogger.info(user + " updated player list entry for " + target.getLiteralString());
+                AfkPlusLogger.info(user + " updated player list entry for " + target.getString());
                 return 1;
         }
 }
