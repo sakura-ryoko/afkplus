@@ -21,8 +21,7 @@ public class AfkPlusPlaceholders {
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Text result = player.afkplus$isAfk()
-                    ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder),
-                    ctx)
+                    ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlaceholder), ctx)
                     : Text.of("");
             return PlaceholderResult.value(result);
         });
@@ -37,18 +36,11 @@ public class AfkPlusPlaceholders {
             Text result;
             if (CONFIG.PlaceholderOptions.afkDurationPretty) {
                 result = player.afkplus$isAfk()
-                        ? TextParserUtils.formatTextSafe(
-                        CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                                + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() -
-                                player.afkplus$getAfkTimeMs(), true, true)
-                                + "<r>")
+                        ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationWords(Util.getMeasuringTimeMs() - player.afkplus$getAfkTimeMs(), true, true) + "<r>")
                         : TextParserUtils.formatTextSafe("");
             } else {
                 result = player.afkplus$isAfk()
-                        ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                        + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() -
-                        player.afkplus$getAfkTimeMs())
-                        + "<r>")
+                        ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationHMS(Util.getMeasuringTimeMs() - player.afkplus$getAfkTimeMs()) + "<r>")
                         : TextParserUtils.formatTextSafe("");
             }
             return PlaceholderResult.value(result);
@@ -62,11 +54,8 @@ public class AfkPlusPlaceholders {
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Text result = player.afkplus$isAfk()
-                    ? Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
-                    : Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
-                    ctx);
+                    ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
+                    : Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
         Placeholders.register(new Identifier(AFK_MOD_ID, "display_name"), (ctx, arg) -> {
@@ -76,11 +65,8 @@ public class AfkPlusPlaceholders {
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Text result = player.afkplus$isAfk()
-                    ? Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
-                    : Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder),
-                    ctx);
+                    ? Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
+                    : Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
     }
@@ -92,10 +78,7 @@ public class AfkPlusPlaceholders {
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Text result = player.afkplus$isAfk()
-                    ? TextParserUtils
-                    .formatTextSafe(
-                            CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.afkplus$getAfkReason()
-                                    + "<r>")
+                    ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting + player.afkplus$getAfkReason() + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);
         });
@@ -108,19 +91,31 @@ public class AfkPlusPlaceholders {
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Text result = player.afkplus$isAfk()
-                    ? TextParserUtils
-                    .formatTextSafe(
-                            CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.afkplus$getAfkTimeString()
-                                    + "<r>")
+                    ? TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting + player.afkplus$getAfkTimeString() + "<r>")
                     : TextParserUtils.formatTextSafe("");
             return PlaceholderResult.value(result);
         });
     }
+    protected static void registerInvulnerable() {
+        Placeholders.register(new Identifier(AFK_MOD_ID, "invulnerable"), (ctx, arg) -> {
+            if (!ctx.hasPlayer()) {
+                return PlaceholderResult.invalid("No player!");
+            }
+            IAfkPlayer player = (IAfkPlayer) ctx.player();
+            assert player != null;
+            Text result = player.afkplus$isDamageEnabled()
+                    ? Text.of("")
+                    : Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkInvulnerablePlaceholder + "<r>"), ctx);
+            return PlaceholderResult.value(result);
+        });
+    }
+
     protected static void register() {
         registerAfk();
         registerDisplayName();
         registerDuration();
         registerReason();
         registerTime();
+        registerInvulnerable();
     }
 }

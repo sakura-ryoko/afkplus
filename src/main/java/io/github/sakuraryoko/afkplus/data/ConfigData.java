@@ -26,6 +26,7 @@ public class ConfigData {
         public boolean resetOnMovement;
         public boolean resetOnLook;
         public boolean disableDamage;
+        public int disableDamageCooldown;
     }
 
     @NotNull
@@ -37,6 +38,7 @@ public class ConfigData {
         public String afkTimePlaceholderFormatting;
         public String afkReasonPlaceholderFormatting;
         public boolean afkDurationPretty;
+        public String afkInvulnerablePlaceholder;
     }
 
     @NotNull
@@ -52,5 +54,7 @@ public class ConfigData {
         public String whenReturn;
         public boolean prettyDuration;
         public String defaultReason;
+        public String whenDamageDisabled;
+        public String whenDamageEnabled;
     }
 }
