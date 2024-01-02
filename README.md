@@ -106,9 +106,9 @@ afkInvulnerablePlaceholder=":<red>I<r>"
 # -- note; This is for when you're NOT using a player list display mods.
 enableListDisplay = true
 # The name that is shown in the playerlist if a player is AFK, and accepts formatting nodes
-# (Default: "<i><gray>[AFK] %player:displayname%<r>")
+# (Default: "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>")
 # -- note; This function works best when not using Player List mods!*
-afkPlayerName = "<i><gray>[AFK] %player:displayname%<r>"
+afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>"
 
 [messageOptions]
 # Enables chat messages when a player goes AFk or returns. (Default: true)
