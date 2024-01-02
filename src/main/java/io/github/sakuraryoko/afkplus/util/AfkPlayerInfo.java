@@ -13,31 +13,33 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
 public class AfkPlayerInfo {
-    public static String getString(IAfkPlayer afkPlayer, Text target) {
+    public static String getString(IAfkPlayer afkPlayer) {
         String AfkStatus;
         long duration;
         if (afkPlayer.afkplus$isAfk()) {
             duration = Util.getMeasuringTimeMs() - afkPlayer.afkplus$getAfkTimeMs();
-            if (CONFIG.messageOptions.prettyDuration) {
-                AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getString()
-                        + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
-                        + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
-                        + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                        + DurationFormatUtils.formatDurationWords(duration, true, true);
-            } else {
-                AfkStatus = "<bold><light_purple>AFK Information:"
-                        + "<r>\nPlayer: " + target.getString()
-                        + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
-                        + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
-                        + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting
-                        + DurationFormatUtils.formatDurationHMS(duration)
-                        + "<r>ms (Format:HH:mm:ss)";
-            }
+            AfkStatus = "<bold><light_purple>AFK Information:"
+                    + "<r>\nPlayer: " + afkPlayer.afkplus$getName()
+                    + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
+                    + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
+                    + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting;
+            if (CONFIG.messageOptions.prettyDuration)
+                AfkStatus = AfkStatus + DurationFormatUtils.formatDurationWords(duration, true, true);
+            else
+                AfkStatus = AfkStatus + DurationFormatUtils.formatDurationHMS(duration) + "<r>ms (Format:HH:mm:ss)";
+            if (afkPlayer.afkplus$isCreative())
+                AfkStatus = AfkStatus + "<r>\nDamage Status: <yellow>CREATIVE";
+            else if (afkPlayer.afkplus$isDamageEnabled())
+                AfkStatus = AfkStatus + "<r>\nDamage Status: <green>Enabled";
+            else
+                AfkStatus = AfkStatus + "<r>\nDamage Status: <red>Disabled";
+            if (afkPlayer.afkplus$isLockDamageDisabled())
+                AfkStatus = AfkStatus + " <red>[RESTRICTED]";
+            else
+                AfkStatus = AfkStatus + " <green>[ALLOWED]";
             AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
-        } else {
+        } else
             AfkStatus = "";
-        }
         return AfkStatus;
     }
 

@@ -14,26 +14,24 @@ import net.minecraft.server.command.ServerCommandSource;
 public class AfkCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("afk")
-                        .requires(Permissions.require("afkplus.afk", 0))
-                        .executes(ctx -> setAfk(ctx.getSource(), ""))
-                        .then(argument("reason", StringArgumentType.greedyString())
-                                .requires(Permissions.require("afkplus.afk", 0))
-                                .executes(
-                                        ctx -> setAfk(ctx.getSource(),
-                                                StringArgumentType.getString(ctx, "reason"))))));
+            literal("afk")
+                .requires(Permissions.require("afkplus.afk", 0))
+                .executes(ctx -> setAfk(ctx.getSource(), ""))
+                .then(argument("reason", StringArgumentType.greedyString())
+                    .requires(Permissions.require("afkplus.afk", 0))
+                    .executes(ctx -> setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
+                )
+        ));
     }
 
     private static int setAfk(ServerCommandSource src, String reason) throws CommandSyntaxException {
         IAfkPlayer player = (IAfkPlayer) src.getPlayerOrThrow();
-        if (reason == null && CONFIG.messageOptions.defaultReason == null) {
+        if (reason == null && CONFIG.messageOptions.defaultReason == null)
             player.afkplus$registerAfk("via /afk");
-        } else if (reason == null || reason.isEmpty()) {
+        else if (reason == null || reason.isEmpty())
             player.afkplus$registerAfk(CONFIG.messageOptions.defaultReason);
-        } else {
+        else
             player.afkplus$registerAfk(reason);
-        }
-
         return 1;
     }
 }
