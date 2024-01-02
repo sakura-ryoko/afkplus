@@ -13,35 +13,28 @@ public class AfkPlusMod {
     // Generic Mod init
     public static void init() {
         AfkPlusLogger.initLogger();
+        AfkPlusLogger.debug("Initializing Mod.");
         AfkPlusInfo.initModInfo();
         AfkPlusInfo.displayModInfo();
         if (AfkPlusInfo.isClient()) {
             AfkPlusLogger.info("MOD is running in a CLIENT Environment.");
         }
-        AfkPlusConflicts.checkMods();
+        if (!AfkPlusConflicts.checkMods())
+            AfkPlusLogger.warn("Mod conflicts check has FAILED.");
         AfkPlusLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
+        AfkPlusLogger.debug("Loading Config.");
         ConfigManager.loadConfig();
-        AfkPlusLogger.debug("Config successful, registerring Placeholders.");
+        AfkPlusLogger.debug("Registering Placeholders.");
         PlaceholderManager.register();
-        AfkPlusLogger.debug("All Placeholders registered, registerring commands.");
+        AfkPlusLogger.debug("Registering commands.");
         CommandManager.register();
-        AfkPlusLogger.debug("Done registerring commands.");
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            ServerEvents.starting(server);
-        });
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            ServerEvents.started(server);
-        });
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server,
-                serverResourceManager, success) -> {
-            ServerEvents.dpReload(server);
-        });
-        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> {
-            ServerEvents.stopping(server);
-        });
-        ServerLifecycleEvents.SERVER_STOPPED.register((server) -> {
-            ServerEvents.stopped(server);
-        });
+        AfkPlusLogger.debug("Registering Server Events.");
+        ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
+        ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
+        ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
+        AfkPlusLogger.debug("All Tasks Done.");
     }
 }
