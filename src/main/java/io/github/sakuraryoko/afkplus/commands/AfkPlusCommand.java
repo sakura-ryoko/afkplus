@@ -79,7 +79,7 @@ public class AfkPlusCommand {
         private static int afkAbout(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 Text ModInfo = AfkPlusInfo.getModInfoText();
                 String user = src.getName();
-                context.getSource().sendFeedback(() -> ModInfo, false);
+                context.getSource().sendFeedback(ModInfo, false);
                 AfkPlusLogger.debug(user + " has executed /afkplus .");
                 return 1;
         }
@@ -87,7 +87,7 @@ public class AfkPlusCommand {
         private static int afkReload(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
                 ConfigManager.reloadConfig();
-                context.getSource().sendFeedback(() -> Text.of("Reloaded config!"), false);
+                context.getSource().sendFeedback(Text.of("Reloaded config!"), false);
                 AfkPlusLogger.info(user + " has reloaded the configuration.");
                 return 1;
         }
@@ -96,7 +96,7 @@ public class AfkPlusCommand {
                 IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 String user = src.getName();
                 if (afkPlayer.afkplus$isAfk()) {
-                        context.getSource().sendFeedback(() -> Text.of(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
+                        context.getSource().sendFeedback(Text.of(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
                 } else {
                         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                                 afkPlayer.afkplus$registerAfk("via /afkplus set");
@@ -119,7 +119,7 @@ public class AfkPlusCommand {
                         afkPlayer.afkplus$unregisterAfk();
                         AfkPlusLogger.info(user + " cleared player " + afkPlayer.afkplus$getName() + " from AFK");
                 } else
-                        context.getSource().sendFeedback(() -> Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."),false);
+                        context.getSource().sendFeedback(Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."),false);
                 return 1;
         }
 
@@ -129,11 +129,11 @@ public class AfkPlusCommand {
                 if (afkPlayer.afkplus$isAfk()) {
                         String afkStatus = AfkPlayerInfo.getString(afkPlayer);
                         Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
-                        context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
-                        context.getSource().sendFeedback(() -> afkReason, false);
+                        context.getSource().sendFeedback(TextParserUtils.formatTextSafe(afkStatus), false);
+                        context.getSource().sendFeedback(afkReason, false);
                         AfkPlusLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
                 } else
-                        context.getSource().sendFeedback(() -> Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+                        context.getSource().sendFeedback(Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
                 return 1;
         }
 
@@ -142,10 +142,10 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 if (afkPlayer.afkplus$isLockDamageDisabled()) {
                         afkPlayer.afkplus$unlockDamageDisabled();
-                        context.getSource().sendFeedback(() -> Text.of("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()),false);
+                        context.getSource().sendFeedback(Text.of("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()),false);
                         AfkPlusLogger.info(user + " Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName());
                 } else
-                        context.getSource().sendFeedback(() -> Text.of("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()),false);
+                        context.getSource().sendFeedback(Text.of("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()),false);
                 return 1;
         }
         private static int enableDamagePlayer(ServerCommandSource src, ServerPlayerEntity player, CommandContext<ServerCommandSource> context) {
@@ -153,10 +153,10 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 if (!afkPlayer.afkplus$isLockDamageDisabled()) {
                         afkPlayer.afkplus$lockDamageDisabled();
-                        context.getSource().sendFeedback(() -> Text.of("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()),false);
+                        context.getSource().sendFeedback(Text.of("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()),false);
                         AfkPlusLogger.info(user + " Force-Enabling Damage for player " + afkPlayer.afkplus$getName());
                 } else
-                        context.getSource().sendFeedback(() -> Text.of("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()),false);
+                        context.getSource().sendFeedback(Text.of("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()),false);
                 return 1;
         }
 
@@ -164,7 +164,7 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 IAfkPlayer afkPlayer = (IAfkPlayer) player;
                 afkPlayer.afkplus$updatePlayerList();
-                context.getSource().sendFeedback(() -> Text.of("Updating player list entry for " + afkPlayer.afkplus$getName()),false);
+                context.getSource().sendFeedback(Text.of("Updating player list entry for " + afkPlayer.afkplus$getName()),false);
                 AfkPlusLogger.info(user + " updated player list entry for " + afkPlayer.afkplus$getName());
                 return 1;
         }
