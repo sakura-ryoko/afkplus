@@ -1,5 +1,7 @@
 package io.github.sakuraryoko.afkplus;
 
+import eu.pb4.placeholders.api.node.MoreColorNode;
+import eu.pb4.placeholders.impl.textparser.MoreColorNodeImpl;
 import io.github.sakuraryoko.afkplus.commands.CommandManager;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
 import io.github.sakuraryoko.afkplus.events.ServerEvents;
@@ -35,6 +37,8 @@ public class AfkPlusMod {
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
+        //PlaceholderAPIMoreColor.init();
+        MoreColorNodeImpl.addColor("ugly", "#FF709D");
         AfkPlusLogger.debug("All Tasks Done.");
     }
 }

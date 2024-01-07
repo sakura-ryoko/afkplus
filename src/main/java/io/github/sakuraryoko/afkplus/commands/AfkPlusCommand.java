@@ -24,6 +24,10 @@ public class AfkPlusCommand {
                 CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                         literal("afkplus")
                                 .executes(ctx -> afkAbout(ctx.getSource(), ctx))
+                                .then(literal("test")
+                                        .requires(Permissions.require("afkplus.afkplus.test", 4))
+                                        .executes(ctx -> afkTest(ctx.getSource(), ctx))
+                                )
                                 .then(literal("reload")
                                         .requires(Permissions.require("afkplus.afkplus.reload", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                         .executes(ctx -> afkReload(ctx.getSource(), ctx))
@@ -83,7 +87,14 @@ public class AfkPlusCommand {
                 AfkPlusLogger.debug(user + " has executed /afkplus .");
                 return 1;
         }
-
+        private static int afkTest(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+                String user = src.getName();
+                context.getSource().sendFeedback(() -> FormattingTest.runBuiltInTest(), false);
+                context.getSource().sendFeedback(() -> FormattingTest.runAliasTest(), false);
+                context.getSource().sendFeedback(() -> FormattingTest.runColorsTest(), false);
+                AfkPlusLogger.debug(user + " has executed /afkplus test .");
+                return 1;
+        }
         private static int afkReload(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
                 ConfigManager.reloadConfig();

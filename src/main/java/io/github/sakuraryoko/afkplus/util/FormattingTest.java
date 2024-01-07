@@ -91,6 +91,7 @@ public class FormattingTest {
         if (test != null)
             testString = testString + "<r>\n<italic>Italic: " + test.getName();
 
+        AfkPlusLogger.debug("FormatTest.runBuiltInTest() --> testString: " + testString);
         return TextParserUtils.formatTextSafe(testString);
     }
     public static Text runAliasTest() {
@@ -99,6 +100,28 @@ public class FormattingTest {
         testString = testString + "<r>\n<grey>Grey: grey";
         testString = testString + "<r>\n<pink>Pink: pink";
         testString = testString + "<r>\n<dark_grey>Dark Grey: dark_grey";
+        AfkPlusLogger.debug("FormatTest.runAliasTest() --> testString: " + testString);
         return TextParserUtils.formatTextSafe(testString);
+    }
+    public static Text runColorsTest() {
+        String testString = "<r>COLORS:";
+        Text out;
+        testString = testString + "<r>\n<brown>Brown: brown";
+        testString = testString + "<r>\n<cyan>Cyan: cyan";
+        testString = testString + "<r>\n<dark_brown>Dark Brown: dark_brown";
+        testString = testString + "<r>\n<dark_pink>Dark Pink: dark_pink";
+        testString = testString + "<r>\n<light_blue>Light Blue: light_blue";
+        testString = testString + "<r>\n<light_gray>Light Gray: light_gray";
+        testString = testString + "<r>\n<light_pink>Light Pink: light_pink";
+        testString = testString + "<r>\n<lime>Lime: lime";
+        testString = testString + "<r>\n<magenta>Magenta: magenta";
+        testString = testString + "<r>\n<orange>Orange: orange";
+        testString = testString + "<r>\n<pink>Pink: pink";
+        testString = testString + "<r>\n<purple>Purple: purple";
+        testString = testString + "<r>\n<ugly>Some Ugly Random Color: ugly";
+        AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
+        out = TextParserUtils.formatTextSafe(testString);
+        AfkPlusLogger.debug("FormatTest.runColorsTest() --> out: " + out.getString());
+        return out;
     }
 }
