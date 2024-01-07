@@ -12,7 +12,7 @@ import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlayerInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
-import io.github.sakuraryoko.afkplus.util.FormattingTest;
+import io.github.sakuraryoko.afkplus.util.FormattingExample;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -24,9 +24,9 @@ public class AfkPlusCommand {
                 CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                         literal("afkplus")
                                 .executes(ctx -> afkAbout(ctx.getSource(), ctx))
-                                .then(literal("test")
-                                        .requires(Permissions.require("afkplus.afkplus.test", 4))
-                                        .executes(ctx -> afkTest(ctx.getSource(), ctx))
+                                .then(literal("ex")
+                                        .requires(Permissions.require("afkplus.afkplus.ex", 4))
+                                        .executes(ctx -> afkExample(ctx.getSource(), ctx))
                                 )
                                 .then(literal("reload")
                                         .requires(Permissions.require("afkplus.afkplus.reload", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
@@ -87,12 +87,12 @@ public class AfkPlusCommand {
                 AfkPlusLogger.debug(user + " has executed /afkplus .");
                 return 1;
         }
-        private static int afkTest(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
+        private static int afkExample(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
                 String user = src.getName();
-                context.getSource().sendFeedback(() -> FormattingTest.runBuiltInTest(), false);
-                context.getSource().sendFeedback(() -> FormattingTest.runAliasTest(), false);
-                context.getSource().sendFeedback(() -> FormattingTest.runColorsTest(), false);
-                AfkPlusLogger.debug(user + " has executed /afkplus test .");
+                context.getSource().sendFeedback(() -> FormattingExample.runBuiltInTest(), false);
+                context.getSource().sendFeedback(() -> FormattingExample.runAliasTest(), false);
+                context.getSource().sendFeedback(() -> FormattingExample.runColorsTest(), false);
+                AfkPlusLogger.debug(user + " has executed /afkplus example .");
                 return 1;
         }
         private static int afkReload(ServerCommandSource src, CommandContext<ServerCommandSource> context) {

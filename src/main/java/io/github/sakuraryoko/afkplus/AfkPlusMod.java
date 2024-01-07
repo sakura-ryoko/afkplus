@@ -1,10 +1,9 @@
 package io.github.sakuraryoko.afkplus;
 
-import eu.pb4.placeholders.api.node.MoreColorNode;
-import eu.pb4.placeholders.impl.textparser.MoreColorNodeImpl;
 import io.github.sakuraryoko.afkplus.commands.CommandManager;
 import io.github.sakuraryoko.afkplus.config.ConfigManager;
 import io.github.sakuraryoko.afkplus.events.ServerEvents;
+import io.github.sakuraryoko.afkplus.nodes.NodeManager;
 import io.github.sakuraryoko.afkplus.placeholders.PlaceholderManager;
 import io.github.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
@@ -27,6 +26,10 @@ public class AfkPlusMod {
         ConfigManager.initConfig();
         AfkPlusLogger.debug("Loading Config.");
         ConfigManager.loadConfig();
+        AfkPlusLogger.debug("Initializing nodes.");
+        NodeManager.initNodes();
+        AfkPlusLogger.debug("Registering nodes.");
+        NodeManager.registerNodes();
         AfkPlusLogger.debug("Registering Placeholders.");
         PlaceholderManager.register();
         AfkPlusLogger.debug("Registering commands.");
@@ -37,8 +40,7 @@ public class AfkPlusMod {
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
-        //PlaceholderAPIMoreColor.init();
-        MoreColorNodeImpl.addColor("ugly", "#FF709D");
+        //MoreColorNodeImpl.addColor("ugly", "#FF709D");
         AfkPlusLogger.debug("All Tasks Done.");
     }
 }

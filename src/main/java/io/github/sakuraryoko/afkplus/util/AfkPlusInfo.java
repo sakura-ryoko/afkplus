@@ -42,11 +42,11 @@ public class AfkPlusInfo {
 
     public static Text getModInfoText() {
         String modInfo = AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION
-        + "\nAuthor: <light_purple>" + AFK_AUTHO_STRING + "</light_purple>"
+        + "\nAuthor: <pink>" + AFK_AUTHO_STRING + "</pink>"
         + "\nLicense: <yellow>" + AFK_LICENSES_STRING + "</yellow>"
-        + "\nHomepage: <aqua><url:'" + AFK_HOMEPAGE_STRING + "'>" + AFK_HOMEPAGE_STRING + "</url></aqua>"
-        + "\nSource: <aqua><url:'" + AFK_SOURCES_STRING + "'>" + AFK_SOURCES_STRING + "</url></aqua>"
-        + "\nDescription: " + AFK_DESC;
+        + "\nHomepage: <cyan><url:'" + AFK_HOMEPAGE_STRING + "'>" + AFK_HOMEPAGE_STRING + "</url></cyan>"
+        + "\nSource: <cyan><url:'" + AFK_SOURCES_STRING + "'>" + AFK_SOURCES_STRING + "</url></cyan>"
+        + "\nDescription: <light_blue>" + AFK_DESC;
         Text info = TextParserUtils.formatText(modInfo);
         AfkPlusLogger.debug(modInfo);
         return info;
