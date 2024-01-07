@@ -15,31 +15,37 @@ public class MoreColorNode {
     private TextColor color;
 
     protected MoreColorNode(String name, String hexCode) {
-        DataResult<TextColor> dr;
-        dr = TextColor.parse(hexCode);
-        if (dr.error().isEmpty()) {
-            this.name = name;
-            this.hexCode = hexCode;
-            this.color = dr.get().left().orElse(null);
-        } else {
+        // 1.20.4
+        //DataResult<TextColor> dr;
+        //dr = TextColor.parse(hexCode);
+        //if (dr.error().isEmpty()) {
+        this.name = name;
+        this.hexCode = hexCode;
+        this.color = TextColor.parse(hexCode);
+        // 1.20.4
+/*        } else {
             AfkPlusLogger.warn("MoreColor("+ name +") is Invalid, error: "+dr.error().toString());
             this.name = "";
             this.hexCode = "";
         }
+        */
     }
     protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases) {
-        DataResult<TextColor> dr;
-        dr = TextColor.parse(hexCode);
-        if (dr.error().isEmpty()) {
-            this.name = name;
-            this.hexCode = hexCode;
-            this.color = dr.get().left().orElse(null);
-            this.aliases = aliases;
-        } else {
+        // 1.20.4
+        //DataResult<TextColor> dr;
+        //dr = TextColor.parse(hexCode);
+        //if (dr.error().isEmpty()) {
+        this.name = name;
+        this.hexCode = hexCode;
+        this.color = TextColor.parse(hexCode);
+        this.aliases = aliases;
+        // 1.20.4
+        /*} else {
             AfkPlusLogger.warn("MoreColor("+ name +") is Invalid, error: "+dr.error().toString());
             this.name = "";
             this.hexCode = "";
         }
+         */
     }
 
     protected String getName() { return this.name; }

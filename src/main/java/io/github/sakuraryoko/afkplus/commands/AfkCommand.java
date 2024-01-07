@@ -8,12 +8,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class AfkCommand {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+        CommandRegistrationCallback.EVENT.register((dispatcher, environment) -> dispatcher.register(
             literal("afk")
                 .requires(Permissions.require("afkplus.afk", 0))
                 .executes(ctx -> setAfk(ctx.getSource(), ""))
@@ -25,7 +25,7 @@ public class AfkCommand {
     }
 
     private static int setAfk(ServerCommandSource src, String reason) throws CommandSyntaxException {
-        IAfkPlayer player = (IAfkPlayer) src.getPlayerOrThrow();
+        IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         if (reason == null && CONFIG.messageOptions.defaultReason == null)
             player.afkplus$registerAfk("via /afk");
         else if (reason == null || reason.isEmpty())
