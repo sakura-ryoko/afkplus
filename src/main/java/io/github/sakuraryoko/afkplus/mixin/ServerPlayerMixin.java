@@ -128,7 +128,7 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     }
     @Unique
     public String afkplus$getName() {
-        return player.getName().getLiteralString();
+        return player.getName().getString();
     }
     @Unique
     private void sendAfkMessage(Text text) {

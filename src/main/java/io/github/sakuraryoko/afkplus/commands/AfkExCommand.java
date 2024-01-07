@@ -20,9 +20,9 @@ public class AfkExCommand {
     }
     private static int afkExample(ServerCommandSource src, CommandContext<ServerCommandSource> context) {
         String user = src.getName();
-        context.getSource().sendFeedback(FormattingExample::runBuiltInTest, false);
-        context.getSource().sendFeedback(FormattingExample::runAliasTest, false);
-        context.getSource().sendFeedback(FormattingExample::runColorsTest, false);
+        context.getSource().sendFeedback(FormattingExample.runBuiltInTest(), false);
+        context.getSource().sendFeedback(FormattingExample.runAliasTest(), false);
+        context.getSource().sendFeedback(FormattingExample.runColorsTest(), false);
         AfkPlusLogger.debug(user + " has executed /afkex (example) .");
         return 1;
     }
