@@ -34,6 +34,8 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     public MinecraftServer server;
     @Shadow public abstract boolean isCreative();
 
+    @Shadow public abstract boolean isSpectator();
+
     @Unique
     public ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
     @Unique
@@ -126,7 +128,7 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     }
     @Unique
     public String afkplus$getName() {
-        return player.getName().getString();
+        return player.getName().getLiteralString();
     }
     @Unique
     private void sendAfkMessage(Text text) {
@@ -170,6 +172,8 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
         AfkPlusLogger.debug("disableDamage() has been invoked for: "+afkplus$getName());
         if (player.isCreative())
             return;
+        if (player.isSpectator())
+            return;
         if (!CONFIG.packetOptions.disableDamage)
             return;
         if (afkplus$isLockDamageDisabled()) {
@@ -199,6 +203,8 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
         AfkPlusLogger.debug("enableDamage() has been invoked for: "+afkplus$getName());
         if (player.isCreative())
             return;
+        if (player.isSpectator())
+            return;
         // They don't need to be AFK, and 'public' makes it so /afkplus damage [Player] works
         if (!afkplus$isDamageEnabled()) {
             this.isDamageEnabled = true;
@@ -221,6 +227,8 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     public void afkplus$unlockDamageDisabled() { this.isLockDamageDisabled = false; }
     @Unique
     public boolean afkplus$isCreative() { return this.isCreative(); }
+    @Unique
+    public boolean afkplus$isSpectator() { return this.isSpectator(); }
     @Inject(method = "updateLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci) { afkplus$unregisterAfk(); }
 
@@ -247,6 +255,8 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     private void checkAfk(CallbackInfo ci) {
         try {
             if (this.player.isCreative())
+                return;
+            if (this.player.isSpectator())
                 return;
             if (this.afkplus$isLockDamageDisabled()) {
                 if (!this.afkplus$isDamageEnabled()) {
