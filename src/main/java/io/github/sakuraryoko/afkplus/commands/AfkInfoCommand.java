@@ -33,11 +33,11 @@ public class AfkInfoCommand {
         if (afkPlayer.afkplus$isAfk()) {
             String afkStatus = AfkPlayerInfo.getString(afkPlayer);
             Text afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
-            context.getSource().sendFeedback(TextParserUtils.formatTextSafe(afkStatus), false);
-            context.getSource().sendFeedback(afkReason, false);
+            context.getSource().sendFeedback(() -> TextParserUtils.formatTextSafe(afkStatus), false);
+            context.getSource().sendFeedback(() -> afkReason, false);
             AfkPlusLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
         } else
-            context.getSource().sendFeedback(Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            context.getSource().sendFeedback(() -> Text.of(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
         return 1;
     }
 }

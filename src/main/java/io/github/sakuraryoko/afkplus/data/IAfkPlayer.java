@@ -16,4 +16,5 @@ public interface IAfkPlayer {
     void afkplus$unlockDamageDisabled();
     String afkplus$getName();
     boolean afkplus$isCreative();
+    boolean afkplus$isSpectator();
 }

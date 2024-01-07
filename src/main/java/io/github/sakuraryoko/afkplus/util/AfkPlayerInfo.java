@@ -18,7 +18,7 @@ public class AfkPlayerInfo {
         long duration;
         if (afkPlayer.afkplus$isAfk()) {
             duration = Util.getMeasuringTimeMs() - afkPlayer.afkplus$getAfkTimeMs();
-            AfkStatus = "<bold><light_purple>AFK Information:"
+            AfkStatus = "<bold><magenta>AFK Information:"
                     + "<r>\nPlayer: " + afkPlayer.afkplus$getName()
                     + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                     + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
@@ -28,7 +28,9 @@ public class AfkPlayerInfo {
             else
                 AfkStatus = AfkStatus + DurationFormatUtils.formatDurationHMS(duration) + "<r>ms (Format:HH:mm:ss)";
             if (afkPlayer.afkplus$isCreative())
-                AfkStatus = AfkStatus + "<r>\nDamage Status: <yellow>CREATIVE";
+                AfkStatus = AfkStatus + "<r>\nDamage Status: <light_blue>CREATIVE";
+            else if (afkPlayer.afkplus$isSpectator())
+                AfkStatus = AfkStatus + "<r>\nDamage Status: <gray>SPECTATOR";
             else if (afkPlayer.afkplus$isDamageEnabled())
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <green>Enabled";
             else
