@@ -10,6 +10,9 @@ public class CommandManager {
         if (CONFIG.afkPlusOptions.enableAfkInfoCommand) {
             AfkInfoCommand.register();
         }
+        if (CONFIG.afkPlusOptions.enableAfkExCommand) {
+            AfkExCommand.register();
+        }
         AfkPlusCommand.register();
     }
 }

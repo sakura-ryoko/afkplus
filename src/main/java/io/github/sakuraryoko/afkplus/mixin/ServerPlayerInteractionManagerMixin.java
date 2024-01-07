@@ -22,7 +22,7 @@ public abstract class ServerPlayerInteractionManagerMixin {
     private void checkGameMode(GameMode gameMode, CallbackInfoReturnable<Boolean> cir) {
         IAfkPlayer afkPlayer = (IAfkPlayer) this.player;
         if (cir.getReturnValue()) {
-            AfkPlusLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName());
+            AfkPlusLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameMode.getName());
             if (afkPlayer.afkplus$isAfk()) {
                 // Fixes uncommon de-sync when switching Game Modes.
                 afkPlayer.afkplus$unregisterAfk();

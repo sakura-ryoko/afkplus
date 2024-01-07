@@ -14,8 +14,10 @@ public class ConfigData {
     public static class AfkPlusOptions {
         public boolean enableAfkCommand;
         public boolean enableAfkInfoCommand;
+        public boolean enableAfkExCommand;
         public int afkCommandPermissions;
         public int afkInfoCommandPermissions;
+        public int afkExCommandPermissions;
         public int afkPlusCommandPermissions;
         public String afkTimeoutString;
     }
