@@ -9,16 +9,6 @@
 - Mod can now be used on Single Player, and Integrated Servers (Open to LAN).
 
 ## Features :blush:
-- '**/afkplus reload**' command.  This allows an Administrator to reload the configuration while the server is running. (Permission: afkplus.afkplus.reload)
-- '**/afkplus set [Player] [Reason]**' command.  This allows any administrator to set the AFK status of a player. (Permission: afkplus.afkplus.set)
-- '**/afkplus clear [Player]**' command.  This allows any administrator to clear the AFK status of a player. (Permission: afkplus.afkplus.clear)
-- [NEW] '**/afkplus damage enable [Player]**' command.  This allows an Administrator to force-enable an AFK player's ability to be damaged as long as they are connected. (Permission: afkplus.afkplus.damage.enable)
-- [NEW] '**/afkplus damage disable [Player]**' command.  This allows an Administrator to revert a player's ability to use "Disable Damage" after it was forcefully removed. (Permission: afkplus.afkplus.damage.disable)
-- '**/afkplus info [Player]**' command.  This allows any administrator to check the AFK status of a player, and display the time and duration since they went AFK. (Permission: afkplus.afkplus.info)
-- '**/afkplus update [Player]**' command.  This allows any administrator to force a player list update for a player. (Permission: afkplus.afkplus.update)
-- '**/afkinfo [Player]**' command.  Does the same thing as '**/afkplus info [Player]**', but can be used for Mods, or players, or however you like to configure it for people to see. (Permission: afkplus.afkinfo)
-- '**/afk [Reason]**' This allows any user to use a [Reason] along with setting their AFK status.
-- **[PERMISSIONS]**: Security permissions for the '**/afkplus**' command via [Luck Permissions](https://luckperms.net/) with the AfkPlusCommandPermissions setting the default restrictions, the '**/afk**' and '**/afkinfo**' command also has restrictions using AfkCommandPermissions/AfkInfoCommandPermissions setting as well.
 - Added a placeholder `%afkplus:afk%` for you to offer a very basic '**[AFK]**' tag to players who are AFK.
 - Added a placeholder `%afkplus:name%`/`%afkplus:display_name%` so that you can use this as a replacement for the '**%player:displayname%**' placeholder under other Mods, such as [Styled Playerlist](https://modrinth.com/mod/styledplayerlist "Styled Playerlist").
 ***NOTE that this method was designed to be fully compliant with LuckPerms Prefixes under Styled Playerlist, because the standard method for playerlist updating fails, or you can simply use %afkplus:afk% to add formatting to existing names if you like.***
@@ -32,6 +22,35 @@
 - [NEW] Added a "disableDamageCooldown" configuration to allow Administrators to adjust the default "timer" that is applied after a player goes AFK.  I highly recommend not setting this to '0', unless you don't think your players will abuse this privilege.
 - [NEW] Added a "whenDamageDisabled" configuration so that you can customize the message displayed when your players are marked as invulnerable.
 - [NEW] Added a "whenDamageEnabled" configuration so that you can customize the message displayed when your players are unmarked as invulnerable.
+- [NEW] Now also checks for if players are in Spectator Mode, and not only Creative for managing your AFK/Disable Damage status.
+- [NEW] Adds several color nodes that players can use for AFK Reasons.  See /afkex for a display example.
+  - brown, cyan, dark_brown, dark_pink, light_blue, light_brown, light_gray, light_pink, lime, magenta, purple, salmon.
+
+## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
+- '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
+  - Displays the Mod Version information.
+- '**/afkplus reload**' command. (Permission: afkplus.afkplus.reload)
+  - This allows an Administrator to reload the configuration while the server is running.
+- '**/afkplus ex**' command.  (Permission: afkplus.afkplus.ex)
+  - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
+- '**/afkplus set [Player] [Reason]**' command. (Permission: afkplus.afkplus.set)
+  - This allows any administrator to set the AFK status of a player.
+- '**/afkplus clear [Player]**' command. (Permission: afkplus.afkplus.clear)
+  - This allows any administrator to clear the AFK status of a player.
+- [NEW] '**/afkplus damage enable [Player]**' command. (Permission: afkplus.afkplus.damage.enable)
+  - This allows an Administrator to force-enable an AFK player's ability to be damaged as long as they are connected.
+- [NEW] '**/afkplus damage disable [Player]**' command. (Permission: afkplus.afkplus.damage.disable)
+  - This allows an Administrator to revert a player's ability to use "Disable Damage" after it was forcefully removed.
+- '**/afkplus info [Player]**' command. (Permission: afkplus.afkplus.info)
+  - This allows any administrator to check the AFK status of a player, and display the time and duration since they went AFK.
+- '**/afkplus update [Player]**' command. (Permission: afkplus.afkplus.update)
+  - This allows any administrator to force a player list update for a player.
+- '**/afkinfo [Player]**' with the AfkInfoCommandPermissions (Default: 2) setting the default restrictions, (Permission: afkplus.afkinfo)
+  - Does the same thing as '**/afkplus info [Player]**', but can be used for Mods, or players, or however you like to configure it for people to see.
+- '**/afkex**' with the AfkExCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.afkex)
+  - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
+- '**/afk [Reason]**' with the AfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.afk)
+  - This allows any user to use a [Reason] along with setting their AFK status.
 
 ## Potential known conflicts (Make your choice)
 - [afk display Data pack](https://vanillatweaks.net/picker/datapacks/) (Vanilla Tweaks Data pack, changes the player list display) -- Mod checks for any "afk" containing data packs in the name.
@@ -48,10 +67,14 @@ The configuration is located in `afkplus.toml` inside your servers config folder
 [AfkPlusOptions]
 # Allows you to disable the /afk command to mark yourself as AFK, with an optional [Reason] (Default: true)
 enableAfkCommand = true
+# Allows you to disable the /afkex command to allow players to see some default formattting nodes available. (Default: true)
+enableAfkExCommand = true
 # Allows you to disable the /afkinfo command to allow players to see someone's AFK status (Time, Duration, Reason). (Default: true)
 enableAfkInfoCommand = true
 # The /afk default command permissions, configurable with Luck Perms (afkplus.afk) node (Default: 0)
 afkCommandPermissions = 0
+# The /afkex default command permissions, configurable with Luck Perms (afkplus.afkex) node (Default: 0)
+afkExCommandPermissions = 0
 # The /afkinfo default command permissions, configurable with Luck Perms (afkplus.afkinfo) node (Usually for Mods) (Default: 2)
 afkInfoCommandPermissions = 2
 # The /afkplus default command permissions, configurable with Luck Perms (afkplus.afkplus with .subcommands) node (Default: 3)

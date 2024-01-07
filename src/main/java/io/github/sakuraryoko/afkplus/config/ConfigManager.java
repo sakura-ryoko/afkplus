@@ -18,7 +18,9 @@ public class ConfigManager {
         CONFIG.afkPlusOptions.afkPlusCommandPermissions = 3;
         CONFIG.afkPlusOptions.enableAfkCommand = true;
         CONFIG.afkPlusOptions.enableAfkInfoCommand = true;
+        CONFIG.afkPlusOptions.enableAfkExCommand = true;
         CONFIG.afkPlusOptions.afkCommandPermissions = 0;
+        CONFIG.afkPlusOptions.afkExCommandPermissions = 0;
         CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
         CONFIG.afkPlusOptions.afkTimeoutString = "<i><gray>timeout<r>";
         CONFIG.packetOptions.resetOnLook = false;
@@ -51,10 +53,13 @@ public class ConfigManager {
             CONFIG.afkPlusOptions.afkPlusCommandPermissions = 3;
         //CONFIG.afkPlusOptions.enableAfkCommand = true;
         //CONFIG.afkPlusOptions.enableAfkInfoCommand = true;
+        //CONFIG.afkPlusOptions.enableAfkExCommand = true;
         if (CONFIG.afkPlusOptions.afkCommandPermissions < 0 || CONFIG.afkPlusOptions.afkCommandPermissions > 4)
             CONFIG.afkPlusOptions.afkCommandPermissions = 0;
         if (CONFIG.afkPlusOptions.afkInfoCommandPermissions < 0 || CONFIG.afkPlusOptions.afkInfoCommandPermissions > 4)
             CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
+        if (CONFIG.afkPlusOptions.afkExCommandPermissions < 0 || CONFIG.afkPlusOptions.afkExCommandPermissions > 4)
+            CONFIG.afkPlusOptions.afkExCommandPermissions = 0;
         if (CONFIG.afkPlusOptions.afkTimeoutString == null)
             CONFIG.afkPlusOptions.afkTimeoutString = "<i><gray>timeout<r>";
         //CONFIG.packetOptions.resetOnLook = false;
