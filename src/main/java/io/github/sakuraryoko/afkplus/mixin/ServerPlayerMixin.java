@@ -91,8 +91,13 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     }
     @Unique
     public void afkplus$unregisterAfk() {
-        if (!afkplus$isAfk())
+        if (!afkplus$isAfk()) {
+            // Maybe it was called by PlayerManagerMixin?
+            setAfk(false);
+            clearAfkTime();
+            clearAfkReason();
             return;
+        }
         if (CONFIG.messageOptions.prettyDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
