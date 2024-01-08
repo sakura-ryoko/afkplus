@@ -3,7 +3,6 @@ package io.github.sakuraryoko.afkplus.mixin;
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 import net.minecraft.network.MessageType;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +10,6 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import eu.pb4.placeholders.PlaceholderAPI;
 import eu.pb4.placeholders.TextParser;
@@ -39,7 +37,6 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
 
     @Shadow public abstract boolean isSpectator();
 
-    @Shadow @Final public ServerPlayerInteractionManager interactionManager;
     @Unique
     public ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
     @Unique
@@ -95,8 +92,13 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     }
     @Unique
     public void afkplus$unregisterAfk() {
-        if (!afkplus$isAfk())
+        if (!afkplus$isAfk()) {
+            // Might be a call from PlayerManager, set blank values.
+            setAfk(false);
+            clearAfkTime();
+            clearAfkReason();
             return;
+        }
         if (CONFIG.messageOptions.prettyDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
