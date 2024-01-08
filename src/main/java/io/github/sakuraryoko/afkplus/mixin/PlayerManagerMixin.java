@@ -4,9 +4,7 @@ import com.mojang.authlib.GameProfile;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +19,7 @@ public abstract class PlayerManagerMixin {
         super();
     }
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void checkInvulnerable1(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci){
+    private void checkInvulnerable1(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci){
         if (player == null)
             return;
         IAfkPlayer iPlayer = (IAfkPlayer) player;
@@ -35,7 +33,7 @@ public abstract class PlayerManagerMixin {
         iPlayer.afkplus$unregisterAfk();
     }
     @Inject(method = "createPlayer", at = @At("RETURN"))
-    private void checkInvulnerable2(GameProfile profile, SyncedClientOptions syncedOptions, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+    private void checkInvulnerable2(GameProfile profile, CallbackInfoReturnable<ServerPlayerEntity> cir) {
         ServerPlayerEntity playerEntity = cir.getReturnValue();
         IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
         if (playerEntity == null)
