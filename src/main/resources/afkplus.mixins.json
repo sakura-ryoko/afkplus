@@ -4,6 +4,7 @@
   "package": "io.github.sakuraryoko.afkplus.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "PlayerManagerMixin",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayerMixin",
     "ServerPlayNetworkMixin"
