@@ -1,9 +1,8 @@
 package io.github.sakuraryoko.afkplus.nodes;
 
-import eu.pb4.placeholders.api.node.TextNode;
-import eu.pb4.placeholders.api.node.parent.ColorNode;
-import eu.pb4.placeholders.api.parsers.TextParserV1;
-import eu.pb4.placeholders.impl.textparser.TextParserImpl;
+import eu.pb4.placeholders.TextParser;
+import eu.pb4.placeholders.util.TextParserUtils;
+import net.minecraft.text.Style;
 import net.minecraft.text.TextColor;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class NodeManager {
         COLORS.add(new MoreColorNode("lime","#76C610"));
         COLORS.add(new MoreColorNode("magenta","#CB69C5"));
         //COLORS.add(new MoreColorNode("orange","#E69E34"));
-        //COLORS.add(new MoreColorNode("pink","#EDA7CB"));
+        COLORS.add(new MoreColorNode("pink","#EDA7CB"));
         COLORS.add(new MoreColorNode("purple","#A453CE"));
         COLORS.add(new MoreColorNode("salmon", "#FF91A4", List.of("pink_salmon")));
     }
@@ -37,25 +36,20 @@ public class NodeManager {
             // DataResult checked at initialization
             TextColor finalIColorNode = iColorNode.getColor();
             if (iColorNode.getAliases() != null) {
-                TextParserV1.registerDefault(
-                        TextParserV1.TextTag.of(
-                                iColorNode.getName(),
-                                iColorNode.getAliases(),
-                                "color",
-                                true,
-                                wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
-                        )
-                );
+                TextParser.TextFormatterHandler iColor = (tag, data, input, handlers, endAt) -> {
+                    eu.pb4.placeholders.util.GeneralUtils.TextLengthPair out = TextParserUtils.recursiveParsing(input, handlers, endAt);
+                    out.text().fillStyle(Style.EMPTY.withColor(finalIColorNode));
+                    return out;
+                };
+                TextParser.register(iColorNode.getName(), iColor);
+                List<String> iAliases = iColorNode.getAliases();
+                for (String iAlias : iAliases) TextParser.register(iAlias, iColor);
             } else {
-                TextParserV1.registerDefault(
-                        TextParserV1.TextTag.of(
-                                iColorNode.getName(),
-                                List.of(""),
-                                "color",
-                                true,
-                                wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
-                        )
-                );
+                TextParser.register(iColorNode.getName(), (tag, data, input, handlers, endAt) -> {
+                    eu.pb4.placeholders.util.GeneralUtils.TextLengthPair out = TextParserUtils.recursiveParsing(input, handlers, endAt);
+                    out.text().fillStyle(Style.EMPTY.withColor(finalIColorNode));
+                    return out;
+                });
             }
         }
     }
@@ -66,7 +60,8 @@ public class NodeManager {
         registerColors();
     }
 
-    // Copied wrap() from TextTags.java
+    // Copied wrap() from PlaceholderAPI 2.X - TextTags.java
+    /*
     private static TextParserV1.TagNodeBuilder wrap(Wrapper wrapper) {
         return (tag, data, input, handlers, endAt) -> {
             var out = TextParserImpl.recursiveParsing(input, handlers, endAt);
@@ -75,5 +70,5 @@ public class NodeManager {
     }
     interface Wrapper {
         TextNode wrap(TextNode[] nodes, String arg);
-    }
+    }*/
 }
