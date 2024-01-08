@@ -256,7 +256,7 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     public @Nullable Text getPlayerListName() {
         if (CONFIG.playerListOptions.enableListDisplay && this.afkplus$isAfk()) {
             Text mess1 = TextParser.parse(CONFIG.playerListOptions.afkPlayerName);
-            AfkPlusLogger.debug("getPlayerListName() player: "+this.getName()+" mess1 -> "+mess1);
+            //AfkPlusLogger.debug("getPlayerListName() player: "+this.afkplus$getName()+" mess1 -> "+mess1);
             Text listEntry = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
             // this.getServer().getPlayerManager().getPlayer(this.uuid).getDisplayName();
             AfkPlusLogger.debug("replacePlayerListName-listEntry(): " + listEntry);
