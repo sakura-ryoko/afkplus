@@ -2,6 +2,7 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import com.mojang.authlib.GameProfile;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
+import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
@@ -33,6 +34,9 @@ public abstract class PlayerManagerMixin {
         }
         // This might simply initialize a player entry...
         iPlayer.afkplus$unregisterAfk();
+        // Fixes some quirky-ness of Styled Player List
+        if (AfkPlusInfo.isServer())
+            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "createPlayer", at = @At("RETURN"))
     private void checkInvulnerable2(GameProfile profile, SyncedClientOptions syncedOptions, CallbackInfoReturnable<ServerPlayerEntity> cir) {
@@ -48,6 +52,9 @@ public abstract class PlayerManagerMixin {
         }
         // This might simply initialize a player entry...
         iPlayer.afkplus$unregisterAfk();
+        // Fixes some quirky-ness of Styled Player List
+        if (AfkPlusInfo.isServer())
+            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
     private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
@@ -61,6 +68,9 @@ public abstract class PlayerManagerMixin {
                 playerEntity.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
+                // Fixes some quirky-ness of Styled Player List
+                if (AfkPlusInfo.isServer())
+                    iPlayer.afkplus$updatePlayerList();
             }
         }
         if (player.interactionManager.getGameMode() == GameMode.SURVIVAL) {
@@ -70,6 +80,9 @@ public abstract class PlayerManagerMixin {
                 player.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
+                // Fixes some quirky-ness of Styled Player List
+                if (AfkPlusInfo.isServer())
+                    iPlayer.afkplus$updatePlayerList();
             }
         }
     }

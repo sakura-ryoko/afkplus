@@ -38,6 +38,17 @@ public class AfkPlusConflicts {
             modCheck = false;
         }
 
+        // Check for autoafk --> afk timeout / damage disabling
+        modTarget = "autoafk";
+        if (FabricLoader.getInstance().isModLoaded(modTarget)) {
+            modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
+            modVer = modData.getVersion().getFriendlyString();
+            modName = modData.getName();
+            AfkPlusLogger.warn(modName + "-" + modVer
+                    + " has been found, please remove this mod to avoid AFK timeout confusion.");
+            modCheck = false;
+        }
+
         // Check for sessility --> changes timeout behavior's (Remove)
         modTarget = "sessility";
         if (FabricLoader.getInstance().isModLoaded(modTarget)) {
@@ -75,7 +86,7 @@ public class AfkPlusConflicts {
 
     public static boolean checkDatapacks(Collection<String> dpCollection) {
         boolean dpCheck = true;
-        // Check for any datapacks matching with "afk"
+        // Check for any data packs matching with "afk"
         AfkPlusLogger.debug("Data pack reload detected.  Checking for conflicting data packs.");
         for (String dpString : dpCollection) {
             if (dpString.contains("afk") || dpString.contains("Afk") || dpString.contains("AFK")) {

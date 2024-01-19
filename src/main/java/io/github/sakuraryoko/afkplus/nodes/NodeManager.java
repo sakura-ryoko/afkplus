@@ -15,6 +15,10 @@ public class NodeManager {
 
     private static void initColors() {
         COLORS.add(new MoreColorNode("brown", "#632C04"));
+        COLORS.add(new MoreColorNode("burnt_orange","#FF7034"));
+        COLORS.add(new MoreColorNode("canary", "#FFFF99"));
+        COLORS.add(new MoreColorNode("cool_mint", "#DDEBEC"));
+        COLORS.add(new MoreColorNode("copper", "#DA8A67"));
         COLORS.add(new MoreColorNode("cyan","#2D7C9D"));
         COLORS.add(new MoreColorNode("dark_brown","#421F05"));
         COLORS.add(new MoreColorNode("dark_pink","#DE8BB4"));
@@ -26,8 +30,12 @@ public class NodeManager {
         COLORS.add(new MoreColorNode("magenta","#CB69C5"));
         //COLORS.add(new MoreColorNode("orange","#E69E34"));
         //COLORS.add(new MoreColorNode("pink","#EDA7CB"));
+        COLORS.add(new MoreColorNode("powder_blue", "#C0D5F0"));
         COLORS.add(new MoreColorNode("purple","#A453CE"));
+        COLORS.add(new MoreColorNode("royal_purple", "#6B3FA0"));
         COLORS.add(new MoreColorNode("salmon", "#FF91A4", List.of("pink_salmon")));
+        COLORS.add(new MoreColorNode("shamrock","#33CC99"));
+        COLORS.add(new MoreColorNode("tickle_me_pink", "#FC80A5"));
     }
     private static void registerColors() {
         final Iterator<MoreColorNode> iterator = COLORS.iterator();
