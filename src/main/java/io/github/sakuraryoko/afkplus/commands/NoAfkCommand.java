@@ -25,11 +25,11 @@ public class NoAfkCommand {
         String user = src.getName();
         if (player.afkplus$isNoAfkEnabled()) {
             player.afkplus$unsetNoAfkEnabled();
-            context.getSource().sendFeedback(() -> Text.of("No AFK Mode Disabled. (Timeouts enabled)"), true);
+            context.getSource().sendFeedback(Text.of("No AFK Mode Disabled. (Timeouts enabled)"), true);
             //AfkPlusLogger.info(user+ " has disabled No AFK mode. (Timeouts enabled)");
         } else {
             player.afkplus$setNoAfkEnabled();
-            context.getSource().sendFeedback(() -> Text.of("No AFK Mode Enabled. (Timeouts disabled)"), true);
+            context.getSource().sendFeedback(Text.of("No AFK Mode Enabled. (Timeouts disabled)"), true);
             //AfkPlusLogger.info(user+ " has enabled No AFK mode. (Timeouts disabled)");
         }
         return 1;

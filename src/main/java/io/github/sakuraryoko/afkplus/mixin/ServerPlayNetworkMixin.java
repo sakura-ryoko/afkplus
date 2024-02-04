@@ -37,7 +37,7 @@ public abstract class ServerPlayNetworkMixin {
                 } else {
                     afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
-                AfkPlusLogger.debug("Setting player " + this.player.getName().getLiteralString() + " as AFK (timeout)");
+                AfkPlusLogger.debug("Setting player " + this.player.getName() + " as AFK (timeout)");
             }
         }
     }
