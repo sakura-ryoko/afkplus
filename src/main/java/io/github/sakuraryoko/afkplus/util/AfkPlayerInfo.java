@@ -40,7 +40,11 @@ public class AfkPlayerInfo {
             else
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
-        } else
+        } else if (afkPlayer.afkplus$isNoAfkEnabled()) {
+            AfkStatus = "Player: " + afkPlayer.afkplus$getName()
+                    + "<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)";
+        }
+        else
             AfkStatus = "";
         return AfkStatus;
     }
