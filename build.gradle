@@ -26,6 +26,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
 	modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
 	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
 	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")

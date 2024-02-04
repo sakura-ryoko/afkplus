@@ -28,7 +28,7 @@ import net.minecraft.util.Util;
 import net.minecraft.world.World;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
+public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlayer {
     @Shadow
     @Final
     public MinecraftServer server;
@@ -50,7 +50,9 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     private boolean isDamageEnabled = true;
     @Unique
     private boolean isLockDamageDisabled = false;
-    public ServerPlayerMixin(EntityType<?> type, World world) {
+    @Unique
+    private boolean noAfkEnabled = false;
+    public ServerPlayerEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
     @Unique
@@ -234,6 +236,12 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     public boolean afkplus$isCreative() { return this.isCreative(); }
     @Unique
     public boolean afkplus$isSpectator() { return this.isSpectator(); }
+    @Unique
+    public boolean afkplus$isNoAfkEnabled() { return this.noAfkEnabled; }
+    @Unique
+    public void afkplus$setNoAfkEnabled() { this.noAfkEnabled = true; }
+    @Unique
+    public void afkplus$unsetNoAfkEnabled() { this.noAfkEnabled = false; }
     @Inject(method = "updateLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci) { afkplus$unregisterAfk(); }
 

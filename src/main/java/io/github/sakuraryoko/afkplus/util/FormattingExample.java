@@ -111,7 +111,8 @@ public class FormattingExample {
     public static Text runColorsTest() {
         String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
         Text out;
-        testString = testString + "<r>\n<copy:'<brown>'><brown>brown";
+        testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";
+        testString = testString + "<r> <copy:'<brown>'><brown>brown";
         testString = testString + "<r> <copy:'<burnt_orange>'><burnt_orange>burnt_orange";
         testString = testString + "<r> <copy:'<canary>'><canary>canary";
         testString = testString + "<r> <copy:'<cool_mint>'><cool_mint>cool_mint";
@@ -131,6 +132,7 @@ public class FormattingExample {
         testString = testString + "<r> <copy:'<salmon>'><salmon>salmon";
         testString = testString + "<r> <copy:'<shamrock>'><shamrock>shamrock";
         testString = testString + "<r> <copy:'<tickle_me_pink>'><tickle_me_pink>tickle_me_pink";
+        testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
         testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
         out = TextParserUtils.formatTextSafe(testString);

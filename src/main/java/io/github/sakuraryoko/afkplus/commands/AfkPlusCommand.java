@@ -109,6 +109,11 @@ public class AfkPlusCommand {
                 if (afkPlayer.afkplus$isAfk()) {
                         context.getSource().sendFeedback(() -> Text.of(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
                 } else {
+                        if (afkPlayer.afkplus$isNoAfkEnabled()) {
+                                afkPlayer.afkplus$unsetNoAfkEnabled();
+                                //AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + "'s NoAfk status OFF.");
+                                context.getSource().sendFeedback(() -> Text.of("Toggled player " + afkPlayer.afkplus$getName() + "'s NoAFK status OFF."), true);
+                        }
                         if (reason == null && CONFIG.messageOptions.defaultReason == null) {
                                 afkPlayer.afkplus$registerAfk("via /afkplus set");
                                 AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK");
@@ -153,8 +158,8 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 if (afkPlayer.afkplus$isLockDamageDisabled()) {
                         afkPlayer.afkplus$unlockDamageDisabled();
-                        context.getSource().sendFeedback(() -> Text.of("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()),false);
-                        AfkPlusLogger.info(user + " Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName());
+                        context.getSource().sendFeedback(() -> Text.of("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()),true);
+                        //AfkPlusLogger.info(user + " Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName());
                 } else
                         context.getSource().sendFeedback(() -> Text.of("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()),false);
                 return 1;
@@ -164,8 +169,8 @@ public class AfkPlusCommand {
                 String user = src.getName();
                 if (!afkPlayer.afkplus$isLockDamageDisabled()) {
                         afkPlayer.afkplus$lockDamageDisabled();
-                        context.getSource().sendFeedback(() -> Text.of("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()),false);
-                        AfkPlusLogger.info(user + " Force-Enabling Damage for player " + afkPlayer.afkplus$getName());
+                        context.getSource().sendFeedback(() -> Text.of("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()),true);
+                        //AfkPlusLogger.info(user + " Force-Enabling Damage for player " + afkPlayer.afkplus$getName());
                 } else
                         context.getSource().sendFeedback(() -> Text.of("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()),false);
                 return 1;

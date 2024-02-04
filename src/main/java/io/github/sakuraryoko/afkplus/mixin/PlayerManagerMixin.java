@@ -53,8 +53,8 @@ public abstract class PlayerManagerMixin {
         // This might simply initialize a player entry...
         iPlayer.afkplus$unregisterAfk();
         // Fixes some quirky-ness of Styled Player List
-        if (AfkPlusInfo.isServer())
-            iPlayer.afkplus$updatePlayerList();
+//        if (AfkPlusInfo.isServer())
+//            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
     private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
