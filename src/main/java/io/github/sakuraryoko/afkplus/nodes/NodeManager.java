@@ -14,9 +14,10 @@ public class NodeManager {
     public static List<MoreColorNode> COLORS = new ArrayList<>();
 
     private static void initColors() {
+        COLORS.add(new MoreColorNode("bluetiful", "#3C69E7", List.of("blue2")));
         COLORS.add(new MoreColorNode("brown", "#632C04"));
-        COLORS.add(new MoreColorNode("burnt_orange","#FF7034"));
-        COLORS.add(new MoreColorNode("canary", "#FFFF99"));
+        COLORS.add(new MoreColorNode("burnt_orange","#FF7034", List.of("orange2")));
+        COLORS.add(new MoreColorNode("canary", "#FFFF99", List.of("yellow2")));
         COLORS.add(new MoreColorNode("cool_mint", "#DDEBEC"));
         COLORS.add(new MoreColorNode("copper", "#DA8A67"));
         COLORS.add(new MoreColorNode("cyan","#2D7C9D"));
@@ -36,6 +37,7 @@ public class NodeManager {
         COLORS.add(new MoreColorNode("salmon", "#FF91A4", List.of("pink_salmon")));
         COLORS.add(new MoreColorNode("shamrock","#33CC99"));
         COLORS.add(new MoreColorNode("tickle_me_pink", "#FC80A5"));
+        COLORS.add(new MoreColorNode("ultramarine_blue", "#3F26BF", List.of("ultramarine")));
     }
     private static void registerColors() {
         final Iterator<MoreColorNode> iterator = COLORS.iterator();

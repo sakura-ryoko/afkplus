@@ -7,6 +7,9 @@ public class CommandManager {
         if (CONFIG.afkPlusOptions.enableAfkCommand) {
             AfkCommand.register();
         }
+        if (CONFIG.afkPlusOptions.enableNoAfkCommand) {
+            NoAfkCommand.register();
+        }
         if (CONFIG.afkPlusOptions.enableAfkInfoCommand) {
             AfkInfoCommand.register();
         }

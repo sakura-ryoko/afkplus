@@ -27,14 +27,17 @@ public abstract class ServerPlayNetworkMixin {
         long afkDuration = Util.getMeasuringTimeMs() - this.player.getLastActionTime();
         if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0) {
             return;
-        } else {
+        }
+        else if (afkPlayer.afkplus$isNoAfkEnabled())
+            return;
+        else {
             if (afkDuration > timeoutSeconds * 1000L) {
                 if (CONFIG.afkPlusOptions.afkTimeoutString.isEmpty()) {
                     afkPlayer.afkplus$registerAfk("timeout");
                 } else {
                     afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
-                AfkPlusLogger.debug("Setting player " + this.player.getName() + " as AFK (timeout)");
+                AfkPlusLogger.debug("Setting player " + this.player.getName().getLiteralString() + " as AFK (timeout)");
             }
         }
     }
