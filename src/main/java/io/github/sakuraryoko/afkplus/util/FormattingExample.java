@@ -111,7 +111,12 @@ public class FormattingExample {
     public static Text runColorsTest() {
         String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
         Text out;
-        testString = testString + "<r>\n<copy:'<brown>'><brown>brown";
+        testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";
+        testString = testString + "<r> <copy:'<brown>'><brown>brown";
+        testString = testString + "<r> <copy:'<burnt_orange>'><burnt_orange>burnt_orange";
+        testString = testString + "<r> <copy:'<canary>'><canary>canary";
+        testString = testString + "<r> <copy:'<cool_mint>'><cool_mint>cool_mint";
+        testString = testString + "<r> <copy:'<copper>'><copper>copper";
         testString = testString + "<r> <copy:'<cyan>'><cyan>cyan";
         testString = testString + "<r> <copy:'<dark_brown>'><dark_brown>dark_brown";
         testString = testString + "<r> <copy:'<dark_pink>'><dark_pink>dark_pink";
@@ -121,8 +126,13 @@ public class FormattingExample {
         testString = testString + "<r> <copy:'<light_pink>'><light_pink>light_pink";
         testString = testString + "<r> <copy:'<lime>'><lime>lime";
         testString = testString + "<r> <copy:'<magenta>'><magenta>magenta";
+        testString = testString + "<r> <copy:'<powder_blue>'><powder_blue>powder_blue";
         testString = testString + "<r> <copy:'<purple>'><purple>purple";
+        testString = testString + "<r> <copy:'<royal_purple>'><royal_purple>royal_purple";
         testString = testString + "<r> <copy:'<salmon>'><salmon>salmon";
+        testString = testString + "<r> <copy:'<shamrock>'><shamrock>shamrock";
+        testString = testString + "<r> <copy:'<tickle_me_pink>'><tickle_me_pink>tickle_me_pink";
+        testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
         testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
         out = TextParserUtils.formatTextSafe(testString);
