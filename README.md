@@ -24,7 +24,11 @@
 - [NEW] Added a "whenDamageEnabled" configuration so that you can customize the message displayed when your players are unmarked as invulnerable.
 - [NEW] Now also checks for if players are in Spectator Mode, and not only Creative for managing your AFK/Disable Damage status.
 - [NEW] Adds several color nodes that players can use for AFK Reasons.  See /afkex for a display example.
-  - brown, cyan, dark_brown, dark_pink, light_blue, light_brown, light_gray, light_pink, lime, magenta, purple, salmon.
+  - brown, cyan, dark_brown, dark_pink, light_blue, light_brown, light_gray, light_pink, lime, magenta, purple, salmon,
+  - bluetiful, burnt_orange, canary, cool_mint, copper, powder_blue, royal_purple, shamrock, tickle_me_pink, ultramarine_blue
+- [NEW] Added a "bypassSleepCount" configuration so that you can allow players marked as Afk to bypass the Sleeping Requirements.
+- [NEW] Added a "bypassInsomnia" configuration so that you can allow players marked as Afk to block Phantom spawning.
+- [NEW] Added a "/noafk" command for players to stop themselves from being marked as Afk.
 
 ## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
 - '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
@@ -34,7 +38,7 @@
 - '**/afkplus ex**' command.  (Permission: afkplus.afkplus.ex)
   - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
 - '**/afkplus set [Player] [Reason]**' command. (Permission: afkplus.afkplus.set)
-  - This allows any administrator to set the AFK status of a player.
+  - This allows any administrator to set the AFK status of a player, and this also removes their NoAFK status. 
 - '**/afkplus clear [Player]**' command. (Permission: afkplus.afkplus.clear)
   - This allows any administrator to clear the AFK status of a player.
 - [NEW] '**/afkplus damage enable [Player]**' command. (Permission: afkplus.afkplus.damage.enable)
@@ -51,6 +55,8 @@
   - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
 - '**/afk [Reason]**' with the AfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.afk)
   - This allows any user to use a [Reason] along with setting their AFK status.
+- '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
+  - This allows any user to set themselves in a state where they will not go Afk based on the configured timeout value.
 
 ## Potential known conflicts (Make your choice)
 - [afk display Data pack](https://vanillatweaks.net/picker/datapacks/) (Vanilla Tweaks Data pack, changes the player list display) -- Mod checks for any "afk" containing data packs in the name.
@@ -67,12 +73,16 @@ The configuration is located in `afkplus.toml` inside your servers config folder
 [AfkPlusOptions]
 # Allows you to disable the /afk command to mark yourself as AFK, with an optional [Reason] (Default: true)
 enableAfkCommand = true
+# Allows you to disable the /noafk command to mark yourself as NoAFK, which disables the timeout (Default: true)
+enableNoAfkCommand = true
 # Allows you to disable the /afkex command to allow players to see some default formattting nodes available. (Default: true)
 enableAfkExCommand = true
 # Allows you to disable the /afkinfo command to allow players to see someone's AFK status (Time, Duration, Reason). (Default: true)
 enableAfkInfoCommand = true
 # The /afk default command permissions, configurable with Luck Perms (afkplus.afk) node (Default: 0)
 afkCommandPermissions = 0
+# The /noafk default command permissions, configurable with Luck Perms (afkplus.noafk) node (Default: 0)
+noAfkCommandPermissions = 0
 # The /afkex default command permissions, configurable with Luck Perms (afkplus.afkex) node (Default: 0)
 afkExCommandPermissions = 0
 # The /afkinfo default command permissions, configurable with Luck Perms (afkplus.afkinfo) node (Usually for Mods) (Default: 2)
@@ -94,6 +104,10 @@ disableDamage = false
 # Cooldown timer for enabling the "DisableDamage" feature. (Default: 15 seconds)
 # - WARNING!  Be advised that settings this too low can encourage poor player behavior.
 disableDamageCooldown = 15
+# Makes it so that Afk players are not counted in the Sleep Percentage check (Default: true)
+bypassSleepCount = true
+# Makes it so that Afk Players block Phantom Spawning attempts. (Default: true)
+bypassInsomnia = true
 
 [PlaceholderOptions]
 # This will be the value of the placeholder %afkplus:afk% if a player is AFK, option accepts full formatting nodes
