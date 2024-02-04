@@ -10,7 +10,7 @@ public class AfkPlusServer implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
         if (!AFK_INIT) {
-            // AFK_DEBUG = true;
+            //AFK_DEBUG = true;
             AFK_INIT = true;
             AfkPlusMod.init();
         }
