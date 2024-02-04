@@ -55,7 +55,7 @@
   - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
 - '**/afk [Reason]**' with the AfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.afk)
   - This allows any user to use a [Reason] along with setting their AFK status.
-- '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
+- [NEW] '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
   - This allows any user to set themselves in a state where they will not go Afk based on the configured timeout value.
 
 ## Potential known conflicts (Make your choice)
