@@ -14,14 +14,14 @@ public class ServerEvents {
     }
 
     public static void started(MinecraftServer server) {
-        dpCollection = server.getDataPackManager().getEnabledNames();
+        dpCollection = server.getDataPackManager().getEnabledIds();
         if (!AfkPlusConflicts.checkDatapacks(dpCollection))
             AfkPlusLogger.warn("MOD Data Pack test has FAILED.");
         AfkPlusLogger.debug("Server has started. " + server.getName());
     }
 
     public static void dpReload(MinecraftServer server) {
-        dpCollection = server.getDataPackManager().getEnabledNames();
+        dpCollection = server.getDataPackManager().getEnabledIds();
         if (!AfkPlusConflicts.checkDatapacks(dpCollection))
             AfkPlusLogger.warn("MOD Data Pack test has FAILED.");
         AfkPlusLogger.debug("Server has reloaded it's data packs. " + server.getName());
