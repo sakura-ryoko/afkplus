@@ -78,6 +78,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             setAfkReason("<red>none");
             Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
                     PlaceholderContext.of(this));
+
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             sendAfkMessage(mess);
         } else {
@@ -100,25 +101,27 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             clearAfkReason();
             return;
         }
-        if (CONFIG.messageOptions.prettyDuration) {
+        if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
-            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+
             Text mess1 = TextParserUtils.formatTextSafe(ret);
-            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
             Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
-            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
             sendAfkMessage(mess2);
-        } else {
+        } else if (CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
-            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
+
             Text mess1 = TextParserUtils.formatTextSafe(ret);
-            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
             Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
-            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+            sendAfkMessage(mess2);
+        } else {
+            String ret = CONFIG.messageOptions.whenReturn + "<r>";
+
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
         setAfk(false);
