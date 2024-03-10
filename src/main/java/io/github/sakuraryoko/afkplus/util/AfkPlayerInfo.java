@@ -22,10 +22,12 @@ public class AfkPlayerInfo {
                     + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
                     + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)"
                     + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting;
-            if (CONFIG.messageOptions.prettyDuration)
+            if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration)
                 AfkStatus = AfkStatus + DurationFormatUtils.formatDurationWords(duration, true, true);
-            else
+            else if (CONFIG.messageOptions.displayDuration)
                 AfkStatus = AfkStatus + DurationFormatUtils.formatDurationHMS(duration) + "<r>ms (Format:HH:mm:ss)";
+            else
+                AfkStatus = AfkStatus + "<r>";
             if (afkPlayer.afkplus$isCreative())
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <light_blue>CREATIVE";
             else if (afkPlayer.afkplus$isSpectator())
@@ -39,7 +41,11 @@ public class AfkPlayerInfo {
             else
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
-        } else
+        } else if (afkPlayer.afkplus$isNoAfkEnabled()) {
+            AfkStatus = "Player: " + afkPlayer.afkplus$getName()
+                    + "<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)";
+        }
+        else
             AfkStatus = "";
         return AfkStatus;
     }

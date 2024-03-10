@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
+public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlayer {
     @Shadow
     @Final
     public MinecraftServer server;
@@ -51,7 +51,9 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     private boolean isDamageEnabled = true;
     @Unique
     private boolean isLockDamageDisabled = false;
-    public ServerPlayerMixin(EntityType<?> type, World world) {
+    @Unique
+    private boolean noAfkEnabled = false;
+    public ServerPlayerEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
     @Unique
@@ -93,31 +95,33 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     @Unique
     public void afkplus$unregisterAfk() {
         if (!afkplus$isAfk()) {
-            // Might be a call from PlayerManager, set blank values.
+            // Maybe it was called by PlayerManagerMixin?
             setAfk(false);
             clearAfkTime();
             clearAfkReason();
             return;
         }
-        if (CONFIG.messageOptions.prettyDuration) {
+        if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
-            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
-            Text mess1 = TextParser.parse(ret);
-            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = PlaceholderAPI.parseText(mess1, this.player);
-            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
             sendAfkMessage(mess2);
-        } else {
+        } else if (CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
-            //AfkPlusLogger.debug("unregisterAfk-ret: " + ret);
-            Text mess1 = TextParser.parse(ret);
-            //AfkPlusLogger.debug("unregisterafk-mess1().toString(): " + mess1.toString());
-            Text mess2 = PlaceholderAPI.parseText(mess1, this.player);
-            //AfkPlusLogger.debug("unregisterafk-mess2().toString(): " + mess2.toString());
+
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            sendAfkMessage(mess2);
+        } else {
+            String ret = CONFIG.messageOptions.whenReturn + "<r>";
+
+            Text mess1 = TextParserUtils.formatTextSafe(ret);
+            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
         setAfk(false);
@@ -235,6 +239,12 @@ public abstract class ServerPlayerMixin extends Entity implements IAfkPlayer {
     public boolean afkplus$isCreative() { return this.isCreative(); }
     @Unique
     public boolean afkplus$isSpectator() { return this.isSpectator(); }
+    @Unique
+    public boolean afkplus$isNoAfkEnabled() { return this.noAfkEnabled; }
+    @Unique
+    public void afkplus$setNoAfkEnabled() { this.noAfkEnabled = true; }
+    @Unique
+    public void afkplus$unsetNoAfkEnabled() { this.noAfkEnabled = false; }
     @Inject(method = "updateLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci) { afkplus$unregisterAfk(); }
 

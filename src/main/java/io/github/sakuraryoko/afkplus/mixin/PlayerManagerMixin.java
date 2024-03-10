@@ -2,9 +2,12 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import com.mojang.authlib.GameProfile;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
+import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +22,7 @@ public abstract class PlayerManagerMixin {
         super();
     }
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void checkInvulnerable1(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci){
+    private void checkInvulnerable1(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci){
         if (player == null)
             return;
         IAfkPlayer iPlayer = (IAfkPlayer) player;
@@ -31,9 +34,12 @@ public abstract class PlayerManagerMixin {
         }
         // This might simply initialize a player entry...
         iPlayer.afkplus$unregisterAfk();
+        // Fixes some quirky-ness of Styled Player List
+        if (AfkPlusInfo.isServer())
+            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "createPlayer", at = @At("RETURN"))
-    private void checkInvulnerable2(GameProfile profile, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+    private void checkInvulnerable2(GameProfile profile, SyncedClientOptions syncedOptions, CallbackInfoReturnable<ServerPlayerEntity> cir) {
         ServerPlayerEntity playerEntity = cir.getReturnValue();
         IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
         if (playerEntity == null)
@@ -46,6 +52,9 @@ public abstract class PlayerManagerMixin {
         }
         // This might simply initialize a player entry...
         iPlayer.afkplus$unregisterAfk();
+        // Fixes some quirky-ness of Styled Player List
+//        if (AfkPlusInfo.isServer())
+//            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
     private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
@@ -59,6 +68,9 @@ public abstract class PlayerManagerMixin {
                 playerEntity.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
+                // Fixes some quirky-ness of Styled Player List
+                if (AfkPlusInfo.isServer())
+                    iPlayer.afkplus$updatePlayerList();
             }
         }
         if (player.interactionManager.getGameMode() == GameMode.SURVIVAL) {
@@ -68,6 +80,9 @@ public abstract class PlayerManagerMixin {
                 player.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
+                // Fixes some quirky-ness of Styled Player List
+                if (AfkPlusInfo.isServer())
+                    iPlayer.afkplus$updatePlayerList();
             }
         }
     }

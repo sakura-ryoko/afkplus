@@ -13,9 +13,11 @@ public class ConfigData {
     @NotNull
     public static class AfkPlusOptions {
         public boolean enableAfkCommand;
+        public boolean enableNoAfkCommand;
         public boolean enableAfkInfoCommand;
         public boolean enableAfkExCommand;
         public int afkCommandPermissions;
+        public int noAfkCommandPermissions;
         public int afkInfoCommandPermissions;
         public int afkExCommandPermissions;
         public int afkPlusCommandPermissions;
@@ -29,6 +31,8 @@ public class ConfigData {
         public boolean resetOnLook;
         public boolean disableDamage;
         public int disableDamageCooldown;
+        public boolean bypassSleepCount;
+        public boolean bypassInsomnia;
     }
 
     @NotNull
@@ -58,5 +62,6 @@ public class ConfigData {
         public String defaultReason;
         public String whenDamageDisabled;
         public String whenDamageEnabled;
+        public boolean displayDuration;
     }
 }

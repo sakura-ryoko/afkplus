@@ -10,6 +10,9 @@ public interface IAfkPlayer {
     void afkplus$updatePlayerList();
     boolean afkplus$isDamageEnabled();
     boolean afkplus$isLockDamageDisabled();
+    boolean afkplus$isNoAfkEnabled();
+    void afkplus$setNoAfkEnabled();
+    void afkplus$unsetNoAfkEnabled();
     void afkplus$enableDamage();
     void afkplus$disableDamage();
     void afkplus$lockDamageDisabled();

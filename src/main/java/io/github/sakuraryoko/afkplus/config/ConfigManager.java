@@ -17,9 +17,11 @@ public class ConfigManager {
     public static void initConfig() {
         CONFIG.afkPlusOptions.afkPlusCommandPermissions = 3;
         CONFIG.afkPlusOptions.enableAfkCommand = true;
+        CONFIG.afkPlusOptions.enableNoAfkCommand = true;
         CONFIG.afkPlusOptions.enableAfkInfoCommand = true;
         CONFIG.afkPlusOptions.enableAfkExCommand = true;
         CONFIG.afkPlusOptions.afkCommandPermissions = 0;
+        CONFIG.afkPlusOptions.noAfkCommandPermissions = 0;
         CONFIG.afkPlusOptions.afkExCommandPermissions = 0;
         CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
         CONFIG.afkPlusOptions.afkTimeoutString = "<i><gray>timeout<r>";
@@ -28,6 +30,8 @@ public class ConfigManager {
         CONFIG.packetOptions.timeoutSeconds = 240;
         CONFIG.packetOptions.disableDamage = false;
         CONFIG.packetOptions.disableDamageCooldown = 15;
+        CONFIG.packetOptions.bypassSleepCount = true;
+        CONFIG.packetOptions.bypassInsomnia = true;
         CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%]<r>";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholder = "%player:displayname%";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname_unformatted%<r>";
@@ -45,6 +49,7 @@ public class ConfigManager {
         CONFIG.messageOptions.defaultReason = "<gray>poof!<r>";
         CONFIG.messageOptions.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
         CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
+        CONFIG.messageOptions.displayDuration = true;
         AfkPlusLogger.debug("Default config initialized.");
     }
     public static void testConfig() {
@@ -52,10 +57,13 @@ public class ConfigManager {
         if (CONFIG.afkPlusOptions.afkPlusCommandPermissions < 0 || CONFIG.afkPlusOptions.afkPlusCommandPermissions > 4)
             CONFIG.afkPlusOptions.afkPlusCommandPermissions = 3;
         //CONFIG.afkPlusOptions.enableAfkCommand = true;
+        //CONFIG.afkPlusOptions.enableNoAfkCommand = true;
         //CONFIG.afkPlusOptions.enableAfkInfoCommand = true;
         //CONFIG.afkPlusOptions.enableAfkExCommand = true;
         if (CONFIG.afkPlusOptions.afkCommandPermissions < 0 || CONFIG.afkPlusOptions.afkCommandPermissions > 4)
             CONFIG.afkPlusOptions.afkCommandPermissions = 0;
+        if (CONFIG.afkPlusOptions.noAfkCommandPermissions < 0 || CONFIG.afkPlusOptions.noAfkCommandPermissions > 4)
+            CONFIG.afkPlusOptions.noAfkCommandPermissions = 0;
         if (CONFIG.afkPlusOptions.afkInfoCommandPermissions < 0 || CONFIG.afkPlusOptions.afkInfoCommandPermissions > 4)
             CONFIG.afkPlusOptions.afkInfoCommandPermissions = 2;
         if (CONFIG.afkPlusOptions.afkExCommandPermissions < 0 || CONFIG.afkPlusOptions.afkExCommandPermissions > 4)
@@ -69,6 +77,8 @@ public class ConfigManager {
         //CONFIG.packetOptions.disableDamage = false;
         if (CONFIG.packetOptions.disableDamageCooldown < -1 || CONFIG.packetOptions.disableDamageCooldown > 3600)
             CONFIG.packetOptions.disableDamageCooldown = 15;
+        //CONFIG.packetOptions.bypassSleepCount = true;
+        //CONFIG.packetOptions.bypassInsomnia = true;
         if (CONFIG.PlaceholderOptions.afkPlaceholder == null)
             CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%]<r>";
         if (CONFIG.PlaceholderOptions.afkPlusNamePlaceholder == null)
@@ -99,6 +109,7 @@ public class ConfigManager {
             CONFIG.messageOptions.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
         if (CONFIG.messageOptions.whenDamageEnabled == null)
             CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
+        //CONFIG.messageOptions.displayDuration = true;
         AfkPlusLogger.debug("Config checked for null values.");
     }
 
