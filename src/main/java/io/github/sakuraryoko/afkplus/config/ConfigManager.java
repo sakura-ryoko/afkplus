@@ -49,6 +49,7 @@ public class ConfigManager {
         CONFIG.messageOptions.defaultReason = "<gray>poof!<r>";
         CONFIG.messageOptions.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
         CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
+        CONFIG.messageOptions.displayDuration = true;
         AfkPlusLogger.debug("Default config initialized.");
     }
     public static void testConfig() {
@@ -108,6 +109,7 @@ public class ConfigManager {
             CONFIG.messageOptions.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
         if (CONFIG.messageOptions.whenDamageEnabled == null)
             CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
+        //CONFIG.messageOptions.displayDuration = true;
         AfkPlusLogger.debug("Config checked for null values.");
     }
 

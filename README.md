@@ -29,6 +29,7 @@
 - [NEW] Added a "bypassSleepCount" configuration so that you can allow players marked as Afk to bypass the Sleeping Requirements.
 - [NEW] Added a "bypassInsomnia" configuration so that you can allow players marked as Afk to block Phantom spawning.
 - [NEW] Added a "/noafk" command for players to stop themselves from being marked as Afk.
+- [NEW] Added a "displayDuration" configuration option so that you can enable/disable the "Gone for XX minutes, XX seconds" during whenReturn.
 
 ## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
 - '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
@@ -55,7 +56,7 @@
   - This displays a simple "formatting test" to show the user what basic text nodes are available to use, and this also allows them to use this for Copy/Paste by clicking on colors/formats.
 - '**/afk [Reason]**' with the AfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.afk)
   - This allows any user to use a [Reason] along with setting their AFK status.
-- '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
+- [NEW] '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
   - This allows any user to set themselves in a state where they will not go Afk based on the configured timeout value.
 
 ## Potential known conflicts (Make your choice)
@@ -166,4 +167,7 @@ whenDamageDisabled="%player:displayname% <yellow>is marked as <red>Invulnerable.
 # The message content when an AFK player is no longer marked as Invulnerable.
 # (Default: "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>")
 whenDamageEnabled="%player:displayname% <yellow>is no longer <red>Invulnerable.<r>"
+# This enables the display of "Gone for XX minutes, XX seconds" portion of the whenReturn message.
+# (Default: true)
+displayDuration=true
 ```

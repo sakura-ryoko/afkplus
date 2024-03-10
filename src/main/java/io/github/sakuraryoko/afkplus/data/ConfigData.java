@@ -62,5 +62,6 @@ public class ConfigData {
         public String defaultReason;
         public String whenDamageDisabled;
         public String whenDamageEnabled;
+        public boolean displayDuration;
     }
 }
