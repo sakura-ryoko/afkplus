@@ -29,6 +29,7 @@
 - [NEW] Added a "bypassSleepCount" configuration so that you can allow players marked as Afk to bypass the Sleeping Requirements.
 - [NEW] Added a "bypassInsomnia" configuration so that you can allow players marked as Afk to block Phantom spawning.
 - [NEW] Added a "/noafk" command for players to stop themselves from being marked as Afk.
+- [NEW] Added a "displayDuration" configuration option so that you can enable/disable the "Gone for XX minutes, XX seconds" during whenReturn.
 
 ## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
 - '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
@@ -166,4 +167,7 @@ whenDamageDisabled="%player:displayname% <yellow>is marked as <red>Invulnerable.
 # The message content when an AFK player is no longer marked as Invulnerable.
 # (Default: "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>")
 whenDamageEnabled="%player:displayname% <yellow>is no longer <red>Invulnerable.<r>"
+# This enables the display of "Gone for XX minutes, XX seconds" portion of the whenReturn message.
+# (Default: true)
+displayDuration=true
 ```
