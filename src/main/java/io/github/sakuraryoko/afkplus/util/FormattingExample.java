@@ -73,7 +73,7 @@ public class FormattingExample {
 
         test = Formatting.byName("obfuscated");
         if (test != null)
-            testString = testString + "<r>\n<u><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
+            testString = testString + "<r>\n<underline><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
 
         test = Formatting.byName("bold");
         if (test != null)
@@ -97,19 +97,18 @@ public class FormattingExample {
     public static Text runAliasTest() {
         String testString = "<r><b><i><rainbow>*** PlaceholderAPI (Default) nodes:";
         Text out;
-        testString = testString + "<r>\n<copy:'<orange>'><orange>orange (gold alias)";
-        testString = testString + "<r> <copy:'<pink>'><pink>pink (light_purple alias)";
+        testString = testString + "<r>\n<copy:'<orange>'><orange>orange (alias of gold)";
         testString = testString + "<r> <copy:'<rainbow>'><rainbow>rainbow";
         testString = testString + "<r> <copy:'<gradient:#76C610:#DE8BB4>'><gradient:#76C610:#DE8BB4>gradient:#76C610:#DE8BB4";
         testString = testString + "<r>\n<green><hover:show_text:'hover text'>hover:show_text:'hover text'";
-        testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
+        testString = testString + "<r> <underline><aqua><url:'https://github.io'>url:'https://github.io'";
         AfkPlusLogger.debug("FormatTest.runAliasTest() --> testString: " + testString);
         out = TextParser.parse(testString);
         AfkPlusLogger.debug("FormatTest.runAliasTest() --> out: " + out.getString());
         return out;
     }
     public static Text runColorsTest() {
-        String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
+        String testString = "<r><b><i><salmon>*** <underline>AFKPLUS ONLY!</underline>:";
         Text out;
         testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";
         testString = testString + "<r> <copy:'<brown>'><brown>brown";
@@ -126,6 +125,7 @@ public class FormattingExample {
         testString = testString + "<r> <copy:'<light_pink>'><light_pink>light_pink";
         testString = testString + "<r> <copy:'<lime>'><lime>lime";
         testString = testString + "<r> <copy:'<magenta>'><magenta>magenta";
+        testString = testString + "<r> <copy:'<pink>'><pink>pink";
         testString = testString + "<r> <copy:'<powder_blue>'><powder_blue>powder_blue";
         testString = testString + "<r> <copy:'<purple>'><purple>purple";
         testString = testString + "<r> <copy:'<royal_purple>'><royal_purple>royal_purple";
@@ -133,7 +133,7 @@ public class FormattingExample {
         testString = testString + "<r> <copy:'<shamrock>'><shamrock>shamrock";
         testString = testString + "<r> <copy:'<tickle_me_pink>'><tickle_me_pink>tickle_me_pink";
         testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
-        testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
+        testString = testString + "<r>\n<i><underline><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
         out = TextParser.parse(testString);
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> out: " + out.getString());

@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlayer {
@@ -107,7 +108,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
             Text mess1 = TextParser.parse(ret);
-            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else if (CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
@@ -115,13 +116,13 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
             Text mess1 = TextParser.parse(ret);
-            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else {
             String ret = CONFIG.messageOptions.whenReturn + "<r>";
 
             Text mess1 = TextParser.parse(ret);
-            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         }
         setAfk(false);
@@ -133,7 +134,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     }
     @Unique
     public void afkplus$updatePlayerList() {
-        this.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, this.getServer().getPlayerManager().getPlayer(this.getUuid())));
+        this.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid())));
         AfkPlusLogger.debug("sending player list update for " + afkplus$getName());
     }
     @Unique
@@ -266,19 +267,12 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     public @Nullable Text getPlayerListName() {
         if (CONFIG.playerListOptions.enableListDisplay && this.afkplus$isAfk()) {
             Text mess1 = TextParser.parse(CONFIG.playerListOptions.afkPlayerName);
-            //AfkPlusLogger.debug("getPlayerListName() player: "+this.afkplus$getName()+" mess1 -> "+mess1);
-            Text listEntry = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
-            // this.getServer().getPlayerManager().getPlayer(this.uuid).getDisplayName();
+            Text listEntry = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             AfkPlusLogger.debug("replacePlayerListName-listEntry(): " + listEntry);
-            //cir.setReturnValue(listEntry.copy());
-            //return listEntry;
-            //cir.setReturnValue(listEntry.copy());
             return listEntry;
         } else {
-            //return this.getDisplayName();
             Text mess1 = TextParser.parse("%afkplus:name%");
-            return PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
-            //cir.setReturnValue(listEntry.copy());
+            return PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
         }
     }
 
