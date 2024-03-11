@@ -2,10 +2,10 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.spawner.PhantomSpawner;
+import net.minecraft.world.gen.PhantomSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
+import java.util.Random;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -24,11 +25,12 @@ public class PhantomSpawnerMixin {
     private IAfkPlayer player;
     @Inject(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
     at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/network/ServerPlayerEntity;isSpectator()Z"),
+            target = "Lnet/minecraft/entity/player/PlayerEntity;getBlockPos()Lnet/minecraft/util/math/BlockPos;"),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void capturePlayerForMath(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
-                                      Random random, int i, Iterator var6, ServerPlayerEntity serverPlayerEntity) {
+                                      Random random, int i, Iterator var6, PlayerEntity playerEntity) {
+        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) playerEntity;
         player = (IAfkPlayer) serverPlayerEntity;
     }
     @ModifyArg(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",

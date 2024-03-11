@@ -106,22 +106,22 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else if (CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else {
             String ret = CONFIG.messageOptions.whenReturn + "<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, this.getServer().getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         }
         setAfk(false);

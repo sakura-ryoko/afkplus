@@ -1,6 +1,6 @@
 package io.github.sakuraryoko.afkplus.util;
 
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.TextParser;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -92,7 +92,7 @@ public class FormattingExample {
             testString = testString + "<r> <copy:'<italic>'><italic>" + test.getName();
 
         AfkPlusLogger.debug("FormatTest.runBuiltInTest() --> testString: " + testString);
-        return TextParserUtils.formatTextSafe(testString);
+        return TextParser.parse(testString);
     }
     public static Text runAliasTest() {
         String testString = "<r><b><i><rainbow>*** PlaceholderAPI (Default) nodes:";
@@ -104,7 +104,7 @@ public class FormattingExample {
         testString = testString + "<r>\n<green><hover:show_text:'hover text'>hover:show_text:'hover text'";
         testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
         AfkPlusLogger.debug("FormatTest.runAliasTest() --> testString: " + testString);
-        out = TextParserUtils.formatTextSafe(testString);
+        out = TextParser.parse(testString);
         AfkPlusLogger.debug("FormatTest.runAliasTest() --> out: " + out.getString());
         return out;
     }
@@ -135,7 +135,7 @@ public class FormattingExample {
         testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
         testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
-        out = TextParserUtils.formatTextSafe(testString);
+        out = TextParser.parse(testString);
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> out: " + out.getString());
         return out;
     }
