@@ -33,7 +33,7 @@ public abstract class ServerPlayNetworkMixin {
         else {
             if (afkDuration > timeoutSeconds * 1000L) {
                 if (CONFIG.afkPlusOptions.afkTimeoutString.isEmpty()) {
-                    afkPlayer.afkplus$registerAfk("timeout");
+                    afkPlayer.afkplus$registerAfk("");
                 } else {
                     afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
