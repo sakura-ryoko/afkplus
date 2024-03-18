@@ -168,7 +168,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Unique
     private void setAfkReason(String reason) {
         if (reason == null || reason.isEmpty()) {
-            this.afkReason = "<red>none";
+            this.afkReason = "";
         } else {
             this.afkReason = reason;
         }
