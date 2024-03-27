@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -14,11 +14,11 @@ repositories {
 	maven {
 		name "Nucleoid"
 		url "https://maven.nucleoid.xyz/"
-		//mavenLocal()
+		mavenLocal()
 	}
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 	// Only for a local maven repo for deps
-	//flatDir { dirs 'libs' }
+	flatDir { dirs 'libs' }
 }
 
 dependencies {

@@ -18,9 +18,17 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.name = name;
-            this.hexCode = hexCode;
-            this.color = dr.get().left().orElse(null);
+            this.color = dr.result().orElse(null);
+            if (this.color != null)
+            {
+                this.name = name;
+                this.hexCode = hexCode;
+            }
+            else {
+                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error");
+                this.name = "";
+                this.hexCode = "";
+            }
         } else {
             AfkPlusLogger.warn("MoreColor("+ name +") is Invalid, error: "+dr.error().toString());
             this.name = "";
@@ -31,10 +39,18 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.name = name;
-            this.hexCode = hexCode;
-            this.color = dr.get().left().orElse(null);
-            this.aliases = aliases;
+            this.color = dr.result().orElse(null);
+            if (this.color != null)
+            {
+                this.name = name;
+                this.hexCode = hexCode;
+                this.aliases = aliases;
+            }
+            else {
+                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error");
+                this.name = "";
+                this.hexCode = "";
+            }
         } else {
             AfkPlusLogger.warn("MoreColor("+ name +") is Invalid, error: "+dr.error().toString());
             this.name = "";
