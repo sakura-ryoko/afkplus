@@ -10,15 +10,17 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
+import net.minecraft.MinecraftVersion;
 import net.minecraft.text.Text;
 
-public class AfkPlusInfo {
+public class AfkPlusInfo
+{
     private static final FabricLoader AFK_INST = FabricLoader.getInstance();
     private static final ModContainer AFK_CONTAINER = AFK_INST.getModContainer(AFK_MOD_ID).get();
 
-    public static void initModInfo() {
-        AFK_MC_VERSION = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion()
-                .getFriendlyString();
+    public static void initModInfo()
+    {
+        AFK_MC_VERSION = MinecraftVersion.CURRENT.getName();
         AFK_ENV = AFK_INST.getEnvironmentType();
         ModMetadata AFK_METADATA = AFK_CONTAINER.getMetadata();
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
@@ -35,12 +37,14 @@ public class AfkPlusInfo {
         AFK_SOURCES_STRING = getSourcesString();
     }
 
-    public static void displayModInfo() {
+    public static void displayModInfo()
+    {
         AfkPlusLogger.info(AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION);
         AfkPlusLogger.info("Author: " + AFK_AUTHO_STRING);
     }
 
-    public static Text getModInfoText() {
+    public static Text getModInfoText()
+    {
         String modInfo = AFK_NAME + "-" + AFK_MC_VERSION + "-" + AFK_VERSION
         + "\nAuthor: <pink>" + AFK_AUTHO_STRING + "</pink>"
         + "\nLicense: <yellow>" + AFK_LICENSES_STRING + "</yellow>"
@@ -60,13 +64,16 @@ public class AfkPlusInfo {
         return AFK_ENV == EnvType.CLIENT;
     }
 
-    private static String getAuthoString() {
+    private static String getAuthoString()
+    {
         StringBuilder authoString = new StringBuilder();
         if (AFK_AUTHOR.isEmpty())
             return authoString.toString();
-        else {
+        else
+        {
             final Iterator<Person> iterator = AFK_AUTHOR.iterator();
-            while (iterator.hasNext()) {
+            while (iterator.hasNext())
+            {
                 if (authoString.isEmpty())
                     authoString = new StringBuilder(iterator.next().getName());
                 else
@@ -76,13 +83,16 @@ public class AfkPlusInfo {
         }
     }
 
-    private static String getContribString() {
+    private static String getContribString()
+    {
         StringBuilder contribString = new StringBuilder();
         if (AFK_CONTRIB.isEmpty())
             return contribString.toString();
-        else {
+        else
+        {
             final Iterator<Person> iterator = AFK_CONTRIB.iterator();
-            while (iterator.hasNext()) {
+            while (iterator.hasNext())
+            {
                 if (contribString.isEmpty())
                     contribString = new StringBuilder(iterator.next().getName());
                 else
@@ -92,13 +102,16 @@ public class AfkPlusInfo {
         }
     }
 
-    private static String getLicenseString() {
+    private static String getLicenseString()
+    {
         StringBuilder licsenseString = new StringBuilder();
         if (AFK_LICENSES.isEmpty())
             return licsenseString.toString();
-        else {
+        else
+        {
             final Iterator<String> iterator = AFK_LICENSES.iterator();
-            while (iterator.hasNext()) {
+            while (iterator.hasNext())
+            {
                 if (licsenseString.isEmpty())
                     licsenseString = new StringBuilder(iterator.next());
                 else
@@ -108,7 +121,8 @@ public class AfkPlusInfo {
         }
     }
 
-    private static String getHomepageString() {
+    private static String getHomepageString()
+    {
         String homepageString = AFK_CONTACTS.asMap().get("homepage");
         if (homepageString.isEmpty())
             return "";
@@ -116,7 +130,8 @@ public class AfkPlusInfo {
             return homepageString;
     }
 
-    private static String getSourcesString() {
+    private static String getSourcesString()
+    {
         String sourcesString = AFK_CONTACTS.asMap().get("sources");
         if (sourcesString.isEmpty())
             return "";
