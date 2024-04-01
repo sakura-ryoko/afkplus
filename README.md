@@ -31,6 +31,15 @@
 - [NEW] Added a "/noafk" command for players to stop themselves from being marked as Afk.
 - [NEW] Added a "displayDuration" configuration option so that you can enable/disable the "Gone for XX minutes, XX seconds" during whenReturn.
 - [NEW] Added additional handling to allow "afkTimeoutString" to be set to "", and passing the "defaultReason" as "" to have more of the "Original" AfkDisplay feel.
+- [NEW] Added a new "AFK Kick" system to automatically kick players from the server who are AFK after a configured amount of time.  It has several configuration options:
+  - `afkKickEnabled` - (true/false) Enables the AFK Auto Kick manager.
+  - `afkKickNonSurvival` - (true/false) Allows Kicking Creative / Spectator players.
+  - `afkKickTimer` - The time beyond `timeoutSeconds` (Additive) when a player gets removed from the server, so if `timeoutSeconds` is 240, and `afkKickTimer` is set to 3600, the actual time they get kicked is at **3840**, or 64 minutes at the longest.
+  - `afkKickSafePermissions` - (Permission 3) The default Permissions level that is marked "safe" from being automatically kicked. (Luck Perms: afkplus.kick.safe)
+    - Note; that if a player has `afkPlusCommandPermissions` (Luck Perms: afkplus.afkplus), they will also be marked as safe from being automatically kicked, but this new configuration allows you to configure these permissions separately.
+  - `afkKickMessage` - The message sent to Players that get kicked as the reason for their removal. (Adds the Duration when `displayDuration` is enabled)
+  - `whenKicked` - The message broadcast to the server when a player gets kicked for being AFK. (Adds the Duration when `displayDuration` is enabled)
+  - NOTE: This feature *DOES NOT* automatically kick Carpet Mod Bots, because the 'fake' players do not get ticked by the server, and also why they don't automatically get marked as AFK.
 
 ## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
 - '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
@@ -59,11 +68,13 @@
   - This allows any user to use a [Reason] along with setting their AFK status.
 - [NEW] '**/noafk**' with the noAfkCommandPermissions (Default: 0) setting the default restrictions.  (Permission: afkplus.noafk)
   - This allows any user to set themselves in a state where they will not go Afk based on the configured timeout value.
+- [NEW] 'afkKickSafePermissions' (Default: 3) sets the default permissions to mark an AFK player as safe from being kicked. (Permission: afkplus.kick.safe)
 
 ## Potential known conflicts (Make your choice)
 - [afk display Data pack](https://vanillatweaks.net/picker/datapacks/) (Vanilla Tweaks Data pack, changes the player list display) -- Mod checks for any "afk" containing data packs in the name.
 - [AfkDisplay](https://modrinth.com/mod/afkdisplay) -- because this is the mod that AfkPlus is based upon, and offers fewer features.
 - [AntiLogout](https://modrinth.com/mod/noexits) (/afk command, timeout handling)
+- [Auto AFK](https://modrinth.com/mod/auto-afk) (/afk command, timeout handling)
 - [Sessility](https://modrinth.com/mod/sessility) (timeout handling)
 - [Playtime-Tracker](https://modrinth.com/mod/playtime-tracker) (timeout handling)
 - [SvrUtil](https://modrinth.com/mod/svrutil) (/afk command, the rest is safe)
@@ -112,6 +123,15 @@ disableDamageCooldown = 15
 bypassSleepCount = true
 # Makes it so that Afk Players block Phantom Spawning attempts. (Default: true)
 bypassInsomnia = true
+# Enables the AFK Auto-Kick system. (Default: false)
+afkKickEnabled = false
+# Allows Non-Survival players to be kicked (Creative, Spectator, etc) (Default: false)
+afkKickNonSurvival = false
+# The time after `timeoutSeconds` to automatically kick an AFK player (Default: 3600, aka. 1 hour)
+# --note; that this value is "Additive" to the `timeoutSeconds` value, so the actual time will be 3840, aka. 64 minutes.
+afkKickTimer = 3600
+# Default permission level to mark players as "safe" from being automatically kicked, i.e., Server Admins (Default: 3)
+afkKickSafePermissions = 3
 
 [PlaceholderOptions]
 # This will be the value of the placeholder %afkplus:afk% if a player is AFK, option accepts full formatting nodes
@@ -137,10 +157,10 @@ afkTimePlaceholderFormatting = "<green>"
 afkReasonPlaceholderFormatting = ""
 # Adds an option for using the "pretty" human-readable output for the %duration% placeholder.  This might cause unexpected
 # issues depending on where you use the placeholder. (Default: false)
-afkDurationPretty=false
+afkDurationPretty = false
 # Adds an option to configure a basic "Add-On" placeholder for attaching to the "[AFK]" tag to mark when a player is
 # marked as Invulnerable using %afkplus:invulnerable% (Default: ":<red>I<r>")
-afkInvulnerablePlaceholder=":<red>I<r>"
+afkInvulnerablePlaceholder = ":<red>I<r>"
 
 [playerListOptions]
 # Change the playerlist name for players who are AFK (Default: true)
@@ -158,20 +178,29 @@ enableMessages = true
 whenAfk = "%player:displayname% <yellow>is now AFK<r>"
 # The messages content when a player returns from AFK, and accepts formatting nodes.
 # (Default: "%player:displayname% <yellow>is no longer AFK<r>")
+# --note; that this message gets the AFK duration added to the end if `displayDuration` is set to true.
 whenReturn = "%player:displayname% <yellow>is no longer AFK<r>"
 # Re-Formats the "duration" in chat messages and /afkinfo to a more human-readable format. (Default: true)
-prettyDuration=true
+prettyDuration = true
 # Default reason for going AFK via the /afk command.  Leave in a poof of smoke without having to give a reason.
 # (Default: "<gray>poof!<r>")
 # --note; "" is a valid setting, and will disable the default /afk reason.
-defaultReason="<gray>poof!<r>"
+defaultReason = "<gray>poof!<r>"
 # The message content when an AFK player is marked as Invulnerable.
 # (Default: "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>")
-whenDamageDisabled="%player:displayname% <yellow>is marked as <red>Invulnerable.<r>"
+whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>"
 # The message content when an AFK player is no longer marked as Invulnerable.
 # (Default: "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>")
-whenDamageEnabled="%player:displayname% <yellow>is no longer <red>Invulnerable.<r>"
+whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>"
 # This enables the display of "Gone for XX minutes, XX seconds" portion of the whenReturn message.
 # (Default: true)
-displayDuration=true
+displayDuration = true
+# The Kick Reason message sent to players that are removed.  Can be set to "" to get a basic "AFK timeout" reason.
+# (Default: "<copper>AFK beyond the allowed time limit set by your Administrator.<r>")
+# --note; that this message gets the AFK duration added to the end if `displayDuration` is set to true.
+afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>"
+# The message content when an AFK player gets kicked from the server.
+# (Default: "%player:displayname% <copper>was kicked for being AFK.<r>")
+# --note; that this message gets the AFK duration added to the end if `displayDuration` is set to true.
+whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>"
 ```
