@@ -4,6 +4,7 @@ import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ColorNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
 import eu.pb4.placeholders.impl.textparser.TextParserImpl;
+import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.text.TextColor;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class NodeManager {
         while (iterator.hasNext()) {
             iColorNode = iterator.next();
             // DataResult checked at initialization
+            AfkPlusLogger.debug("registerColors(): register ColorNode: "+ iColorNode.getName() +" // "+ iColorNode.getHexCode());
             TextColor finalIColorNode = iColorNode.getColor();
             if (iColorNode.getAliases() != null) {
                 TextParserV1.registerDefault(
