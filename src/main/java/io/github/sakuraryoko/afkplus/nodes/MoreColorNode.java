@@ -3,6 +3,7 @@ package io.github.sakuraryoko.afkplus.nodes;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.text.TextColor;
@@ -13,9 +14,8 @@ public class MoreColorNode {
     private List<String> aliases = new ArrayList<>();
     private final TextColor color;
 
-    protected MoreColorNode(String name, String hexCode) {
-        this.name = name;
-        this.hexCode = hexCode;
+    protected MoreColorNode(String name, String hexCode)
+    {
         this.color = TextColor.parse(hexCode);
         if (this.color != null)
         {
@@ -28,10 +28,8 @@ public class MoreColorNode {
             this.hexCode = "";
         }
     }
-    protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases) {
-        this.name = name;
-        this.hexCode = hexCode;
-        this.aliases = aliases;
+    protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
+    {
         this.color = TextColor.parse(hexCode);
         if (this.color != null)
         {
