@@ -2,6 +2,8 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
+import io.github.sakuraryoko.afkplus.data.ModData;
+import net.fabricmc.api.EnvType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +31,8 @@ public abstract class ServerPlayNetworkMixin
         long afkDuration = Util.getMeasuringTimeMs() - this.player.getLastActionTime();
         if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0)
         {
-            if (CONFIG.packetOptions.afkKickEnabled && CONFIG.packetOptions.afkKickTimer > -1)
+            if (CONFIG.packetOptions.afkKickEnabled && CONFIG.packetOptions.afkKickTimer > -1
+                    && ModData.AFK_ENV.equals(EnvType.SERVER))
             {
                 if ((afkPlayer.afkplus$isCreative() || afkPlayer.afkplus$isSpectator()) && !CONFIG.packetOptions.afkKickNonSurvival)
                     return;

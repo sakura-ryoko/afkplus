@@ -39,7 +39,8 @@
     - Note; that if a player has `afkPlusCommandPermissions` (Luck Perms: afkplus.afkplus), they will also be marked as safe from being automatically kicked, but this new configuration allows you to configure these permissions separately.
   - `afkKickMessage` - The message sent to Players that get kicked as the reason for their removal. (Adds the Duration when `displayDuration` is enabled)
   - `whenKicked` - The message broadcast to the server when a player gets kicked for being AFK. (Adds the Duration when `displayDuration` is enabled)
-  - NOTE: This feature *DOES NOT* automatically kick Carpet Mod Bots, because the 'fake' players do not get ticked by the server, and also why they don't automatically get marked as AFK.
+  - NOTES: This feature *DOES NOT* automatically kick Carpet Mod Bots, because the 'fake' players do not get ticked by the server.
+    - This feature *DOES NOT* work in Single Player/Open To Lan, and requires a Dedicated Server Environment to function properly.
 
 ## Commands (Permissions via [Luck Permissions](https://luckperms.net/) or the AfkPermissions configurations)
 - '**/afkplus**' with the AfkPlusCommandPermissions (Default: 4) setting the default restrictions. (Permission: afkplus.afkplus)
