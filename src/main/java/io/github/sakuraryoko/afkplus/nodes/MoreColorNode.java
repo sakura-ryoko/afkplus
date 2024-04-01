@@ -18,7 +18,7 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.color = dr.get().left().orElse(null);
+            this.color = dr.result().orElse(null);
             if (this.color != null)
             {
                 this.name = name;
@@ -39,7 +39,7 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.color = dr.get().left().orElse(null);
+            this.color = dr.result().orElse(null);
             if (this.color != null)
             {
                 this.name = name;

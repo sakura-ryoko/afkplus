@@ -11,7 +11,7 @@ public class AfkPlusClient implements ClientModInitializer
     {
         if (!AFK_INIT)
         {
-            //AFK_DEBUG = true;
+            AFK_DEBUG = true;
             AFK_INIT = true;
             AfkPlusMod.init();
         }
