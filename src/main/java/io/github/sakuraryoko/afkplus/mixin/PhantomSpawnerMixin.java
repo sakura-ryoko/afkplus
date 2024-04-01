@@ -2,6 +2,7 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.random.Random;
@@ -23,18 +24,19 @@ public class PhantomSpawnerMixin {
     @Unique
     private IAfkPlayer player;
     @Inject(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
-    at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/server/network/ServerPlayerEntity;isSpectator()Z"),
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/entity/player/PlayerEntity;getBlockPos()Lnet/minecraft/util/math/BlockPos;"),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void capturePlayerForMath(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
-                                      Random random, int i, Iterator var6, ServerPlayerEntity serverPlayerEntity) {
+                                      Random random, int i, Iterator var6, PlayerEntity playerEntity) {
+        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) playerEntity;
         player = (IAfkPlayer) serverPlayerEntity;
     }
     @ModifyArg(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I"),
-                    index = 0)
+            index = 0)
     private int checkForAfkPlayer(int value) {
         if (player == null)
             return value;
