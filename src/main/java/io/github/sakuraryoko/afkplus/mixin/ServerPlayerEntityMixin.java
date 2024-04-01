@@ -2,6 +2,7 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.spongepowered.asm.mixin.Final;
@@ -168,7 +169,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Unique
     private void setAfkReason(String reason) {
         if (reason == null || reason.isEmpty()) {
-            this.afkReason = "<red>none";
+            this.afkReason = "";
         } else {
             this.afkReason = reason;
         }
@@ -230,6 +231,116 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             }
         }
         afkplus$updatePlayerList();
+    }
+    @Unique
+    public void afkplus$afkKick()
+    {
+        if (afkplus$isAfk() && CONFIG.packetOptions.afkKickEnabled)
+        {
+            if ((player.isCreative() || player.isSpectator()) && !CONFIG.packetOptions.afkKickNonSurvival)
+            {
+                return;
+            }
+            else if (Permissions.check(player, "afkplus.kick.safe", CONFIG.packetOptions.afkKickSafePermissions))
+            {
+                return;
+            }
+            else if (Permissions.check(player, "afkplus.afkplus", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+            {
+                return;
+            }
+            else
+            {
+                String kickReasonString;
+                String kickMessageString;
+                Text kickReason;
+                Text kickMessage;
+
+                if (CONFIG.messageOptions.whenKicked.isEmpty())
+                    kickMessageString = "";
+                else
+                    kickMessageString = CONFIG.messageOptions.whenKicked;
+
+                AfkPlusLogger.warn("Configured timeout has been reached for player "+ afkplus$getName() +" --> removing from server.");
+
+                if (!CONFIG.messageOptions.afkKickMessage.isEmpty())
+                {
+                    if (CONFIG.messageOptions.displayDuration)
+                    {
+                        long afkDuration = Util.getMeasuringTimeMs() - (player.getLastActionTime());
+                        if (CONFIG.messageOptions.prettyDuration)
+                        {
+                            kickReasonString = CONFIG.messageOptions.afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
+                                    + DurationFormatUtils.formatDurationWords(afkDuration, true, true) + "<gray>)<r>";
+                            if (!kickMessageString.isEmpty())
+                            {
+                                kickMessageString = kickMessageString + " <gray>(Gone for: <green>"
+                                        + DurationFormatUtils.formatDurationWords(afkDuration, true, true) + "<gray>)<r>";
+                            }
+                        }
+                        else
+                        {
+                            kickReasonString = CONFIG.messageOptions.afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
+                                    + DurationFormatUtils.formatDurationHMS(afkDuration) + "<gray>)<r>";
+                            if (!kickMessageString.isEmpty())
+                            {
+                                kickMessageString = kickMessageString + " <gray>(Gone for: <green>"
+                                        + DurationFormatUtils.formatDurationHMS(afkDuration) + "<gray>)<r>";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        kickReasonString = CONFIG.messageOptions.afkKickMessage;
+                    }
+                    kickReason = TextParserUtils.formatTextSafe(kickReasonString);
+                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
+
+                    setAfk(false);
+                    clearAfkTime();
+                    clearAfkReason();
+                    if (!afkplus$isDamageEnabled())
+                    {
+                        afkplus$enableDamage();
+                    }
+
+                    player.networkHandler.disconnect(kickReason);
+
+                    if (!kickMessageString.isEmpty())
+                    {
+                        kickMessage = TextParserUtils.formatTextSafe(kickMessageString);
+                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(player));
+
+                        sendAfkMessage(kickMessage);
+                    }
+                }
+                else
+                {
+                    kickReasonString = "<copper>AFK timeout<r>";
+
+                    kickReason = TextParserUtils.formatTextSafe(kickReasonString);
+                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
+
+                    setAfk(false);
+                    clearAfkTime();
+                    clearAfkReason();
+                    if (!afkplus$isDamageEnabled())
+                    {
+                        afkplus$enableDamage();
+                    }
+
+                    player.networkHandler.disconnect(kickReason);
+
+                    if (!kickMessageString.isEmpty())
+                    {
+                        kickMessage = TextParserUtils.formatTextSafe(kickMessageString);
+                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(player));
+
+                        sendAfkMessage(kickMessage);
+                    }
+                }
+            }
+        }
     }
     @Unique
     public void afkplus$lockDamageDisabled() { this.isLockDamageDisabled = true; }
