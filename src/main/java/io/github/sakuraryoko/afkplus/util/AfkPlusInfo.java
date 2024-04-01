@@ -20,7 +20,7 @@ public class AfkPlusInfo
 
     public static void initModInfo()
     {
-        AFK_MC_VERSION = MinecraftVersion.CURRENT.getName();
+        AFK_MC_VERSION = MinecraftVersion.GAME_VERSION.getName();
         AFK_ENV = AFK_INST.getEnvironmentType();
         ModMetadata AFK_METADATA = AFK_CONTAINER.getMetadata();
         AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();

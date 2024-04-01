@@ -2,21 +2,18 @@ package io.github.sakuraryoko.afkplus.mixin;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
+import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.TextParser;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.network.MessageType;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.minecraft.entity.Entity;
@@ -27,6 +24,11 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import net.minecraft.world.World;
+
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Objects;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlayer {
@@ -77,15 +79,14 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             setAfkReason("<red>none");
         } else if (reason == null || reason.isEmpty()) {
             setAfkReason("<red>none");
-            Text mess = Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
-                    PlaceholderContext.of(this));
+            Text mess = PlaceholderAPI.parseText(TextParser.parse(CONFIG.messageOptions.whenAfk), Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             sendAfkMessage(mess);
         } else {
             setAfkReason(reason);
             String mess1 = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
-            Text mess2 = Placeholders.parseText(TextParserUtils.formatTextSafe(mess1), PlaceholderContext.of(player));
+            Text mess2 = PlaceholderAPI.parseText(TextParser.parse(mess1), Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         }
         setAfk(true);
@@ -107,22 +108,22 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else if (CONFIG.messageOptions.displayDuration) {
             long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         } else {
             String ret = CONFIG.messageOptions.whenReturn + "<r>";
 
-            Text mess1 = TextParserUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Text mess1 = TextParser.parse(ret);
+            Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
             sendAfkMessage(mess2);
         }
         setAfk(false);
@@ -139,15 +140,15 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     }
     @Unique
     public String afkplus$getName() {
-        return player.getName().getLiteralString();
+        return player.getName().getString();
     }
     @Unique
     private void sendAfkMessage(Text text) {
         if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
             return;
-        server.sendMessage(text);
+        server.sendSystemMessage(text, uuid);
         for (ServerPlayerEntity player : this.server.getPlayerManager().getPlayerList()) {
-            player.sendMessage(text);
+            player.sendMessage(text, MessageType.CHAT, uuid);
         }
     }
 
@@ -157,7 +158,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Unique
     private void setAfkTime() {
         this.afkTimeMs = Util.getMeasuringTimeMs();
-        this.afkTimeString = Util.getFormattedCurrentTime();
+        this.afkTimeString = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT).format(ZonedDateTime.now());
     }
 
     @Unique
@@ -200,8 +201,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                 }
                 // Send announcement
                 if (!CONFIG.messageOptions.whenDamageDisabled.isEmpty()) {
-                    Text mess1 = TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenDamageDisabled);
-                    Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+                    Text mess1 = TextParser.parse(CONFIG.messageOptions.whenDamageDisabled);
+                    Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
                     sendAfkMessage(mess2);
                 }
             }
@@ -225,8 +226,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             }
             // Send announcement
             if (!CONFIG.messageOptions.whenDamageEnabled.isEmpty()) {
-                Text mess1 = TextParserUtils.formatTextSafe(CONFIG.messageOptions.whenDamageEnabled);
-                Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+                Text mess1 = TextParser.parse(CONFIG.messageOptions.whenDamageEnabled);
+                Text mess2 = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
                 sendAfkMessage(mess2);
             }
         }
@@ -293,8 +294,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                     {
                         kickReasonString = CONFIG.messageOptions.afkKickMessage;
                     }
-                    kickReason = TextParserUtils.formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
+                    kickReason = TextParser.parse(kickReasonString);
+                    kickReason = PlaceholderAPI.parseText(kickReason, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
 
                     setAfk(false);
                     clearAfkTime();
@@ -308,8 +309,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
 
                     if (!kickMessageString.isEmpty())
                     {
-                        kickMessage = TextParserUtils.formatTextSafe(kickMessageString);
-                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(player));
+                        kickMessage = TextParser.parse(kickMessageString);
+                        kickMessage = PlaceholderAPI.parseText(kickMessage, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
 
                         sendAfkMessage(kickMessage);
                     }
@@ -318,8 +319,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                 {
                     kickReasonString = "<copper>AFK timeout<r>";
 
-                    kickReason = TextParserUtils.formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
+                    kickReason = TextParser.parse(kickReasonString);
+                    kickReason = PlaceholderAPI.parseText(kickReason, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
 
                     setAfk(false);
                     clearAfkTime();
@@ -333,8 +334,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
 
                     if (!kickMessageString.isEmpty())
                     {
-                        kickMessage = TextParserUtils.formatTextSafe(kickMessageString);
-                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(player));
+                        kickMessage = TextParser.parse(kickMessageString);
+                        kickMessage = PlaceholderAPI.parseText(kickMessage, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
 
                         sendAfkMessage(kickMessage);
                     }
@@ -367,14 +368,24 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         super.setPosition(x, y, z);
     }
 
-    @Inject(method = "getPlayerListName", at = @At("RETURN"), cancellable = true)
-    private void replacePlayerListName(CallbackInfoReturnable<Text> cir) {
-        if (CONFIG.playerListOptions.enableListDisplay && afkplus$isAfk()) {
-            Text listEntry = Placeholders.parseText(
-                    TextParserUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
-                    PlaceholderContext.of(this));
-            //AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
-            cir.setReturnValue(listEntry.copy());
+    /**
+     * @author SakuraRyoko
+     * @reason 1.17.1's call is broken, so we overwrite it.
+     */
+    @Overwrite
+    public @Nullable Text getPlayerListName()
+    {
+        if (CONFIG.playerListOptions.enableListDisplay && this.afkplus$isAfk())
+        {
+            Text mess1 = TextParser.parse(CONFIG.playerListOptions.afkPlayerName);
+            Text listEntry = PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
+            AfkPlusLogger.debug("replacePlayerListName-listEntry(): " + listEntry);
+            return listEntry;
+        }
+        else
+        {
+            Text mess1 = TextParser.parse("%afkplus:name%");
+            return PlaceholderAPI.parseText(mess1, Objects.requireNonNull(this.getServer()).getPlayerManager().getPlayer(this.getUuid()));
         }
     }
 

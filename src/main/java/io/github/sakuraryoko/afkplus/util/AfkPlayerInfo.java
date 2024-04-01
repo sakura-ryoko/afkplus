@@ -2,12 +2,11 @@ package io.github.sakuraryoko.afkplus.util;
 
 import static io.github.sakuraryoko.afkplus.config.ConfigManager.*;
 
+import eu.pb4.placeholders.PlaceholderAPI;
+import eu.pb4.placeholders.TextParser;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
@@ -73,13 +72,13 @@ public class AfkPlayerInfo
             reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
             if (afkPlayer.afkplus$getAfkReason().isEmpty())
             {
-                afkReason = TextParserUtils.formatTextSafe(reasonFormat + "none");
+                afkReason = TextParser.parse(reasonFormat + "none");
             }
             else
             {
-                afkReason = Placeholders.parseText(
-                        TextParserUtils.formatTextSafe(reasonFormat + afkPlayer.afkplus$getAfkReason()),
-                        PlaceholderContext.of(src));
+                afkReason = PlaceholderAPI.parseText(
+                        TextParser.parse(reasonFormat + afkPlayer.afkplus$getAfkReason()),
+                        src.getServer());
             }
             AfkPlusLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
         }
