@@ -32,6 +32,10 @@ public class ConfigManager {
         CONFIG.packetOptions.disableDamageCooldown = 15;
         CONFIG.packetOptions.bypassSleepCount = true;
         CONFIG.packetOptions.bypassInsomnia = true;
+        CONFIG.packetOptions.afkKickEnabled = false;
+        CONFIG.packetOptions.afkKickNonSurvival = false;
+        CONFIG.packetOptions.afkKickTimer = 3600;
+        CONFIG.packetOptions.afkKickSafePermissions = 3;
         CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%]<r>";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholder = "%player:displayname%";
         CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname_unformatted%<r>";
@@ -50,6 +54,8 @@ public class ConfigManager {
         CONFIG.messageOptions.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
         CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
         CONFIG.messageOptions.displayDuration = true;
+        CONFIG.messageOptions.afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>";
+        CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
         AfkPlusLogger.debug("Default config initialized.");
     }
     public static void testConfig() {
@@ -79,6 +85,12 @@ public class ConfigManager {
             CONFIG.packetOptions.disableDamageCooldown = 15;
         //CONFIG.packetOptions.bypassSleepCount = true;
         //CONFIG.packetOptions.bypassInsomnia = true;
+        //CONFIG.packetOptions.afkKickEnabled = false;
+        //CONFIG.packetOptions.afkKickNonSurvival = false;
+        if (CONFIG.packetOptions.afkKickTimer < -1 || CONFIG.packetOptions.afkKickTimer > 14400)
+            CONFIG.packetOptions.afkKickTimer = 3600;
+        if (CONFIG.packetOptions.afkKickSafePermissions < 0 || CONFIG.packetOptions.afkKickSafePermissions > 4)
+            CONFIG.packetOptions.afkKickSafePermissions = 3;
         if (CONFIG.PlaceholderOptions.afkPlaceholder == null)
             CONFIG.PlaceholderOptions.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%]<r>";
         if (CONFIG.PlaceholderOptions.afkPlusNamePlaceholder == null)
@@ -110,6 +122,10 @@ public class ConfigManager {
         if (CONFIG.messageOptions.whenDamageEnabled == null)
             CONFIG.messageOptions.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
         //CONFIG.messageOptions.displayDuration = true;
+        if (CONFIG.messageOptions.afkKickMessage == null)
+            CONFIG.messageOptions.afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>";
+        if (CONFIG.messageOptions.whenKicked == null)
+            CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
         AfkPlusLogger.debug("Config checked for null values.");
     }
 
