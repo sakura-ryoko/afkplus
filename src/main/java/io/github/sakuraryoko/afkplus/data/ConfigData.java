@@ -3,7 +3,8 @@ package io.github.sakuraryoko.afkplus.data;
 import org.jetbrains.annotations.NotNull;
 
 @NotNull
-public class ConfigData {
+public class ConfigData
+{
     public AfkPlusOptions afkPlusOptions = new AfkPlusOptions();
     public PacketOptions packetOptions = new PacketOptions();
     public PlaceholderOptions PlaceholderOptions = new PlaceholderOptions();
@@ -11,7 +12,8 @@ public class ConfigData {
     public MessageOptions messageOptions = new MessageOptions();
 
     @NotNull
-    public static class AfkPlusOptions {
+    public static class AfkPlusOptions
+    {
         public boolean enableAfkCommand;
         public boolean enableNoAfkCommand;
         public boolean enableAfkInfoCommand;
@@ -25,7 +27,8 @@ public class ConfigData {
     }
 
     @NotNull
-    public static class PacketOptions {
+    public static class PacketOptions
+    {
         public int timeoutSeconds;
         public boolean resetOnMovement;
         public boolean resetOnLook;
@@ -33,10 +36,15 @@ public class ConfigData {
         public int disableDamageCooldown;
         public boolean bypassSleepCount;
         public boolean bypassInsomnia;
+        public boolean afkKickEnabled;
+        public boolean afkKickNonSurvival;
+        public int afkKickTimer;
+        public int afkKickSafePermissions;
     }
 
     @NotNull
-    public static class PlaceholderOptions {
+    public static class PlaceholderOptions
+    {
         public String afkPlaceholder;
         public String afkPlusNamePlaceholderAfk;
         public String afkPlusNamePlaceholder;
@@ -48,13 +56,15 @@ public class ConfigData {
     }
 
     @NotNull
-    public static class PlayerListOptions {
+    public static class PlayerListOptions
+    {
         public boolean enableListDisplay;
         public String afkPlayerName;
     }
 
     @NotNull
-    public static class MessageOptions {
+    public static class MessageOptions
+    {
         public boolean enableMessages;
         public String whenAfk;
         public String whenReturn;
@@ -63,5 +73,7 @@ public class ConfigData {
         public String whenDamageDisabled;
         public String whenDamageEnabled;
         public boolean displayDuration;
+        public String afkKickMessage;
+        public String whenKicked;
     }
 }

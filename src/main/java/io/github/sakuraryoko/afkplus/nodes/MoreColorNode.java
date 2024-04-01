@@ -18,14 +18,14 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.color = dr.result().orElse(null);
+            this.color = dr.get().left().orElse(null);
             if (this.color != null)
             {
                 this.name = name;
                 this.hexCode = hexCode;
             }
             else {
-                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error");
+                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
                 this.name = "";
                 this.hexCode = "";
             }
@@ -39,7 +39,7 @@ public class MoreColorNode {
         DataResult<TextColor> dr;
         dr = TextColor.parse(hexCode);
         if (dr.error().isEmpty()) {
-            this.color = dr.result().orElse(null);
+            this.color = dr.get().left().orElse(null);
             if (this.color != null)
             {
                 this.name = name;
@@ -47,7 +47,7 @@ public class MoreColorNode {
                 this.aliases = aliases;
             }
             else {
-                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error");
+                AfkPlusLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
                 this.name = "";
                 this.hexCode = "";
             }
