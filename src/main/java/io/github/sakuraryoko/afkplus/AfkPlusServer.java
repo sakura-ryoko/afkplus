@@ -11,7 +11,6 @@ public class AfkPlusServer implements DedicatedServerModInitializer
     {
         if (!AFK_INIT)
         {
-            AFK_DEBUG = true;
             AFK_INIT = true;
             AfkPlusMod.init();
         }

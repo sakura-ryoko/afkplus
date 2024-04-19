@@ -10,10 +10,14 @@ import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
+import static io.github.sakuraryoko.afkplus.data.ModData.*;
+
 public class AfkPlusMod
 {
     public static void init()
     {
+        AFK_DEBUG = true;
+
         AfkPlusLogger.initLogger();
         AfkPlusLogger.debug("Initializing Mod.");
 
