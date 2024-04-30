@@ -32,7 +32,7 @@
     "placeholder-api": "*",
     "fabricloader": ">=0.15.10",
     "fabric-permissions-api-v0": "*",
-    "minecraft": ">=1.20.5",
+    "minecraft": ">=1.20.6",
     "java": ">=17"
   }
 }
