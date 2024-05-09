@@ -23,6 +23,7 @@ public class AfkPlusCommand {
         public static void register() {
                 CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                         literal("afkplus")
+                                .requires(Permissions.require("afkplus.afkplus", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                 .executes(ctx -> afkAbout(ctx.getSource(), ctx))
                                 .then(literal("ex")
                                         .requires(Permissions.require("afkplus.afkplus.ex", 4))
@@ -56,6 +57,7 @@ public class AfkPlusCommand {
                                         )
                                 )
                                 .then(literal("damage")
+                                        .requires(Permissions.require("afkplus.afkplus.damage", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                         .then(literal("disable")
                                                 .requires(Permissions.require("afkplus.afkplus.damage.disable", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
                                                 .then(argument("player", EntityArgumentType.player())
