@@ -14,7 +14,7 @@ import static io.github.sakuraryoko.afkplus.data.ModData.AFK_MOD_ID;
 
 public class AfkPlusPlaceholders {
     protected static void registerAfk() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "afk"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "afk"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -27,7 +27,7 @@ public class AfkPlusPlaceholders {
         });
     }
     protected static void registerDuration() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "duration"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "duration"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -47,7 +47,7 @@ public class AfkPlusPlaceholders {
         });
     }
     protected static void registerDisplayName() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "name"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "name"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -58,7 +58,7 @@ public class AfkPlusPlaceholders {
                     : Placeholders.parseText(TextParserUtils.formatTextSafe(CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
-        Placeholders.register(new Identifier(AFK_MOD_ID, "display_name"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "display_name"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -71,7 +71,7 @@ public class AfkPlusPlaceholders {
         });
     }
     protected static void registerReason() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "reason"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "reason"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -84,7 +84,7 @@ public class AfkPlusPlaceholders {
         });
     }
     protected static void registerTime() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "time"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "time"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }
@@ -97,7 +97,7 @@ public class AfkPlusPlaceholders {
         });
     }
     protected static void registerInvulnerable() {
-        Placeholders.register(new Identifier(AFK_MOD_ID, "invulnerable"), (ctx, arg) -> {
+        Placeholders.register(Identifier.of(AFK_MOD_ID, "invulnerable"), (ctx, arg) -> {
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.invalid("No player!");
             }

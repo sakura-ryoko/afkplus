@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import io.github.sakuraryoko.afkplus.data.IAfkPlayer;
 import io.github.sakuraryoko.afkplus.util.AfkPlusInfo;
 import io.github.sakuraryoko.afkplus.util.AfkPlusLogger;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
 import net.minecraft.server.PlayerManager;
@@ -57,12 +58,15 @@ public abstract class PlayerManagerMixin {
 //            iPlayer.afkplus$updatePlayerList();
     }
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
-    private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+    private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir)
+    {
         ServerPlayerEntity playerEntity = cir.getReturnValue();
         if (playerEntity == null)
             return;
-        if (playerEntity.interactionManager.getGameMode() == GameMode.SURVIVAL) {
-            if (playerEntity.isInvulnerable()) {
+        if (playerEntity.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        {
+            if (playerEntity.isInvulnerable())
+            {
                 IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
                 AfkPlusLogger.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: "+iPlayer.afkplus$getName()+" as vulnerable.");
                 playerEntity.setInvulnerable(false);
@@ -73,8 +77,10 @@ public abstract class PlayerManagerMixin {
                     iPlayer.afkplus$updatePlayerList();
             }
         }
-        if (player.interactionManager.getGameMode() == GameMode.SURVIVAL) {
-            if (player.isInvulnerable()) {
+        if (player.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        {
+            if (player.isInvulnerable())
+            {
                 IAfkPlayer iPlayer = (IAfkPlayer) player;
                 AfkPlusLogger.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: "+iPlayer.afkplus$getName()+" as vulnerable.");
                 player.setInvulnerable(false);
