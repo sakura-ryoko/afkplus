@@ -18,10 +18,10 @@
   "environment": "*",
   "entrypoints": {
     "server": [
-      "io.github.sakuraryoko.afkplus.AfkPlusServer"
+      "com.github.sakuraryoko.afkplus.AfkPlusServer"
     ],
     "client": [
-      "io.github.sakuraryoko.afkplus.AfkPlusClient"
+      "com.github.sakuraryoko.afkplus.AfkPlusClient"
     ],
     "main": []
   },
