@@ -13,11 +13,7 @@ group = project.maven_group
 repositories {
 	mavenCentral()
 	maven { url "https://jitpack.io" }
-	maven {
-		name "Nucleoid"
-		url "https://maven.nucleoid.xyz/"
-		//mavenLocal()
-	}
+	maven { url "https://maven.nucleoid.xyz/" }
 	// Only for a local maven repo for deps
 	//flatDir { dirs 'libs' }
 }
