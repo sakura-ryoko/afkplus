@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.sakuraryoko.afkplus.mixin",
+  "package": "com.sakuraryoko.afkplus.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "PhantomSpawnerMixin",
