@@ -128,12 +128,12 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             Text mess2 = Placeholders.parseText(TextUtils.formatTextSafe(mess1), PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
-        setAfk(true);
         if (CONFIG.packetOptions.disableDamage && CONFIG.packetOptions.disableDamageCooldown < 1)
         {
             afkplus$disableDamage();
         }
         afkplus$updatePlayerList();
+        setAfk(true);
     }
 
     @Unique

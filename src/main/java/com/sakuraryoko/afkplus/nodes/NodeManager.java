@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sakuraryoko.afkplus.compat.TextUtils;
+import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
+import eu.pb4.placeholders.api.parsers.tag.TextTag;
 import net.minecraft.text.TextColor;
 
 import eu.pb4.placeholders.api.node.TextNode;
@@ -57,25 +60,53 @@ public class NodeManager
             TextColor finalIColorNode = iColorNode.getColor();
             if (iColorNode.getAliases() != null)
             {
-                TextParserV1.registerDefault(
-                        TextParserV1.TextTag.of(
+                if (TextUtils.LEGACY)
+                {
+                    // Legacy Parser
+                    TextParserV1.registerDefault(
+                            TextParserV1.TextTag.of(
+                                    iColorNode.getName(),
+                                    iColorNode.getAliases(),
+                                    "color",
+                                    true,
+                                    wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
+                            )
+                    );
+                }
+                // New Code
+                TagRegistry.registerDefault(
+                        TextTag.enclosing(
                                 iColorNode.getName(),
                                 iColorNode.getAliases(),
                                 "color",
                                 true,
-                                wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
+                                (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
                         )
                 );
             }
             else
             {
-                TextParserV1.registerDefault(
-                        TextParserV1.TextTag.of(
+                if (TextUtils.LEGACY)
+                {
+                    // Legacy Parser
+                    TextParserV1.registerDefault(
+                            TextParserV1.TextTag.of(
+                                    iColorNode.getName(),
+                                    List.of(""),
+                                    "color",
+                                    true,
+                                    wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
+                            )
+                    );
+                }
+                // New Code
+                TagRegistry.registerDefault(
+                        TextTag.enclosing(
                                 iColorNode.getName(),
                                 List.of(""),
                                 "color",
                                 true,
-                                wrap((nodes, arg) -> new ColorNode(nodes, finalIColorNode))
+                                (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
                         )
                 );
             }
@@ -97,6 +128,7 @@ public class NodeManager
     {
         return (tag, data, input, handlers, endAt) ->
         {
+            // Legacy Parser
             var out = TextParserImpl.recursiveParsing(input, handlers, endAt);
             return new TextParserV1.TagNodeValue(wrapper.wrap(out.nodes(), data), out.length());
         };

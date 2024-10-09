@@ -1,5 +1,6 @@
 package com.sakuraryoko.afkplus.compat;
 
+import eu.pb4.placeholders.api.ParserContext;
 import net.minecraft.text.Text;
 
 import eu.pb4.placeholders.api.TextParserUtils;
@@ -7,19 +8,32 @@ import org.jetbrains.annotations.Nullable;
 
 public class TextUtils
 {
-    //private static final TagParser SAFE = TagParser.QUICK_TEXT_WITH_STF_SAFE;
-    //private static final TagParser DEFAULT = TagParser.QUICK_TEXT_WITH_STF;
+    // TODO - Remove legacy support in the future
+    public static final boolean LEGACY = false;
+
+    public static Text formatText(String str, ParserContext ctx)
+    {
+        return TextParser.PARSE.parseText(str, ctx);
+    }
 
     public static Text formatText(String str)
     {
-        return TextParserUtils.formatText(str);
-        //return DEFAULT.parseText(str, ParserContext.of());
+        if (LEGACY)
+        {
+            return TextParserUtils.formatText(str);
+        }
+
+        return TextParser.PARSE.parseNode(str).toText();
     }
 
     public static Text formatTextSafe(String str)
     {
-        return TextParserUtils.formatTextSafe(str);
-        //return SAFE.parseText(str, ParserContext.of());
+        if (LEGACY)
+        {
+            return TextParserUtils.formatTextSafe(str);
+        }
+
+        return TextParser.PARSE.parseNode(str).toText();
     }
 
     public static Text of(String str)

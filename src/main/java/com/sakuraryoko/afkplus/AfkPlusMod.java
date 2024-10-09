@@ -1,5 +1,6 @@
 package com.sakuraryoko.afkplus;
 
+import com.sakuraryoko.afkplus.compat.TextParser;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import com.sakuraryoko.afkplus.commands.CommandManager;
@@ -17,7 +18,7 @@ public class AfkPlusMod
 {
     public static void init()
     {
-        AFK_DEBUG = false;
+        AFK_DEBUG = true;
 
         AfkPlusLogger.initLogger();
         AfkPlusLogger.debug("Initializing Mod.");
@@ -44,6 +45,8 @@ public class AfkPlusMod
         NodeManager.registerNodes();
         AfkPlusLogger.debug("Registering Placeholders.");
         PlaceholderManager.register();
+        AfkPlusLogger.debug("Building Text Parser.");
+        TextParser.build();
         AfkPlusLogger.debug("Registering commands.");
         CommandManager.register();
 

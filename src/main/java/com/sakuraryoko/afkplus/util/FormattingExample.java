@@ -1,9 +1,8 @@
 package com.sakuraryoko.afkplus.util;
 
+import com.sakuraryoko.afkplus.compat.TextUtils;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import com.sakuraryoko.afkplus.compat.TextUtils;
 
 public class FormattingExample
 {
@@ -137,29 +136,26 @@ public class FormattingExample
         }
 
         AfkPlusLogger.debug("FormatTest.runBuiltInTest() --> testString: " + testString);
-        return TextUtils.formatTextSafe(testString);
+        return TextUtils.formatText(testString);
     }
 
     public static Text runAliasTest()
     {
         String testString = "<r><b><i><rainbow>*** PlaceholderAPI (Default) nodes:";
-        Text out;
         testString = testString + "<r>\n<copy:'<orange>'><orange>orange (gold alias)";
         testString = testString + "<r> <copy:'<pink>'><pink>pink (light_purple alias)";
         testString = testString + "<r> <copy:'<rainbow>'><rainbow>rainbow";
         testString = testString + "<r> <copy:'<gradient:#76C610:#DE8BB4>'><gradient:#76C610:#DE8BB4>gradient:#76C610:#DE8BB4";
         testString = testString + "<r>\n<green><hover:show_text:'hover text'>hover:show_text:'hover text'";
         testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
+
         AfkPlusLogger.debug("FormatTest.runAliasTest() --> testString: " + testString);
-        out = TextUtils.formatTextSafe(testString);
-        AfkPlusLogger.debug("FormatTest.runAliasTest() --> out: " + out.getString());
-        return out;
+        return TextUtils.formatText(testString);
     }
 
     public static Text runColorsTest()
     {
         String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
-        Text out;
         testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";
         testString = testString + "<r> <copy:'<brown>'><brown>brown";
         testString = testString + "<r> <copy:'<burnt_orange>'><burnt_orange>burnt_orange";
@@ -183,9 +179,8 @@ public class FormattingExample
         testString = testString + "<r> <copy:'<tickle_me_pink>'><tickle_me_pink>tickle_me_pink";
         testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
         testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
+
         AfkPlusLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
-        out = TextUtils.formatTextSafe(testString);
-        AfkPlusLogger.debug("FormatTest.runColorsTest() --> out: " + out.getString());
-        return out;
+        return TextUtils.formatText(testString);
     }
 }
