@@ -490,7 +490,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         afkplus$unregisterAfk();
     }
 
-    //@Override
+    @Override
     public void setPosition(double x, double y, double z)
     {
         if (CONFIG.packetOptions.resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
