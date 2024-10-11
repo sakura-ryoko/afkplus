@@ -26,9 +26,9 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	//modImplementation "com.github.sakura-ryoko:corelib:${project.corelib_id}"
 
-	modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
 	//modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
-	modImplementation "com.github.sakura-ryoko:fabric-permissions-api:${project.fabric_permissions_api_id}"
+	modImplementation include("com.github.sakura-ryoko:fabric-permissions-api:${project.fabric_permissions_api_id}")
 }
 
 processResources {
