@@ -1,14 +1,20 @@
 package com.sakuraryoko.afkplus.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
+import me.lucko.fabric.api.permissions.v0.Permissions;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Util;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,19 +24,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import me.lucko.fabric.api.permissions.v0.Permissions;
-import org.apache.commons.lang3.time.DurationFormatUtils;
-
 import com.sakuraryoko.afkplus.compat.TextUtils;
 import com.sakuraryoko.afkplus.data.IAfkPlayer;
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
-@Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlayer
+@Mixin(ServerPlayer.class)
+public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
 {
     @Shadow
     @Final
@@ -42,8 +43,10 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Shadow
     public abstract boolean isSpectator();
 
+    @Shadow
+    public ServerGamePacketListenerImpl connection;
     @Unique
-    public ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+    public ServerPlayer player = (ServerPlayer) (Object) this;
     @Unique
     private boolean isAfk = false;
     @Unique
@@ -58,8 +61,10 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     private boolean isLockDamageDisabled = false;
     @Unique
     private boolean noAfkEnabled = false;
+    @Unique
+    private long lastPlayerListTick = 0;
 
-    public ServerPlayerEntityMixin(EntityType<?> type, World world)
+    public MixinServerPlayer(EntityType<?> type, Level world)
     {
         super(type, world);
     }
@@ -101,6 +106,12 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     }
 
     @Unique
+    public long afkplus$getLastPlayerListTick()
+    {
+        return this.lastPlayerListTick;
+    }
+
+    @Unique
     public void afkplus$registerAfk(String reason)
     {
         if (afkplus$isAfk())
@@ -115,8 +126,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         else if (reason == null || reason.isEmpty())
         {
             setAfkReason("<red>none");
-            Text mess = Placeholders.parseText(TextUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
-                    PlaceholderContext.of(this));
+            Component mess = Placeholders.parseText(TextUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
+                                                    PlaceholderContext.of(this));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             sendAfkMessage(mess);
@@ -125,7 +136,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         {
             setAfkReason(reason);
             String mess1 = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
-            Text mess2 = Placeholders.parseText(TextUtils.formatTextSafe(mess1), PlaceholderContext.of(player));
+            Component mess2 = Placeholders.parseText(TextUtils.formatTextSafe(mess1), PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
         if (CONFIG.packetOptions.disableDamage && CONFIG.packetOptions.disableDamageCooldown < 1)
@@ -149,30 +160,30 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         }
         if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration)
         {
-            long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
+            long duration = Util.getMillis() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
-            Text mess1 = TextUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
+            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
             sendAfkMessage(mess2);
         }
         else if (CONFIG.messageOptions.displayDuration)
         {
-            long duration = Util.getMeasuringTimeMs() - (this.afkTimeMs);
+            long duration = Util.getMillis() - (this.afkTimeMs);
             String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
-            Text mess1 = TextUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
         else
         {
             String ret = CONFIG.messageOptions.whenReturn + "<r>";
 
-            Text mess1 = TextUtils.formatTextSafe(ret);
-            Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
         setAfk(false);
@@ -188,27 +199,28 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Unique
     public void afkplus$updatePlayerList()
     {
-        this.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, player));
+        this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, player));
         AfkPlusLogger.debug("sending player list update for " + afkplus$getName());
+        this.lastPlayerListTick = Util.getMillis();
     }
 
     @Unique
     public String afkplus$getName()
     {
-        return player.getName().getLiteralString();
+        return player.getName().getString();
     }
 
     @Unique
-    private void sendAfkMessage(Text text)
+    private void sendAfkMessage(Component text)
     {
         if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
         {
             return;
         }
-        server.sendMessage(text);
-        for (ServerPlayerEntity player : this.server.getPlayerManager().getPlayerList())
+        server.sendSystemMessage(text);
+        for (ServerPlayer player : this.server.getPlayerList().getPlayers())
         {
-            player.sendMessage(text);
+            player.sendSystemMessage(text);
         }
     }
 
@@ -221,8 +233,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
     @Unique
     private void setAfkTime()
     {
-        this.afkTimeMs = Util.getMeasuringTimeMs();
-        this.afkTimeString = Util.getFormattedCurrentTime();
+        this.afkTimeMs = Util.getMillis();
+        this.afkTimeString = Util.getFilenameFormattedDateTime();
     }
 
     @Unique
@@ -285,8 +297,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                 // Send announcement
                 if (!CONFIG.messageOptions.whenDamageDisabled.isEmpty())
                 {
-                    Text mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageDisabled);
-                    Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+                    Component mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageDisabled);
+                    Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
                     sendAfkMessage(mess2);
                 }
             }
@@ -319,8 +331,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             // Send announcement
             if (!CONFIG.messageOptions.whenDamageEnabled.isEmpty())
             {
-                Text mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageEnabled);
-                Text mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
+                Component mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageEnabled);
+                Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
                 sendAfkMessage(mess2);
             }
         }
@@ -348,8 +360,8 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
             {
                 String kickReasonString;
                 String kickMessageString;
-                Text kickReason;
-                Text kickMessage;
+                Component kickReason;
+                Component kickMessage;
 
                 if (CONFIG.messageOptions.whenKicked.isEmpty())
                 {
@@ -366,7 +378,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                 {
                     if (CONFIG.messageOptions.displayDuration)
                     {
-                        long afkDuration = Util.getMeasuringTimeMs() - (player.getLastActionTime());
+                        long afkDuration = Util.getMillis() - (player.getLastActionTime());
                         if (CONFIG.messageOptions.prettyDuration)
                         {
                             kickReasonString = CONFIG.messageOptions.afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
@@ -393,7 +405,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                         kickReasonString = CONFIG.messageOptions.afkKickMessage;
                     }
                     kickReason = TextUtils.formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
+                    kickReason = Placeholders.parseText((Component) kickReason, PlaceholderContext.of(player));
 
                     setAfk(false);
                     clearAfkTime();
@@ -403,7 +415,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                         afkplus$enableDamage();
                     }
 
-                    player.networkHandler.disconnect(kickReason);
+                    player.connection.disconnect(kickReason);
 
                     if (!kickMessageString.isEmpty())
                     {
@@ -428,7 +440,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                         afkplus$enableDamage();
                     }
 
-                    player.networkHandler.disconnect(kickReason);
+                    player.connection.disconnect(kickReason);
 
                     if (!kickMessageString.isEmpty())
                     {
@@ -484,40 +496,60 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
         this.noAfkEnabled = false;
     }
 
-    @Inject(method = "updateLastActionTime", at = @At("TAIL"))
+    @Inject(method = "resetLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci)
     {
         afkplus$unregisterAfk();
     }
 
     @Override
-    public void setPosition(double x, double y, double z)
+    public void setPos(double x, double y, double z)
     {
         if (CONFIG.packetOptions.resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
         {
-            player.updateLastActionTime();
+            player.resetLastActionTime();
         }
-        super.setPosition(x, y, z);
+        super.setPos(x, y, z);
     }
 
-    @Inject(method = "getPlayerListName", at = @At("RETURN"), cancellable = true)
-    private void replacePlayerListName(CallbackInfoReturnable<Text> cir)
+    @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
+    private void replacePlayerListName(CallbackInfoReturnable<Component> cir)
     {
         if (CONFIG.playerListOptions.enableListDisplay && afkplus$isAfk())
         {
-            Text listEntry = Placeholders.parseText(
+            Component listEntry = Placeholders.parseText(
                     TextUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
                     PlaceholderContext.of(this));
-            //AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.toString());
+            AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.getString());
             cir.setReturnValue(listEntry.copy());
         }
     }
 
-    @Inject(method = "playerTick", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void checkAfk(CallbackInfo ci)
     {
         try
         {
+            if (!this.player.connection.isAcceptingMessages())
+            {
+                return;
+            }
+            if (this.afkplus$isAfk() && CONFIG.playerListOptions.updateInterval > 0)
+            {
+                if (this.lastPlayerListTick <= 0)
+                {
+                    this.afkplus$updatePlayerList();
+                }
+                else
+                {
+                    long diff = Util.getMillis() - this.lastPlayerListTick;
+
+                    if (diff > CONFIG.playerListOptions.updateInterval * 1000L)
+                    {
+                        this.afkplus$updatePlayerList();
+                    }
+                }
+            }
             if (this.player.isCreative())
             {
                 return;
@@ -542,7 +574,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                     int cooldownSeconds = CONFIG.packetOptions.disableDamageCooldown;
                     if (cooldownSeconds > 0)
                     {
-                        long diff = Util.getMeasuringTimeMs() - this.afkTimeMs;
+                        long diff = Util.getMillis() - this.afkTimeMs;
                         if (diff > cooldownSeconds * 1000L)
                         {
                             this.afkplus$disableDamage();
@@ -551,7 +583,7 @@ public abstract class ServerPlayerEntityMixin extends Entity implements IAfkPlay
                     }
                     else
                     {
-                        if (!(this.player.interactionManager.getPreviousGameMode() == GameMode.CREATIVE))
+                        if (!(this.player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
                         {
                             this.afkplus$disableDamage();
                             AfkPlusLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 4.");

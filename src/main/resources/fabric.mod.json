@@ -30,7 +30,7 @@
   ],
   "depends": {
     "placeholder-api": "*",
-    "fabric-permissions-api-v0": "0.3.2-SNAPSHOT",
-    "minecraft": "1.21.2-beta.3"
+    "fabric-permissions-api-v0": "*",
+    "minecraft": "1.21.2-rc.1"
   }
 }

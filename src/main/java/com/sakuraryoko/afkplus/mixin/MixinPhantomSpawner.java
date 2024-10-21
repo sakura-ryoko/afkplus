@@ -1,9 +1,10 @@
 package com.sakuraryoko.afkplus.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.spawner.PhantomSpawner;
+
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.PhantomSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,25 +18,25 @@ import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 @Mixin(PhantomSpawner.class)
-public class PhantomSpawnerMixin
+public class MixinPhantomSpawner
 {
     @Unique
     private IAfkPlayer player;
 
-    @Inject(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
+    @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;isSpectator()Z")
+                     target = "Lnet/minecraft/server/level/ServerPlayer;isSpectator()Z")
     )
-    private void capturePlayerForMath(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
-                                      @Local ServerPlayerEntity serverPlayerEntity)
+    private void capturePlayerForMath(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
+                                      @Local ServerPlayer serverPlayerEntity)
     {
         player = (IAfkPlayer) serverPlayerEntity;
     }
 
-    @ModifyArg(method = "spawn(Lnet/minecraft/server/world/ServerWorld;ZZ)I",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/MathHelper;clamp(III)I"),
-            index = 0)
+    @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
+               at = @At(value = "INVOKE",
+                        target = "Lnet/minecraft/util/Mth;clamp(III)I"),
+               index = 0)
     private int checkForAfkPlayer(int value)
     {
         if (player == null)

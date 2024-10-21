@@ -1,8 +1,8 @@
 package com.sakuraryoko.afkplus.mixin;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.world.GameMode;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,25 +16,25 @@ import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 
-@Mixin(ServerPlayerInteractionManager.class)
-public abstract class ServerPlayerInteractionManagerMixin
+@Mixin(ServerPlayerGameMode.class)
+public abstract class MixinServerPlayerGameMode
 {
     @Shadow
     @Final
-    protected ServerPlayerEntity player;
+    protected ServerPlayer player;
 
-    @Inject(method = "changeGameMode", at = @At("RETURN"))
-    private void checkGameMode(GameMode gameMode, CallbackInfoReturnable<Boolean> cir)
+    @Inject(method = "changeGameModeForPlayer", at = @At("RETURN"))
+    private void checkGameMode(GameType gameType, CallbackInfoReturnable<Boolean> cir)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) this.player;
         if (cir.getReturnValue())
         {
-            AfkPlusLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameMode.getName());
+            AfkPlusLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameType.getName());
             if (afkPlayer.afkplus$isAfk())
             {
                 // Fixes uncommon de-sync when switching Game Modes.
                 afkPlayer.afkplus$unregisterAfk();
-                if (gameMode == GameMode.SURVIVAL)
+                if (gameType == GameType.SURVIVAL)
                 {
                     if (CONFIG.packetOptions.disableDamage)
                     {

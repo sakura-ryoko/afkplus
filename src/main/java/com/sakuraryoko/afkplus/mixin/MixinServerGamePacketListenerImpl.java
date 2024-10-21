@@ -1,9 +1,9 @@
 package com.sakuraryoko.afkplus.mixin;
 
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.fabricmc.api.EnvType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,18 +17,18 @@ import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
-@Mixin(ServerPlayNetworkHandler.class)
-public abstract class ServerPlayNetworkMixin
+@Mixin(ServerGamePacketListenerImpl.class)
+public abstract class MixinServerGamePacketListenerImpl
 {
     @Shadow
-    public ServerPlayerEntity player;
+    public ServerPlayer player;
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void updateAfkStatus(CallbackInfo ci)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         int timeoutSeconds = CONFIG.packetOptions.timeoutSeconds;
-        long afkDuration = Util.getMeasuringTimeMs() - this.player.getLastActionTime();
+        long afkDuration = Util.getMillis() - this.player.getLastActionTime();
         if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0)
         {
             if (CONFIG.packetOptions.afkKickEnabled && CONFIG.packetOptions.afkKickTimer > -1
@@ -61,21 +61,22 @@ public abstract class ServerPlayNetworkMixin
                 {
                     afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
-                AfkPlusLogger.debug("Setting player " + this.player.getName().getLiteralString() + " as AFK (timeout)");
+                AfkPlusLogger.debug("Setting player " + this.player.getName().getString() + " as AFK (timeout)");
             }
         }
     }
 
-    @Inject(method = "onPlayerMove", at = @At("HEAD"))
-    private void checkPlayerLook(PlayerMoveC2SPacket packet, CallbackInfo ci)
+    @Inject(method = "handleMovePlayer", at = @At("HEAD"))
+    private void checkPlayerLook(ServerboundMovePlayerPacket packet, CallbackInfo ci)
     {
-        if (CONFIG.packetOptions.resetOnLook && packet.changesLook())
+        if (CONFIG.packetOptions.resetOnLook && packet.hasRotation())
         {
-            float yaw = player.getYaw();
-            float pitch = player.getPitch();
-            if (pitch != packet.getPitch(pitch) || yaw != packet.getYaw(yaw))
+            player.getEyeY();
+            float yaw = player.getYRot();
+            float pitch = player.getXRot();
+            if (pitch != packet.getXRot(pitch) || yaw != packet.getYRot(yaw))
             {
-                player.updateLastActionTime();
+                player.resetLastActionTime();
             }
         }
     }

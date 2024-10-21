@@ -1,16 +1,16 @@
 package com.sakuraryoko.afkplus.commands;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.context.CommandContext;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.commands.CommandSourceStack;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.config.ConfigManager;
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 import com.sakuraryoko.afkplus.util.FormattingExample;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class AfkExCommand
 {
@@ -23,12 +23,12 @@ public class AfkExCommand
         ));
     }
 
-    private static int afkExample(ServerCommandSource src, CommandContext<ServerCommandSource> context)
+    private static int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
-        String user = src.getName();
-        context.getSource().sendFeedback(FormattingExample::runBuiltInTest, false);
-        context.getSource().sendFeedback(FormattingExample::runAliasTest, false);
-        context.getSource().sendFeedback(FormattingExample::runColorsTest, false);
+        String user = src.getTextName();
+        context.getSource().sendSuccess(FormattingExample::runBuiltInTest, false);
+        context.getSource().sendSuccess(FormattingExample::runAliasTest, false);
+        context.getSource().sendSuccess(FormattingExample::runColorsTest, false);
         AfkPlusLogger.debug(user + " has executed /afkex (example) .");
         return 1;
     }

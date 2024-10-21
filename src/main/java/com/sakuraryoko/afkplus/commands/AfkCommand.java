@@ -1,17 +1,16 @@
 package com.sakuraryoko.afkplus.commands;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.commands.CommandSourceStack;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.config.ConfigManager;
 import com.sakuraryoko.afkplus.data.IAfkPlayer;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class AfkCommand
 {
@@ -22,15 +21,15 @@ public class AfkCommand
                         .requires(Permissions.require("afkplus.afk", 0))
                         .executes(ctx -> setAfk(ctx.getSource(), ""))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                .requires(Permissions.require("afkplus.afk", 0))
-                                .executes(ctx -> setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
+                                      .requires(Permissions.require("afkplus.afk", 0))
+                                      .executes(ctx -> setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
                         )
         ));
     }
 
-    private static int setAfk(ServerCommandSource src, String reason) throws CommandSyntaxException
+    private static int setAfk(CommandSourceStack src, String reason)
     {
-        IAfkPlayer player = (IAfkPlayer) src.getPlayerOrThrow();
+        IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
         {
             player.afkplus$registerAfk("via /afk");

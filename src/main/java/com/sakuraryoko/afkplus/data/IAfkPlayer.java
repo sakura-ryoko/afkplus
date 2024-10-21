@@ -20,6 +20,8 @@ public interface IAfkPlayer
 
     boolean afkplus$isLockDamageDisabled();
 
+    long afkplus$getLastPlayerListTick();
+
     boolean afkplus$isNoAfkEnabled();
 
     void afkplus$setNoAfkEnabled();

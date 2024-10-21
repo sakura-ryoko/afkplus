@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -11,16 +11,16 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-	mavenCentral()
 	maven { url "https://jitpack.io" }
 	maven { url "https://maven.nucleoid.xyz/" }
 	// Only for a local maven repo for deps
-	flatDir { dirs 'libs' }
+	//flatDir { dirs 'libs' }
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings loom.officialMojangMappings()
 	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"

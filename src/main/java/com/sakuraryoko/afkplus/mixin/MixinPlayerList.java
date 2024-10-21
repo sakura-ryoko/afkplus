@@ -1,41 +1,40 @@
 package com.sakuraryoko.afkplus.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.c2s.common.SyncedClientOptions;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.GameMode;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.network.Connection;
+import net.minecraft.server.level.ClientInformation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.mojang.authlib.GameProfile;
-
 import com.sakuraryoko.afkplus.data.IAfkPlayer;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
-@Mixin(PlayerManager.class)
-public abstract class PlayerManagerMixin
+@Mixin(PlayerList.class)
+public abstract class MixinPlayerList
 {
-    public PlayerManagerMixin()
+    public MixinPlayerList()
     {
         super();
     }
 
-    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void checkInvulnerable1(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
+    @Inject(method = "placeNewPlayer", at = @At("TAIL"))
+    private void checkInvulnerable1(Connection connection, ServerPlayer player, CommonListenerCookie commonListenerCookie, CallbackInfo ci)
     {
         if (player == null)
         {
             return;
         }
         IAfkPlayer iPlayer = (IAfkPlayer) player;
-        if (player.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
             if (player.isInvulnerable())
             {
@@ -52,16 +51,16 @@ public abstract class PlayerManagerMixin
         }
     }
 
-    @Inject(method = "createPlayer", at = @At("RETURN"))
-    private void checkInvulnerable2(GameProfile profile, SyncedClientOptions syncedOptions, CallbackInfoReturnable<ServerPlayerEntity> cir)
+    @Inject(method = "getPlayerForLogin", at = @At("RETURN"))
+    private void checkInvulnerable2(GameProfile gameProfile, ClientInformation clientInformation, CallbackInfoReturnable<ServerPlayer> cir)
     {
-        ServerPlayerEntity playerEntity = cir.getReturnValue();
+        ServerPlayer playerEntity = cir.getReturnValue();
         IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
         if (playerEntity == null)
         {
             return;
         }
-        if (playerEntity.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        if (playerEntity.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
             if (playerEntity.isInvulnerable())
             {
@@ -76,15 +75,15 @@ public abstract class PlayerManagerMixin
 //            iPlayer.afkplus$updatePlayerList();
     }
 
-    @Inject(method = "respawnPlayer", at = @At("RETURN"))
-    private void checkInvulnerable3(ServerPlayerEntity player, boolean alive, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayerEntity> cir)
+    @Inject(method = "respawn", at = @At("RETURN"))
+    private void checkInvulnerable3(ServerPlayer player, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
     {
-        ServerPlayerEntity playerEntity = cir.getReturnValue();
+        ServerPlayer playerEntity = cir.getReturnValue();
         if (playerEntity == null)
         {
             return;
         }
-        if (playerEntity.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        if (playerEntity.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
             if (playerEntity.isInvulnerable())
             {
@@ -100,7 +99,7 @@ public abstract class PlayerManagerMixin
                 }
             }
         }
-        if (player.interactionManager.getGameMode() == GameMode.SURVIVAL)
+        if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
             if (player.isInvulnerable())
             {

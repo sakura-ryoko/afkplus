@@ -2,11 +2,10 @@ package com.sakuraryoko.afkplus.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.text.TextColor;
+import org.jetbrains.annotations.Nullable;
 
 import com.mojang.serialization.DataResult;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.network.chat.TextColor;
 
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
@@ -20,7 +19,7 @@ public class MoreColorNode
     protected MoreColorNode(String name, String hexCode)
     {
         DataResult<TextColor> dr;
-        dr = TextColor.parse(hexCode);
+        dr = TextColor.parseColor(hexCode);
         if (dr.error().isEmpty())
         {
             this.color = dr.result().orElse(null);
@@ -47,7 +46,7 @@ public class MoreColorNode
     protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
     {
         DataResult<TextColor> dr;
-        dr = TextColor.parse(hexCode);
+        dr = TextColor.parseColor(hexCode);
         if (dr.error().isEmpty())
         {
             this.color = dr.result().orElse(null);

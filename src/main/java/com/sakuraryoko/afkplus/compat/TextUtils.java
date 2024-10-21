@@ -1,22 +1,22 @@
 package com.sakuraryoko.afkplus.compat;
 
 import eu.pb4.placeholders.api.ParserContext;
-import net.minecraft.text.Text;
-
 import eu.pb4.placeholders.api.TextParserUtils;
 import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.network.chat.Component;
 
 public class TextUtils
 {
     // TODO - Remove legacy support in the future
-    public static final boolean LEGACY = false;
+    public static final boolean LEGACY = true;
 
-    public static Text formatText(String str, ParserContext ctx)
+    public static Component formatText(String str, ParserContext ctx)
     {
         return TextParser.PARSE.parseText(str, ctx);
     }
 
-    public static Text formatText(String str)
+    public static Component formatText(String str)
     {
         if (LEGACY)
         {
@@ -26,7 +26,7 @@ public class TextUtils
         return TextParser.PARSE.parseNode(str).toText();
     }
 
-    public static Text formatTextSafe(String str)
+    public static Component formatTextSafe(String str)
     {
         if (LEGACY)
         {
@@ -36,13 +36,13 @@ public class TextUtils
         return TextParser.PARSE.parseNode(str).toText();
     }
 
-    public static Text of(String str)
+    public static Component of(String str)
     {
-        return Text.of(str);
+        return Component.literal(str);
     }
 
-    public static Text translate(String translateStr, @Nullable String fallback)
+    public static Component translate(String translateStr, @Nullable String fallback)
     {
-        return Text.translatableWithFallback(translateStr, fallback);
+        return Component.translatableWithFallback(translateStr, fallback);
     }
 }

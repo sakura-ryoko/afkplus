@@ -3,17 +3,16 @@ package com.sakuraryoko.afkplus.nodes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.sakuraryoko.afkplus.compat.TextUtils;
-import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
-import eu.pb4.placeholders.api.parsers.tag.TextTag;
-import net.minecraft.text.TextColor;
-
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ColorNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
+import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
+import eu.pb4.placeholders.api.parsers.tag.TextTag;
 import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 
+import net.minecraft.network.chat.TextColor;
+
+import com.sakuraryoko.afkplus.compat.TextUtils;
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
 public class NodeManager

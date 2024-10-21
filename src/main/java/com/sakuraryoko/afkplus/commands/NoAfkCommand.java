@@ -1,17 +1,17 @@
 package com.sakuraryoko.afkplus.commands;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.config.ConfigManager;
 import com.sakuraryoko.afkplus.data.IAfkPlayer;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class NoAfkCommand
 {
@@ -24,21 +24,21 @@ public class NoAfkCommand
         ));
     }
 
-    private static int setNoAfk(ServerCommandSource src, CommandContext<ServerCommandSource> context)
+    private static int setNoAfk(CommandSourceStack src, CommandContext<CommandSourceStack> context)
             throws CommandSyntaxException
     {
-        IAfkPlayer player = (IAfkPlayer) src.getPlayerOrThrow();
-        String user = src.getName();
+        IAfkPlayer player = (IAfkPlayer) src.getPlayer();
+        //String user = src.getTextName();
         if (player.afkplus$isNoAfkEnabled())
         {
             player.afkplus$unsetNoAfkEnabled();
-            context.getSource().sendFeedback(() -> Text.of("No AFK Mode Disabled. (Timeouts enabled)"), true);
+            context.getSource().sendSuccess(() -> Component.literal("No AFK Mode Disabled. (Timeouts enabled)"), true);
             //AfkPlusLogger.info(user+ " has disabled No AFK mode. (Timeouts enabled)");
         }
         else
         {
             player.afkplus$setNoAfkEnabled();
-            context.getSource().sendFeedback(() -> Text.of("No AFK Mode Enabled. (Timeouts disabled)"), true);
+            context.getSource().sendSuccess(() -> Component.literal("No AFK Mode Enabled. (Timeouts disabled)"), true);
             //AfkPlusLogger.info(user+ " has enabled No AFK mode. (Timeouts disabled)");
         }
         return 1;

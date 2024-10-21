@@ -1,135 +1,136 @@
 package com.sakuraryoko.afkplus.util;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+
 import com.sakuraryoko.afkplus.compat.TextUtils;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class FormattingExample
 {
-    public static Text runBuiltInTest()
+    public static Component runBuiltInTest()
     {
         String testString = "<r><bold><i><dark_gray>*** BUILT-IN (Vanilla Formatters):";
-        Formatting test = Formatting.byName("black");
+        ChatFormatting test = ChatFormatting.getByName("black");
         if (test != null)
         {
             testString = testString + "<r>\n<copy:'<black>'><black>" + test.getName();
         }
 
-        test = Formatting.byName("dark_blue");
+        test = ChatFormatting.getByName("dark_blue");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_blue>'><dark_blue>" + test.getName();
         }
 
-        test = Formatting.byName("dark_green");
+        test = ChatFormatting.getByName("dark_green");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_green>'><dark_green>" + test.getName();
         }
 
-        test = Formatting.byName("dark_aqua");
+        test = ChatFormatting.getByName("dark_aqua");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_aqua>'><dark_aqua>" + test.getName();
         }
 
-        test = Formatting.byName("dark_red");
+        test = ChatFormatting.getByName("dark_red");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_red>'><dark_red>" + test.getName();
         }
 
-        test = Formatting.byName("dark_purple");
+        test = ChatFormatting.getByName("dark_purple");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_purple>'><dark_purple>" + test.getName();
         }
 
-        test = Formatting.byName("gold");
+        test = ChatFormatting.getByName("gold");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<gold>'><gold>" + test.getName();
         }
 
-        test = Formatting.byName("gray");
+        test = ChatFormatting.getByName("gray");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<gray>'><gray>" + test.getName();
         }
 
-        test = Formatting.byName("dark_gray");
+        test = ChatFormatting.getByName("dark_gray");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<dark_gray>'><dark_gray>" + test.getName();
         }
 
-        test = Formatting.byName("blue");
+        test = ChatFormatting.getByName("blue");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<blue>'><blue>" + test.getName();
         }
 
-        test = Formatting.byName("green");
+        test = ChatFormatting.getByName("green");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<green>'><green>" + test.getName();
         }
 
-        test = Formatting.byName("aqua");
+        test = ChatFormatting.getByName("aqua");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<aqua>'><aqua>" + test.getName();
         }
 
-        test = Formatting.byName("red");
+        test = ChatFormatting.getByName("red");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<red>'><red>" + test.getName();
         }
 
-        test = Formatting.byName("light_purple");
+        test = ChatFormatting.getByName("light_purple");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<light_purple>'><light_purple>" + test.getName();
         }
 
-        test = Formatting.byName("yellow");
+        test = ChatFormatting.getByName("yellow");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<yellow>'><yellow>" + test.getName();
         }
 
-        test = Formatting.byName("white");
+        test = ChatFormatting.getByName("white");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<white>'><white>" + test.getName();
         }
 
-        test = Formatting.byName("obfuscated");
+        test = ChatFormatting.getByName("obfuscated");
         if (test != null)
         {
             testString = testString + "<r>\n<u><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
         }
 
-        test = Formatting.byName("bold");
+        test = ChatFormatting.getByName("bold");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<bold>'><bold>" + test.getName();
         }
 
-        test = Formatting.byName("strikethrough");
+        test = ChatFormatting.getByName("strikethrough");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<strikethrough>'><strikethrough>" + test.getName();
         }
 
-        test = Formatting.byName("underline");
+        test = ChatFormatting.getByName("underline");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<underline>'><underline>" + test.getName();
         }
 
-        test = Formatting.byName("italic");
+        test = ChatFormatting.getByName("italic");
         if (test != null)
         {
             testString = testString + "<r> <copy:'<italic>'><italic>" + test.getName();
@@ -139,7 +140,7 @@ public class FormattingExample
         return TextUtils.formatText(testString);
     }
 
-    public static Text runAliasTest()
+    public static Component runAliasTest()
     {
         String testString = "<r><b><i><rainbow>*** PlaceholderAPI (Default) nodes:";
         testString = testString + "<r>\n<copy:'<orange>'><orange>orange (gold alias)";
@@ -153,7 +154,7 @@ public class FormattingExample
         return TextUtils.formatText(testString);
     }
 
-    public static Text runColorsTest()
+    public static Component runColorsTest()
     {
         String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
         testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";

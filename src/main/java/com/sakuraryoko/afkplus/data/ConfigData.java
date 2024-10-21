@@ -60,6 +60,7 @@ public class ConfigData
     {
         public boolean enableListDisplay;
         public String afkPlayerName;
+        public int updateInterval;
     }
 
     @NotNull

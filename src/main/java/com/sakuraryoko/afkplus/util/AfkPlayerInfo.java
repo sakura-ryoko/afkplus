@@ -1,12 +1,12 @@
 package com.sakuraryoko.afkplus.util;
 
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Util;
-
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+
+import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
 import com.sakuraryoko.afkplus.compat.TextUtils;
 import com.sakuraryoko.afkplus.data.IAfkPlayer;
@@ -21,7 +21,7 @@ public class AfkPlayerInfo
         long duration;
         if (afkPlayer.afkplus$isAfk())
         {
-            duration = Util.getMeasuringTimeMs() - afkPlayer.afkplus$getAfkTimeMs();
+            duration = Util.getMillis() - afkPlayer.afkplus$getAfkTimeMs();
             AfkStatus = "<bold><magenta>AFK Information:"
                     + "<r>\nPlayer: " + afkPlayer.afkplus$getName()
                     + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
@@ -79,10 +79,10 @@ public class AfkPlayerInfo
         return AfkStatus;
     }
 
-    public static Text getReason(IAfkPlayer afkPlayer, ServerCommandSource src)
+    public static Component getReason(IAfkPlayer afkPlayer, CommandSourceStack src)
     {
         String reasonFormat;
-        Text afkReason;
+        Component afkReason;
         if (afkPlayer.afkplus$isAfk())
         {
             reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
@@ -100,7 +100,7 @@ public class AfkPlayerInfo
         }
         else
         {
-            afkReason = Text.of("");
+            afkReason = Component.empty();
         }
         return afkReason;
     }

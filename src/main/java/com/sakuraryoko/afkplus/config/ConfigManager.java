@@ -48,6 +48,7 @@ public class ConfigManager
         CONFIG.PlaceholderOptions.afkInvulnerablePlaceholder = ":<red>I<r>";
         CONFIG.playerListOptions.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>";
         CONFIG.playerListOptions.enableListDisplay = true;
+        CONFIG.playerListOptions.updateInterval = 15;
         CONFIG.messageOptions.enableMessages = true;
         CONFIG.messageOptions.whenAfk = "%player:displayname% <yellow>is now AFK<r>";
         CONFIG.messageOptions.whenReturn = "%player:displayname% <yellow>is no longer AFK<r>";
@@ -149,6 +150,10 @@ public class ConfigManager
             CONFIG.playerListOptions.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>";
         }
         //CONFIG.playerListOptions.enableListDisplay = true;
+        if (CONFIG.playerListOptions.updateInterval < -1 || CONFIG.playerListOptions.updateInterval > 600)
+        {
+            CONFIG.playerListOptions.updateInterval = 15;
+        }
         //CONFIG.messageOptions.enableMessages = true;
         if (CONFIG.messageOptions.whenAfk == null)
         {
