@@ -27,8 +27,8 @@ dependencies {
 	//modImplementation "com.github.sakura-ryoko:corelib:${project.corelib_id}"
 
 	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
-	//modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
-	modImplementation include("com.github.sakura-ryoko:fabric-permissions-api:${project.fabric_permissions_api_id}")
+	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
+	//modImplementation include("com.github.sakura-ryoko:fabric-permissions-api:${project.fabric_permissions_api_id}")
 }
 
 processResources {
