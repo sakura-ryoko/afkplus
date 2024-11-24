@@ -31,6 +31,6 @@
   "depends": {
     "placeholder-api": "*",
     "fabric-permissions-api-v0": "*",
-    "minecraft": ">=1.21.2 <=1.21.3"
+    "minecraft": "1.21.4-beta.1"
   }
 }
