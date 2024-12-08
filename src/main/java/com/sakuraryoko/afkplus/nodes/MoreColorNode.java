@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
-//#if mcVersion >= 12002
+//#if MC >= 12004
 //$$ import com.mojang.serialization.DataResult;
 //#else
 //#endif
@@ -37,9 +37,9 @@ public class MoreColorNode
     private final String name;
     private final String hexCode;
     private List<String> aliases = new ArrayList<>();
-    private TextColor color;
+    private final TextColor color;
 
-    //#if mcVersion >= 12002
+    //#if MC >= 12004
     //$$ protected MoreColorNode(String name, String hexCode)
     //$$ {
         //$$ DataResult<TextColor> dr;
@@ -64,6 +64,7 @@ public class MoreColorNode
             //$$ AfkPlusLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
+            //$$ this.color = null;
         //$$ }
     //$$ }
 
@@ -92,6 +93,7 @@ public class MoreColorNode
             //$$ AfkPlusLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
+            //$$ this.color = null;
         //$$ }
     //$$ }
     //#else

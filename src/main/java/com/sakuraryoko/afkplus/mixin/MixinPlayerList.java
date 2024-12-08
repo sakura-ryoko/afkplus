@@ -22,8 +22,20 @@ package com.sakuraryoko.afkplus.mixin;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.Connection;
+//#if MC >= 12002
+//$$ import net.minecraft.server.level.ClientInformation;
+//#else
+//#endif
 import net.minecraft.server.level.ServerPlayer;
+//#if MC >= 12002
+//$$ import net.minecraft.server.network.CommonListenerCookie;
+//#else
+//#endif
 import net.minecraft.server.players.PlayerList;
+//#if MC >= 12101
+//$$ import net.minecraft.world.entity.Entity;
+//#else
+//#endif
 import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,18 +56,22 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void checkInvulnerable1(Connection connection, ServerPlayer player, CallbackInfo ci)
+    //#if MC >= 12002
+    //$$ private void checkInvulnerable1(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci)
+    //#else
+    private void checkInvulnerable1(Connection connection, ServerPlayer serverPlayer, CallbackInfo ci)
+    //#endif
     {
-        if (player == null)
+        if (serverPlayer == null)
         {
             return;
         }
-        IAfkPlayer iPlayer = (IAfkPlayer) player;
-        if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
+        IAfkPlayer iPlayer = (IAfkPlayer) serverPlayer;
+        if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
-            if (player.isInvulnerable())
+            if (serverPlayer.isInvulnerable())
             {
-                player.setInvulnerable(false);
+                serverPlayer.setInvulnerable(false);
                 AfkPlusLogger.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
             }
         }
@@ -69,7 +85,11 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "getPlayerForLogin", at = @At("RETURN"))
+    //#if MC >= 12002
+    //$$ private void checkInvulnerable2(GameProfile gameProfile, ClientInformation clientInformation, CallbackInfoReturnable<ServerPlayer> cir)
+    //#else
     private void checkInvulnerable2(GameProfile gameProfile, CallbackInfoReturnable<ServerPlayer> cir)
+    //#endif
     {
         ServerPlayer playerEntity = cir.getReturnValue();
         IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
@@ -93,7 +113,11 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "respawn", at = @At("RETURN"))
-    private void checkInvulnerable3(ServerPlayer player, boolean bl, CallbackInfoReturnable<ServerPlayer> cir)
+    //#if MC >= 12101
+    //$$ private void checkInvulnerable3(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
+    //#else
+    private void checkInvulnerable3(ServerPlayer serverPlayer, boolean bl, CallbackInfoReturnable<ServerPlayer> cir)
+    //#endif
     {
         ServerPlayer playerEntity = cir.getReturnValue();
         if (playerEntity == null)
@@ -116,13 +140,13 @@ public abstract class MixinPlayerList
                 }
             }
         }
-        if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
+        if (serverPlayer.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
         {
-            if (player.isInvulnerable())
+            if (serverPlayer.isInvulnerable())
             {
-                IAfkPlayer iPlayer = (IAfkPlayer) player;
+                IAfkPlayer iPlayer = (IAfkPlayer) serverPlayer;
                 AfkPlusLogger.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
-                player.setInvulnerable(false);
+                serverPlayer.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
                 // Fixes some quirky-ness of Styled Player List

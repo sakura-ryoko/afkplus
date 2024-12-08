@@ -20,7 +20,7 @@
 
 package com.sakuraryoko.afkplus.compat;
 
-//#if MC >= 12103
+//#if MC >= 12006
 //$$ import eu.pb4.placeholders.api.parsers.NodeParser;
 
 //$$ public class TextParser

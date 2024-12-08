@@ -23,7 +23,11 @@ package com.sakuraryoko.afkplus.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 
 import net.minecraft.server.level.ServerLevel;
+//#if MC >= 12001
+//$$ import net.minecraft.server.level.ServerPlayer;
+//#else
 import net.minecraft.world.entity.player.Player;
+//#endif
 import net.minecraft.world.level.levelgen.PhantomSpawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,16 +45,28 @@ import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 public class MixinPhantomSpawner
 {
     @Unique
-    private IAfkPlayer player;
+    private IAfkPlayer afkPlayer;
 
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
             at = @At(value = "INVOKE",
+                     //#if MC >= 12001
+                     //$$ target = "Lnet/minecraft/server/level/ServerPlayer;blockPosition()Lnet/minecraft/core/BlockPos;")
+                     //#else
                      target = "Lnet/minecraft/world/entity/player/Player;blockPosition()Lnet/minecraft/core/BlockPos;")
+                     //#endif
     )
     private void capturePlayerForMath(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
-                                      @Local Player serverPlayerEntity)
+                                      //#if MC >= 12001
+                                      //$$ @Local ServerPlayer serverPlayer)
+                                      //#else
+                                      @Local Player player)
+                                      //#endif
     {
-        player = (IAfkPlayer) serverPlayerEntity;
+        //#if MC >= 12001
+        //$$ afkPlayer = (IAfkPlayer) serverPlayer;
+        //#else
+        afkPlayer = (IAfkPlayer) player;
+        //#endif
     }
 
     @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
@@ -59,22 +75,22 @@ public class MixinPhantomSpawner
                index = 0)
     private int checkForAfkPlayer(int value)
     {
-        if (player == null)
+        if (afkPlayer == null)
         {
             return value;
         }
-        if (player.afkplus$isAfk() && CONFIG.packetOptions.bypassInsomnia)
+        if (afkPlayer.afkplus$isAfk() && CONFIG.packetOptions.bypassInsomnia)
         {
             if (value > 72000)
             {
-                AfkPlusLogger.info("Afk Player: " + player.afkplus$getName() + " was just spared from a phantom spawn chance.");
+                AfkPlusLogger.info("Afk Player: " + afkPlayer.afkplus$getName() + " was just spared from a phantom spawn chance.");
             }
-            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + player.afkplus$getName() + "] obtained TIME_SINCE_REST value of " + value + " setting value to 1");
+            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] obtained TIME_SINCE_REST value of " + value + " setting value to 1");
             return 1;
         }
         else
         {
-            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + player.afkplus$getName() + "] TIME_SINCE_REST has a value of " + value + " ");
+            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] TIME_SINCE_REST has a value of " + value + " ");
             return value;
         }
     }

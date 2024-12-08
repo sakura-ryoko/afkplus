@@ -50,6 +50,10 @@ public class AfkCommand
     private static int setAfk(CommandSourceStack src, String reason)
     {
         IAfkPlayer player = (IAfkPlayer) src.getPlayer();
+        if (player == null)
+        {
+            return 0;
+        }
         if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
         {
             player.afkplus$registerAfk("via /afk");

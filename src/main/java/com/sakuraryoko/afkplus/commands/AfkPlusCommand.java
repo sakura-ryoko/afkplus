@@ -242,7 +242,7 @@ public class AfkPlusCommand
     private static int disableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
-        String user = src.getTextName();
+        //String user = src.getTextName();
         if (afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$unlockDamageDisabled();
@@ -267,7 +267,7 @@ public class AfkPlusCommand
     private static int enableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
-        String user = src.getTextName();
+        //String user = src.getTextName();
         if (!afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$lockDamageDisabled();

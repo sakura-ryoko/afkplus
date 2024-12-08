@@ -54,7 +54,7 @@ public class AfkExCommand
         context.getSource().sendSuccess(FormattingExample.runBuiltInTest(), false);
         context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
         context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
-        //#endof
+        //#endif
         AfkPlusLogger.debug(user + " has executed /afkex (example) .");
         return 1;
     }

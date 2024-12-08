@@ -20,7 +20,7 @@
 
 package com.sakuraryoko.afkplus.compat;
 
-//#if MC >= 12103
+//#if MC >= 12006
 //$$ import eu.pb4.placeholders.api.ParserContext;
 //#else
 //#endif
@@ -29,12 +29,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 
+//#if MC >= 12006
+//$$ @SuppressWarnings("deprecation")
+//#else
+//#endif
 public class TextUtils
 {
     // TODO - Remove legacy support in the future
     public static final boolean LEGACY = true;
 
-    //#if MC >= 12103
+    //#if MC >= 12006
     //$$ public static Component formatText(String str, ParserContext ctx)
     //$$ {
         //$$ return TextParser.PARSE.parseText(str, ctx);
@@ -49,7 +53,7 @@ public class TextUtils
             return TextParserUtils.formatText(str);
         }
 
-        //#if MC >= 12103
+        //#if MC >= 12006
         //$$ return TextParser.PARSE.parseNode(str).toText();
         //#else
         return TextParserUtils.formatText(str);
@@ -63,7 +67,7 @@ public class TextUtils
             return TextParserUtils.formatTextSafe(str);
         }
 
-        //#if MC >= 12103
+        //#if MC >= 12006
         //$$ return TextParser.PARSE.parseNode(str).toText();
         //#else
         return TextParserUtils.formatTextSafe(str);

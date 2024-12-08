@@ -26,7 +26,7 @@ import java.util.List;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ColorNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
-//#if MC >= 12103
+//#if MC >= 12006
 //$$ import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
 //$$ import eu.pb4.placeholders.api.parsers.tag.TextTag;
 //#else
@@ -38,6 +38,10 @@ import net.minecraft.network.chat.TextColor;
 import com.sakuraryoko.afkplus.compat.TextUtils;
 import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 
+//#if MC >= 12006
+//$$ @SuppressWarnings("deprecation")
+//#else
+//#endif
 public class NodeManager
 {
     public static List<MoreColorNode> COLORS = new ArrayList<>();
@@ -96,7 +100,7 @@ public class NodeManager
                     );
                 }
                 // New Code
-//#if MC >= 12103
+//#if MC >= 12006
                 //$$ TagRegistry.registerDefault(
                     //$$ TextTag.enclosing(
                         //$$ iColorNode.getName(),
@@ -125,7 +129,7 @@ public class NodeManager
                     );
                 }
                 // New Code
-//#if MC >= 12103
+//#if MC >= 12006
                 //$$ TagRegistry.registerDefault(
                     //$$ TextTag.enclosing(
                         //$$ iColorNode.getName(),

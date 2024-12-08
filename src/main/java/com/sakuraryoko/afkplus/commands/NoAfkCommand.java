@@ -23,7 +23,6 @@ package com.sakuraryoko.afkplus.commands;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -45,10 +44,13 @@ public class NoAfkCommand
     }
 
     private static int setNoAfk(CommandSourceStack src, CommandContext<CommandSourceStack> context)
-            throws CommandSyntaxException
     {
         IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         //String user = src.getTextName();
+        if (player == null)
+        {
+            return 0;
+        }
         if (player.afkplus$isNoAfkEnabled())
         {
             player.afkplus$unsetNoAfkEnabled();

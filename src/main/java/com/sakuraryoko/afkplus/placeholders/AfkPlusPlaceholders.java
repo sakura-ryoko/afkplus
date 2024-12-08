@@ -37,7 +37,7 @@ public class AfkPlusPlaceholders
 {
     protected static void registerAfk()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "afk"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "afk"), (ctx, arg) ->
@@ -58,7 +58,7 @@ public class AfkPlusPlaceholders
 
     protected static void registerDuration()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "duration"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "duration"), (ctx, arg) ->
@@ -89,7 +89,7 @@ public class AfkPlusPlaceholders
 
     protected static void registerDisplayName()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "name"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "name"), (ctx, arg) ->
@@ -106,7 +106,7 @@ public class AfkPlusPlaceholders
                                : Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "display_name"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "display_name"), (ctx, arg) ->
@@ -127,7 +127,7 @@ public class AfkPlusPlaceholders
 
     protected static void registerReason()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "reason"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "reason"), (ctx, arg) ->
@@ -148,7 +148,7 @@ public class AfkPlusPlaceholders
 
     protected static void registerTime()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "time"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "time"), (ctx, arg) ->
@@ -169,7 +169,7 @@ public class AfkPlusPlaceholders
 
     protected static void registerInvulnerable()
     {
-        //#if MC >= 12102
+        //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->

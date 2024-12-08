@@ -20,7 +20,10 @@
 
 package com.sakuraryoko.afkplus;
 
-import com.sakuraryoko.afkplus.compat.TextParser;
+//#if MC >= 12006
+//$$ import com.sakuraryoko.afkplus.compat.TextParser;
+//#else
+//#endif
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import com.sakuraryoko.afkplus.commands.CommandManager;
@@ -66,7 +69,7 @@ public class AfkPlusMod
         AfkPlusLogger.debug("Registering Placeholders.");
         PlaceholderManager.register();
         AfkPlusLogger.debug("Building Text Parser.");
-        //#if mcVersion >= 12103
+        //#if MC >= 12006
         //$$ TextParser.build();
         //#else
         //#endif
