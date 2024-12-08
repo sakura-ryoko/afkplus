@@ -18,12 +18,23 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.placeholders;
+package com.sakuraryoko.afkplus.entry;
 
-public class PlaceholderManager
+import net.fabricmc.api.ClientModInitializer;
+
+import com.sakuraryoko.afkplus.AfkPlusMod;
+
+import static com.sakuraryoko.afkplus.AfkPlusReference.AFK_INIT;
+
+public class AfkPlusClient implements ClientModInitializer
 {
-    public static void register()
+    @Override
+    public void onInitializeClient()
     {
-        AfkPlusPlaceholders.register();
+        if (!AFK_INIT)
+        {
+            AFK_INIT = true;
+            AfkPlusMod.init();
+        }
     }
 }

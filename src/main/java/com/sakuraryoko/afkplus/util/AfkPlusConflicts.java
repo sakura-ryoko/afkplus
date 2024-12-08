@@ -35,7 +35,7 @@ public class AfkPlusConflicts
         ModMetadata modData;
         boolean modCheck = true;
 
-        AfkPlusLogger.debug("Checking for conflicting mods.");
+        AfkLogger.debug("Checking for conflicting mods.");
 
         // Check for svrutil --> /afk command primarily, the rest is ok
         modTarget = "svrutil";
@@ -44,7 +44,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please verify that the /afk command is disabled under config/svrutil/commands.json.");
             modCheck = false;
         }
@@ -57,7 +57,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please remove this mod to avoid AFK timeout confusion.");
             modCheck = false;
         }
@@ -69,7 +69,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please remove this mod to avoid AFK timeout confusion.");
             modCheck = false;
         }
@@ -81,7 +81,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please remove this mod to avoid AFK timeout confusion.");
             modCheck = false;
         }
@@ -92,7 +92,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please remove this mod to avoid AFK timeout/player list confusion.");
             modCheck = false;
         }
@@ -104,7 +104,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkPlusLogger.warn(modName + "-" + modVer
+            AfkLogger.warn(modName + "-" + modVer
                     + " has been found, please remove this mod to avoid AFK timeout/player list confusion.");
             modCheck = false;
         }
@@ -116,12 +116,12 @@ public class AfkPlusConflicts
     {
         boolean dpCheck = true;
         // Check for any data packs matching with "afk"
-        AfkPlusLogger.debug("Data pack reload detected.  Checking for conflicting data packs.");
+        AfkLogger.debug("Data pack reload detected.  Checking for conflicting data packs.");
         for (String dpString : dpCollection)
         {
             if (dpString.contains("afk") || dpString.contains("Afk") || dpString.contains("AFK"))
             {
-                AfkPlusLogger.warn(
+                AfkLogger.warn(
                         "Possible conflict found with data pack: " + dpString + " -- please remove/disable it.");
                 dpCheck = false;
             }

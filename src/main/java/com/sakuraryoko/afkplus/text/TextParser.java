@@ -18,21 +18,31 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.text;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
+//#if MC >= 12006
+//$$ import eu.pb4.placeholders.api.parsers.NodeParser;
 
-import static com.sakuraryoko.afkplus.data.ModData.AFK_INIT;
+//$$ public class TextParser
+//$$ {
+    //$$ public static NodeParser LEGACY;
+    //$$ public static NodeParser SIMP;
+    //$$ public static NodeParser QUICK;
+    //$$ public static NodeParser PLACEHOLDER;
+    //$$ public static NodeParser PARSE;
 
-public class AfkPlusServer implements DedicatedServerModInitializer
+    //$$ public static void build()
+    //$$ {
+        //$$ LEGACY = NodeParser.builder().legacyAll().build();
+        //$$ SIMP = NodeParser.builder().simplifiedTextFormat().build();
+        //$$ QUICK = NodeParser.builder().quickText().build();
+        //$$ PLACEHOLDER = NodeParser.builder().globalPlaceholders().build();
+
+        //$$ PARSE = NodeParser.builder().add(LEGACY).add(SIMP).add(QUICK).build();
+    //$$ }
+//$$ }
+//#else
+public class TextParser
 {
-    @Override
-    public void onInitializeServer()
-    {
-        if (!AFK_INIT)
-        {
-            AFK_INIT = true;
-            AfkPlusMod.init();
-        }
-    }
 }
+//#endif

@@ -23,31 +23,31 @@ package com.sakuraryoko.afkplus.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.sakuraryoko.afkplus.data.ModData;
+import com.sakuraryoko.afkplus.AfkPlusReference;
 
-public class AfkPlusLogger
+public class AfkLogger
 {
     private static Logger LOGGER;
     private static boolean log;
 
     public static void initLogger()
     {
-        LOGGER = LogManager.getLogger(ModData.AFK_MOD_ID);
+        LOGGER = LogManager.getLogger(AfkPlusReference.AFK_MOD_ID);
         log = true;
-        LOGGER.debug("[{}] Logger initialized.", ModData.AFK_MOD_ID);
+        LOGGER.debug("[{}] Logger initialized.", AfkPlusReference.AFK_MOD_ID);
     }
 
     public static void debug(String msg)
     {
         if (log)
         {
-            if (ModData.AFK_DEBUG)
+            if (AfkPlusReference.AFK_DEBUG)
             {
-                LOGGER.info("[{}:DEBUG] " + msg, ModData.AFK_MOD_ID);
+                LOGGER.info("[{}:DEBUG] " + msg, AfkPlusReference.AFK_MOD_ID);
             }
             else
             {
-                LOGGER.debug("[{}] " + msg, ModData.AFK_MOD_ID);
+                LOGGER.debug("[{}] " + msg, AfkPlusReference.AFK_MOD_ID);
             }
         }
     }
@@ -56,7 +56,7 @@ public class AfkPlusLogger
     {
         if (log)
         {
-            LOGGER.info("[{}] " + msg, ModData.AFK_MOD_ID);
+            LOGGER.info("[{}] " + msg, AfkPlusReference.AFK_MOD_ID);
         }
     }
 
@@ -64,7 +64,7 @@ public class AfkPlusLogger
     {
         if (log)
         {
-            LOGGER.warn("[{}] " + msg, ModData.AFK_MOD_ID);
+            LOGGER.warn("[{}] " + msg, AfkPlusReference.AFK_MOD_ID);
         }
     }
 
@@ -72,7 +72,7 @@ public class AfkPlusLogger
     {
         if (log)
         {
-            LOGGER.error("[{}] " + msg, ModData.AFK_MOD_ID);
+            LOGGER.error("[{}] " + msg, AfkPlusReference.AFK_MOD_ID);
         }
     }
 
@@ -80,7 +80,7 @@ public class AfkPlusLogger
     {
         if (log)
         {
-            LOGGER.fatal("[{}] " + msg, ModData.AFK_MOD_ID);
+            LOGGER.fatal("[{}] " + msg, AfkPlusReference.AFK_MOD_ID);
         }
     }
 }

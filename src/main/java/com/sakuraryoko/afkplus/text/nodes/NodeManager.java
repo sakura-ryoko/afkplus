@@ -18,9 +18,8 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.nodes;
+package com.sakuraryoko.afkplus.text.nodes;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import eu.pb4.placeholders.api.node.TextNode;
@@ -35,8 +34,9 @@ import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 
 import net.minecraft.network.chat.TextColor;
 
-import com.sakuraryoko.afkplus.compat.TextUtils;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.afkplus.text.nodes.type.MoreColorNode;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 //#if MC >= 12006
 //$$ @SuppressWarnings("deprecation")
@@ -44,45 +44,15 @@ import com.sakuraryoko.afkplus.util.AfkPlusLogger;
 //#endif
 public class NodeManager
 {
-    public static List<MoreColorNode> COLORS = new ArrayList<>();
-
-    private static void initColors()
-    {
-        COLORS.add(new MoreColorNode("bluetiful", "#3C69E7", List.of("blue2")));
-        COLORS.add(new MoreColorNode("brown", "#632C04"));
-        COLORS.add(new MoreColorNode("burnt_orange", "#FF7034", List.of("orange2")));
-        COLORS.add(new MoreColorNode("canary", "#FFFF99", List.of("yellow2")));
-        COLORS.add(new MoreColorNode("cool_mint", "#DDEBEC"));
-        COLORS.add(new MoreColorNode("copper", "#DA8A67"));
-        COLORS.add(new MoreColorNode("cyan", "#2D7C9D"));
-        COLORS.add(new MoreColorNode("dark_brown", "#421F05"));
-        COLORS.add(new MoreColorNode("dark_pink", "#DE8BB4"));
-        COLORS.add(new MoreColorNode("light_blue", "#82ACE7"));
-        COLORS.add(new MoreColorNode("light_brown", "#7A4621"));
-        COLORS.add(new MoreColorNode("light_gray", "#BABAC1", List.of("light_grey")));
-        COLORS.add(new MoreColorNode("light_pink", "#F7B4D6"));
-        COLORS.add(new MoreColorNode("lime", "#76C610"));
-        COLORS.add(new MoreColorNode("magenta", "#CB69C5"));
-        //COLORS.add(new MoreColorNode("orange","#E69E34"));
-        //COLORS.add(new MoreColorNode("pink","#EDA7CB"));
-        COLORS.add(new MoreColorNode("powder_blue", "#C0D5F0"));
-        COLORS.add(new MoreColorNode("purple", "#A453CE"));
-        COLORS.add(new MoreColorNode("royal_purple", "#6B3FA0"));
-        COLORS.add(new MoreColorNode("salmon", "#FF91A4", List.of("pink_salmon")));
-        COLORS.add(new MoreColorNode("shamrock", "#33CC99"));
-        COLORS.add(new MoreColorNode("tickle_me_pink", "#FC80A5"));
-        COLORS.add(new MoreColorNode("ultramarine_blue", "#3F26BF", List.of("ultramarine")));
-    }
-
     private static void registerColors()
     {
-        final Iterator<MoreColorNode> iterator = COLORS.iterator();
+        final Iterator<MoreColorNode> iterator = MoreColorNodes.COLORS.iterator();
         MoreColorNode iColorNode;
         while (iterator.hasNext())
         {
             iColorNode = iterator.next();
             // DataResult checked at initialization
-            AfkPlusLogger.debug("registerColors(): register ColorNode: " + iColorNode.getName() + " // " + iColorNode.getHexCode());
+            AfkLogger.debug("registerColors(): register ColorNode: " + iColorNode.getName() + " // " + iColorNode.getHexCode());
             TextColor finalIColorNode = iColorNode.getColor();
             if (iColorNode.getAliases() != null)
             {
@@ -147,7 +117,7 @@ public class NodeManager
 
     public static void initNodes()
     {
-        initColors();
+        MoreColorNodes.register();
     }
 
     public static void registerNodes()

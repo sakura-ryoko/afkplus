@@ -21,7 +21,7 @@
 package com.sakuraryoko.afkplus;
 
 //#if MC >= 12006
-//$$ import com.sakuraryoko.afkplus.compat.TextParser;
+//$$ import com.sakuraryoko.afkplus.text.TextParser;
 //#else
 //#endif
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -29,13 +29,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import com.sakuraryoko.afkplus.commands.CommandManager;
 import com.sakuraryoko.afkplus.config.ConfigManager;
 import com.sakuraryoko.afkplus.events.ServerEvents;
-import com.sakuraryoko.afkplus.nodes.NodeManager;
-import com.sakuraryoko.afkplus.placeholders.PlaceholderManager;
+import com.sakuraryoko.afkplus.text.nodes.NodeManager;
+import com.sakuraryoko.afkplus.text.placeholders.PlaceholderManager;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
-import static com.sakuraryoko.afkplus.data.ModData.AFK_DEBUG;
+import static com.sakuraryoko.afkplus.AfkPlusReference.AFK_DEBUG;
 
 public class AfkPlusMod
 {
@@ -43,45 +43,45 @@ public class AfkPlusMod
     {
         AFK_DEBUG = false;
 
-        AfkPlusLogger.initLogger();
-        AfkPlusLogger.debug("Initializing Mod.");
+        AfkLogger.initLogger();
+        AfkLogger.debug("Initializing Mod.");
 
         AfkPlusInfo.initModInfo();
         AfkPlusInfo.displayModInfo();
 
         if (AfkPlusInfo.isClient())
         {
-            AfkPlusLogger.info("MOD is running in a CLIENT Environment.");
+            AfkLogger.info("MOD is running in a CLIENT Environment.");
         }
         if (!AfkPlusConflicts.checkMods())
         {
-            AfkPlusLogger.warn("Mod conflicts check has FAILED.");
+            AfkLogger.warn("Mod conflicts check has FAILED.");
         }
 
-        AfkPlusLogger.debug("Config Initializing.");
+        AfkLogger.debug("Config Initializing.");
         ConfigManager.initConfig();
-        AfkPlusLogger.debug("Loading Config.");
+        AfkLogger.debug("Loading Config.");
         ConfigManager.loadConfig();
-        AfkPlusLogger.debug("Initializing nodes.");
+        AfkLogger.debug("Initializing nodes.");
         NodeManager.initNodes();
-        AfkPlusLogger.debug("Registering nodes.");
+        AfkLogger.debug("Registering nodes.");
         NodeManager.registerNodes();
-        AfkPlusLogger.debug("Registering Placeholders.");
+        AfkLogger.debug("Registering Placeholders.");
         PlaceholderManager.register();
-        AfkPlusLogger.debug("Building Text Parser.");
         //#if MC >= 12006
+        //$$ AfkLogger.debug("Building Text Parser.");
         //$$ TextParser.build();
         //#else
         //#endif
-        AfkPlusLogger.debug("Registering commands.");
+        AfkLogger.debug("Registering commands.");
         CommandManager.register();
 
-        AfkPlusLogger.debug("Registering Server Events.");
+        AfkLogger.debug("Registering Server Events.");
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
         ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
-        AfkPlusLogger.debug("All Tasks Done.");
+        AfkLogger.debug("All Tasks Done.");
     }
 }

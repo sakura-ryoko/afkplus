@@ -36,8 +36,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -83,14 +83,14 @@ public class MixinPhantomSpawner
         {
             if (value > 72000)
             {
-                AfkPlusLogger.info("Afk Player: " + afkPlayer.afkplus$getName() + " was just spared from a phantom spawn chance.");
+                AfkLogger.info("Afk Player: " + afkPlayer.afkplus$getName() + " was just spared from a phantom spawn chance.");
             }
-            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] obtained TIME_SINCE_REST value of " + value + " setting value to 1");
+            AfkLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] obtained TIME_SINCE_REST value of " + value + " setting value to 1");
             return 1;
         }
         else
         {
-            AfkPlusLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] TIME_SINCE_REST has a value of " + value + " ");
+            AfkLogger.debug("checkPhantomSpawn(): [Player: " + afkPlayer.afkplus$getName() + "] TIME_SINCE_REST has a value of " + value + " ");
             return value;
         }
     }

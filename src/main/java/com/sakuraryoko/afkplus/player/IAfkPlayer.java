@@ -18,10 +18,12 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.data;
+package com.sakuraryoko.afkplus.player;
 
 public interface IAfkPlayer
 {
+    int afkplus$getEntityId();
+
     boolean afkplus$isAfk();
 
     void afkplus$registerAfk(String reason);

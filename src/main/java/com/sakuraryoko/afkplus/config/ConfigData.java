@@ -18,11 +18,8 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.data;
+package com.sakuraryoko.afkplus.config;
 
-import org.jetbrains.annotations.NotNull;
-
-@NotNull
 public class ConfigData
 {
     public AfkPlusOptions afkPlusOptions = new AfkPlusOptions();
@@ -31,7 +28,6 @@ public class ConfigData
     public PlayerListOptions playerListOptions = new PlayerListOptions();
     public MessageOptions messageOptions = new MessageOptions();
 
-    @NotNull
     public static class AfkPlusOptions
     {
         public boolean enableAfkCommand;
@@ -46,7 +42,6 @@ public class ConfigData
         public String afkTimeoutString;
     }
 
-    @NotNull
     public static class PacketOptions
     {
         public int timeoutSeconds;
@@ -62,7 +57,6 @@ public class ConfigData
         public int afkKickSafePermissions;
     }
 
-    @NotNull
     public static class PlaceholderOptions
     {
         public String afkPlaceholder;
@@ -75,7 +69,6 @@ public class ConfigData
         public String afkInvulnerablePlaceholder;
     }
 
-    @NotNull
     public static class PlayerListOptions
     {
         public boolean enableListDisplay;
@@ -83,7 +76,6 @@ public class ConfigData
         public int updateInterval;
     }
 
-    @NotNull
     public static class MessageOptions
     {
         public boolean enableMessages;

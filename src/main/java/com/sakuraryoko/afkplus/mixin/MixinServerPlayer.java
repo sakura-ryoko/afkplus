@@ -44,9 +44,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.compat.TextUtils;
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -87,6 +87,12 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     public MixinServerPlayer(EntityType<?> type, Level world)
     {
         super(type, world);
+    }
+
+    @Override
+    public int afkplus$getEntityId()
+    {
+        return this.getId();
     }
 
     @Unique
@@ -220,7 +226,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     public void afkplus$updatePlayerList()
     {
         this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, player));
-        AfkPlusLogger.debug("sending player list update for " + afkplus$getName());
+        AfkLogger.debug("sending player list update for " + afkplus$getName());
         this.lastPlayerListTick = Util.getMillis();
     }
 
@@ -286,7 +292,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Unique
     public void afkplus$disableDamage()
     {
-        AfkPlusLogger.debug("disableDamage() has been invoked for: " + afkplus$getName());
+        AfkLogger.debug("disableDamage() has been invoked for: " + afkplus$getName());
         if (player.isCreative())
         {
             return;
@@ -301,7 +307,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
         }
         if (afkplus$isLockDamageDisabled())
         {
-            AfkPlusLogger.info("Disable Damage is locked from player: " + afkplus$getName());
+            AfkLogger.info("Disable Damage is locked from player: " + afkplus$getName());
             return;
         }
         if (afkplus$isAfk())
@@ -312,7 +318,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!player.isInvulnerable())
                 {
                     player.setInvulnerable(true);
-                    AfkPlusLogger.info("Damage Disabled for player: " + afkplus$getName());
+                    AfkLogger.info("Damage Disabled for player: " + afkplus$getName());
                 }
                 // Send announcement
                 if (!CONFIG.messageOptions.whenDamageDisabled.isEmpty())
@@ -330,7 +336,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     public void afkplus$enableDamage()
     {
         // Doesn't matter if they are marked as AFK --> make them not Invulnerable.
-        AfkPlusLogger.debug("enableDamage() has been invoked for: " + afkplus$getName());
+        AfkLogger.debug("enableDamage() has been invoked for: " + afkplus$getName());
         if (player.isCreative())
         {
             return;
@@ -346,7 +352,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             if (player.isInvulnerable())
             {
                 player.setInvulnerable(false);
-                AfkPlusLogger.info("Damage Enabled for player: " + afkplus$getName());
+                AfkLogger.info("Damage Enabled for player: " + afkplus$getName());
             }
             // Send announcement
             if (!CONFIG.messageOptions.whenDamageEnabled.isEmpty())
@@ -392,7 +398,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                     kickMessageString = CONFIG.messageOptions.whenKicked;
                 }
 
-                AfkPlusLogger.warn("Configured timeout has been reached for player " + afkplus$getName() + " --> removing from server.");
+                AfkLogger.warn("Configured timeout has been reached for player " + afkplus$getName() + " --> removing from server.");
 
                 if (!CONFIG.messageOptions.afkKickMessage.isEmpty())
                 {
@@ -540,7 +546,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             Component listEntry = Placeholders.parseText(
                     TextUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
                     PlaceholderContext.of(this));
-            AfkPlusLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.getString());
+            AfkLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.getString());
             cir.setReturnValue(listEntry.copy());
         }
     }
@@ -583,7 +589,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!this.afkplus$isDamageEnabled())
                 {
                     this.afkplus$enableDamage();
-                    AfkPlusLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " because they are [UNLOCKED]. step 1.");
+                    AfkLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " because they are [UNLOCKED]. step 1.");
                 }
             }
             else if (this.afkplus$isAfk() && CONFIG.packetOptions.disableDamage)
@@ -598,7 +604,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                         if (diff > cooldownSeconds * 1000L)
                         {
                             this.afkplus$disableDamage();
-                            AfkPlusLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 2.");
+                            AfkLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 2.");
                         }
                     }
                     else
@@ -606,7 +612,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                         if (!(this.player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
                         {
                             this.afkplus$disableDamage();
-                            AfkPlusLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 4.");
+                            AfkLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 4.");
                         }
                     }
                 }
@@ -616,14 +622,14 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!this.afkplus$isDamageEnabled())
                 {
                     this.afkplus$enableDamage();
-                    AfkPlusLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " step 5.");
+                    AfkLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " step 5.");
                 }
             }
         }
         catch (Exception e)
         {
             // Sometimes the values are null, so offer a catch
-            AfkPlusLogger.info("Caught exception during checkAfk(). (" + e.getMessage() + ")");
+            AfkLogger.info("Caught exception during checkAfk(). (" + e.getMessage() + ")");
         }
     }
 }

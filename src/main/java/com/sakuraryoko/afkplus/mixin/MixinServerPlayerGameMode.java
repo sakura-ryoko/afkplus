@@ -30,8 +30,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -49,7 +49,7 @@ public abstract class MixinServerPlayerGameMode
         IAfkPlayer afkPlayer = (IAfkPlayer) this.player;
         if (cir.getReturnValue())
         {
-            AfkPlusLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameType.getName());
+            AfkLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameType.getName());
             if (afkPlayer.afkplus$isAfk())
             {
                 // Fixes uncommon de-sync when switching Game Modes.

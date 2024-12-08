@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -54,10 +54,10 @@ public class MixinSleepStatus
     {
         // Count AFK Players into the total, they can't be marked as Sleeping, so don't increment that value.
         IAfkPlayer player = (IAfkPlayer) serverPlayerEntity;
-        AfkPlusLogger.debug("checkSleepCount(): Current values i:" + i + " j:" + j + " // total: " + this.activePlayers + " sleeping: " + this.sleepingPlayers);
+        AfkLogger.debug("checkSleepCount(): Current values i:" + i + " j:" + j + " // total: " + this.activePlayers + " sleeping: " + this.sleepingPlayers);
         if (player.afkplus$isAfk() && CONFIG.packetOptions.bypassSleepCount)
         {
-            AfkPlusLogger.info("AFK Player: " + player.afkplus$getName() + " is being excluded from the sleep requirements.");
+            AfkLogger.info("AFK Player: " + player.afkplus$getName() + " is being excluded from the sleep requirements.");
             --this.activePlayers;
         }
     }

@@ -18,16 +18,18 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.entry;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 
-import static com.sakuraryoko.afkplus.data.ModData.AFK_INIT;
+import com.sakuraryoko.afkplus.AfkPlusMod;
 
-public class AfkPlusClient implements ClientModInitializer
+import static com.sakuraryoko.afkplus.AfkPlusReference.AFK_INIT;
+
+public class AfkPlusServer implements DedicatedServerModInitializer
 {
     @Override
-    public void onInitializeClient()
+    public void onInitializeServer()
     {
         if (!AFK_INIT)
         {

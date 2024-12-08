@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.nodes;
+package com.sakuraryoko.afkplus.text.nodes.type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 //#endif
 import net.minecraft.network.chat.TextColor;
 
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 public class MoreColorNode
 {
@@ -40,7 +40,7 @@ public class MoreColorNode
     private final TextColor color;
 
     //#if MC >= 12004
-    //$$ protected MoreColorNode(String name, String hexCode)
+    //$$ public MoreColorNode(String name, String hexCode)
     //$$ {
         //$$ DataResult<TextColor> dr;
         //$$ dr = TextColor.parseColor(hexCode);
@@ -54,21 +54,21 @@ public class MoreColorNode
             //$$ }
             //$$ else
             //$$ {
-                //$$ AfkPlusLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
+                //$$ AfkLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
                 //$$ this.name = "";
                 //$$ this.hexCode = "";
             //$$ }
         //$$ }
         //$$ else
         //$$ {
-            //$$ AfkPlusLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
+            //$$ AfkLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
             //$$ this.color = null;
         //$$ }
     //$$ }
 
-    //$$ protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
+    //$$ public MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
     //$$ {
         //$$ DataResult<TextColor> dr;
         //$$ dr = TextColor.parseColor(hexCode);
@@ -83,21 +83,21 @@ public class MoreColorNode
             //$$ }
             //$$ else
             //$$ {
-                //$$ AfkPlusLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
+                //$$ AfkLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
                 //$$ this.name = "";
                 //$$ this.hexCode = "";
             //$$ }
         //$$ }
         //$$ else
         //$$ {
-            //$$ AfkPlusLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
+            //$$ AfkLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
             //$$ this.color = null;
         //$$ }
     //$$ }
     //#else
-    protected MoreColorNode(String name, String hexCode)
+    public MoreColorNode(String name, String hexCode)
     {
         this.color = TextColor.parseColor(hexCode);
         if (this.color != null)
@@ -106,13 +106,13 @@ public class MoreColorNode
             this.hexCode = hexCode;
         }
         else {
-            AfkPlusLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
+            AfkLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
             this.name = "";
             this.hexCode = "";
         }
     }
 
-    protected MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
+    public MoreColorNode(String name, String hexCode, @Nullable List<String> aliases)
     {
         this.color = TextColor.parseColor(hexCode);
         if (this.color != null)
@@ -122,30 +122,30 @@ public class MoreColorNode
             this.aliases = aliases;
         }
         else {
-            AfkPlusLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
+            AfkLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
             this.name = "";
             this.hexCode = "";
         }
     }
     //#endif
 
-    protected String getName()
+    public String getName()
     {
         return this.name;
     }
 
-    protected String getHexCode()
+    public String getHexCode()
     {
         return this.hexCode;
     }
 
     @Nullable
-    protected List<String> getAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
-    protected TextColor getColor()
+    public TextColor getColor()
     {
         return this.color;
     }

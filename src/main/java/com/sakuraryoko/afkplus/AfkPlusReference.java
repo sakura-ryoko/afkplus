@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.data;
+package com.sakuraryoko.afkplus;
 
 import java.util.Collection;
 
@@ -26,7 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.metadata.ContactInformation;
 import net.fabricmc.loader.api.metadata.Person;
 
-public class ModData
+public class AfkPlusReference
 {
     public static final String AFK_MOD_ID = "afkplus";
     public static String AFK_VERSION;

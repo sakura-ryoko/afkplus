@@ -31,9 +31,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.data.ModData;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -52,7 +52,7 @@ public abstract class MixinServerGamePacketListenerImpl
         if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0)
         {
             if (CONFIG.packetOptions.afkKickEnabled && CONFIG.packetOptions.afkKickTimer > -1
-                    && ModData.AFK_ENV.equals(EnvType.SERVER))
+                    && AfkPlusReference.AFK_ENV.equals(EnvType.SERVER))
             {
                 if ((afkPlayer.afkplus$isCreative() || afkPlayer.afkplus$isSpectator()) && !CONFIG.packetOptions.afkKickNonSurvival)
                 {
@@ -81,7 +81,7 @@ public abstract class MixinServerGamePacketListenerImpl
                 {
                     afkPlayer.afkplus$registerAfk(CONFIG.afkPlusOptions.afkTimeoutString);
                 }
-                AfkPlusLogger.debug("Setting player " + this.player.getName().getString() + " as AFK (timeout)");
+                AfkLogger.debug("Setting player " + this.player.getName().getString() + " as AFK (timeout)");
             }
         }
     }

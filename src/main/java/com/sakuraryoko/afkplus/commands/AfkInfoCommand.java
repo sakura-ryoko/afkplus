@@ -29,10 +29,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import com.sakuraryoko.afkplus.compat.TextUtils;
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlayerInfo;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
+import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 import static net.minecraft.commands.Commands.argument;
@@ -66,7 +66,7 @@ public class AfkInfoCommand
             context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkPlusLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
+            AfkLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
         }
         else
         {

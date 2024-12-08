@@ -27,8 +27,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.config.ConfigManager;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
-import com.sakuraryoko.afkplus.util.FormattingExample;
+import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.text.FormattingExample;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -55,7 +55,7 @@ public class AfkExCommand
         context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
         context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
         //#endif
-        AfkPlusLogger.debug(user + " has executed /afkex (example) .");
+        AfkLogger.debug(user + " has executed /afkex (example) .");
         return 1;
     }
 }

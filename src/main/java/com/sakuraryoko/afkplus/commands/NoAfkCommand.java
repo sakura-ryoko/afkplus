@@ -28,7 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.config.ConfigManager;
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 import static net.minecraft.commands.Commands.literal;
 

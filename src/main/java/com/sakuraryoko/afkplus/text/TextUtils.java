@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.compat;
+package com.sakuraryoko.afkplus.text;
 
 //#if MC >= 12006
 //$$ import eu.pb4.placeholders.api.ParserContext;

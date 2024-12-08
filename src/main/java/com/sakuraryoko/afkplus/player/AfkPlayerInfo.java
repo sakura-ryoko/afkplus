@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.util;
+package com.sakuraryoko.afkplus.player;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
@@ -28,8 +28,8 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.compat.TextUtils;
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
+import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.afkplus.util.AfkLogger;
 
 import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
@@ -85,7 +85,7 @@ public class AfkPlayerInfo
             {
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             }
-            AfkPlusLogger.debug("AkfStatus.getString(): " + AfkStatus);
+            AfkLogger.debug("AkfStatus.getString(): " + AfkStatus);
         }
         else if (afkPlayer.afkplus$isNoAfkEnabled())
         {
@@ -116,7 +116,7 @@ public class AfkPlayerInfo
                         TextUtils.formatTextSafe(reasonFormat + afkPlayer.afkplus$getAfkReason()),
                         PlaceholderContext.of(src));
             }
-            AfkPlusLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
+            AfkLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
         }
         else
         {

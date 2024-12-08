@@ -30,13 +30,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import com.sakuraryoko.afkplus.compat.TextUtils;
+import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.config.ConfigManager;
-import com.sakuraryoko.afkplus.data.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkPlayerInfo;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
-import com.sakuraryoko.afkplus.util.AfkPlusLogger;
-import com.sakuraryoko.afkplus.util.FormattingExample;
+import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.text.FormattingExample;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -115,7 +115,7 @@ public class AfkPlusCommand
         //#else
         context.getSource().sendSuccess(ModInfo, false);
         //#endif
-        AfkPlusLogger.debug(user + " has executed /afkplus .");
+        AfkLogger.debug(user + " has executed /afkplus .");
         return 1;
     }
 
@@ -131,7 +131,7 @@ public class AfkPlusCommand
         context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
         context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
         //#endif
-        AfkPlusLogger.debug(user + " has executed /afkplus example .");
+        AfkLogger.debug(user + " has executed /afkplus example .");
         return 1;
     }
 
@@ -144,7 +144,7 @@ public class AfkPlusCommand
         //#else
         context.getSource().sendSuccess(Component.literal("Reloaded config!"), false);
         //#endif
-        AfkPlusLogger.info(user + " has reloaded the configuration.");
+        AfkLogger.info(user + " has reloaded the configuration.");
         return 1;
     }
 
@@ -175,17 +175,17 @@ public class AfkPlusCommand
             if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
             {
                 afkPlayer.afkplus$registerAfk("via /afkplus set");
-                AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK");
+                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK");
             }
             else if (reason == null || reason.isEmpty())
             {
                 afkPlayer.afkplus$registerAfk(ConfigManager.CONFIG.messageOptions.defaultReason);
-                AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + ConfigManager.CONFIG.messageOptions.defaultReason);
+                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + ConfigManager.CONFIG.messageOptions.defaultReason);
             }
             else
             {
                 afkPlayer.afkplus$registerAfk(reason);
-                AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + reason);
+                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + reason);
             }
         }
         return 1;
@@ -198,7 +198,7 @@ public class AfkPlusCommand
         if (afkPlayer.afkplus$isAfk())
         {
             afkPlayer.afkplus$unregisterAfk();
-            AfkPlusLogger.info(user + " cleared player " + afkPlayer.afkplus$getName() + " from AFK");
+            AfkLogger.info(user + " cleared player " + afkPlayer.afkplus$getName() + " from AFK");
         }
         else
         {
@@ -226,7 +226,7 @@ public class AfkPlusCommand
             context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkPlusLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
+            AfkLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
         }
         else
         {
@@ -299,7 +299,7 @@ public class AfkPlusCommand
         //#else
         context.getSource().sendSuccess(Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);
         //#endif
-        AfkPlusLogger.info(user + " updated player list entry for " + afkPlayer.afkplus$getName());
+        AfkLogger.info(user + " updated player list entry for " + afkPlayer.afkplus$getName());
         return 1;
     }
 }

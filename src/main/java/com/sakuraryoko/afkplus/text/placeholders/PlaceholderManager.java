@@ -18,31 +18,17 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.compat;
+package com.sakuraryoko.afkplus.text.placeholders;
 
-//#if MC >= 12006
-//$$ import eu.pb4.placeholders.api.parsers.NodeParser;
-
-//$$ public class TextParser
-//$$ {
-    //$$ public static NodeParser LEGACY;
-    //$$ public static NodeParser SIMP;
-    //$$ public static NodeParser QUICK;
-    //$$ public static NodeParser PLACEHOLDER;
-    //$$ public static NodeParser PARSE;
-
-    //$$ public static void build()
-    //$$ {
-        //$$ LEGACY = NodeParser.builder().legacyAll().build();
-        //$$ SIMP = NodeParser.builder().simplifiedTextFormat().build();
-        //$$ QUICK = NodeParser.builder().quickText().build();
-        //$$ PLACEHOLDER = NodeParser.builder().globalPlaceholders().build();
-
-        //$$ PARSE = NodeParser.builder().add(LEGACY).add(SIMP).add(QUICK).build();
-    //$$ }
-//$$ }
-//#else
-public class TextParser
+public class PlaceholderManager
 {
+    public static void register()
+    {
+        AfkPlaceholder.register();
+        DisplayNamePlaceholder.register();
+        DurationPlaceholder.register();
+        InvulnerablePlaceholder.register();
+        ReasonPlaceholder.register();
+        TimePlaceholder.register();
+    }
 }
-//#endif
