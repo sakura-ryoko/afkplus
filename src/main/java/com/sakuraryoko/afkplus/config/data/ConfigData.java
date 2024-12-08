@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.config;
+package com.sakuraryoko.afkplus.config.data;
 
 public class ConfigData
 {

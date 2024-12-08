@@ -28,6 +28,7 @@ import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
 
 import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.config.data.ConfigData;
 import com.sakuraryoko.afkplus.util.AfkLogger;
 
 public class ConfigManager
