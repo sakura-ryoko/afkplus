@@ -1,58 +1,58 @@
 plugins {
-	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
+	id 'com.github.hierynomus.license' version '0.16.1' apply false
+	id 'fabric-loom' version '1.9-SNAPSHOT' apply false
+
+	// https://github.com/ReplayMod/preprocessor
+	// https://github.com/Fallen-Breath/preprocessor
+	id 'com.replaymod.preprocess' version '9d21b334a7'
+
+	// https://github.com/Fallen-Breath/yamlang
+	id 'me.fallenbreath.yamlang' version '1.4.0' apply false
 }
 
-//sourceCompatibility = JavaVersion.VERSION_21
-//targetCompatibility = JavaVersion.VERSION_21
+preprocess {
+	strictExtraMappings = false
 
-base.archivesName = project.mod_id + '-' + project.minecraft_version
-version = project.mod_version
-group = project.maven_group
+	def mc1194 = createNode('1.19.4', 1_19_04, '')
+	def mc1201 = createNode('1.20.1', 1_20_01, '')
+	def mc1202 = createNode('1.20.2', 1_20_02, '')
+	def mc1204 = createNode('1.20.4', 1_20_04, '')
+	def mc1206 = createNode('1.20.6', 1_20_06, '')
+	def mc1211 = createNode('1.21.1', 1_21_01, '')
+	def mc1213 = createNode('1.21.3', 1_21_03, '')
+	def mc1214 = createNode('1.21.4', 1_21_04, '')
 
-repositories {
-	maven { url "https://jitpack.io" }
-	maven { url "https://maven.nucleoid.xyz/" }
-	// Only for a local maven repo for deps
-	//flatDir { dirs 'libs' }
+	mc1194.link(mc1201, null)
+	mc1201.link(mc1202, null)
+	mc1202.link(mc1204, null)
+	mc1204.link(mc1206, null)
+	mc1206.link(mc1211, null)
+	mc1211.link(mc1213, null)
+	mc1213.link(mc1214, null)
 }
 
-dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	mappings loom.officialMojangMappings()
-
-	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
-	implementation "com.google.code.gson:gson:${project.gson_version}"
-	implementation "com.google.code.findbugs:jsr305:3.0.2"
-
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	//modImplementation "com.github.sakura-ryoko:corelib:${project.corelib_id}"
-
-	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
-	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
-	//modImplementation include("com.github.sakura-ryoko:fabric-permissions-api:${project.fabric_permissions_api_id}")
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+tasks.register('buildAndGather') {
+	subprojects {
+		dependsOn project.tasks.named('build').get()
 	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-}
-
-java {
-	withSourcesJar()
-}
-
-jar {
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName}"}
+	doFirst {
+		println 'Gathering builds'
+		def buildLibs = {
+			p -> p.buildDir.toPath().resolve('libs')
+		}
+		delete fileTree(buildLibs(rootProject)) {
+			include '*'
+		}
+		subprojects {
+			copy {
+				from(buildLibs(project)) {
+					include '*.jar'
+					exclude '*-dev.jar', '*-sources.jar', '*-shadow.jar'
+				}
+				into buildLibs(rootProject)
+				duplicatesStrategy DuplicatesStrategy.INCLUDE
+			}
+		}
 	}
 }

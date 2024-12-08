@@ -1,8 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "afkplus",
+  "id": "${id}",
   "version": "${version}",
-  "name": "AfkPlus",
+
+  "name": "${name}",
   "description": "Show which players are afk in the player list",
   "authors": [
     "sakura-ryoko",
@@ -15,6 +16,7 @@
   },
   "license": "MIT",
   "icon": "assets/afkplus/icon.png",
+
   "environment": "*",
   "entrypoints": {
     "server": [
@@ -28,9 +30,9 @@
   "mixins": [
     "afkplus.mixins.json"
   ],
+
   "depends": {
-    "placeholder-api": "*",
-    "fabric-permissions-api-v0": "*",
-    "minecraft": "1.21.4"
+    "fabricloader": ">=0.11.4",
+    "minecraft": "${minecraft_dependency}"
   }
 }

@@ -1,3 +1,23 @@
+/*
+ * This file is part of the AfkPlus project, licensed under the
+ * GNU Lesser General Public License v3.0
+ *
+ * Copyright (C) 2024  Sakura Ryoko and contributors
+ *
+ * AfkPlus is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AfkPlus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.sakuraryoko.afkplus.nodes;
 
 import java.util.ArrayList;
@@ -6,8 +26,11 @@ import java.util.List;
 import eu.pb4.placeholders.api.node.TextNode;
 import eu.pb4.placeholders.api.node.parent.ColorNode;
 import eu.pb4.placeholders.api.parsers.TextParserV1;
-import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
-import eu.pb4.placeholders.api.parsers.tag.TextTag;
+//#if MC >= 12103
+//$$ import eu.pb4.placeholders.api.parsers.tag.TagRegistry;
+//$$ import eu.pb4.placeholders.api.parsers.tag.TextTag;
+//#else
+//#endif
 import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 
 import net.minecraft.network.chat.TextColor;
@@ -73,15 +96,18 @@ public class NodeManager
                     );
                 }
                 // New Code
-                TagRegistry.registerDefault(
-                        TextTag.enclosing(
-                                iColorNode.getName(),
-                                iColorNode.getAliases(),
-                                "color",
-                                true,
-                                (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
-                        )
-                );
+//#if MC >= 12103
+                //$$ TagRegistry.registerDefault(
+                    //$$ TextTag.enclosing(
+                        //$$ iColorNode.getName(),
+                        //$$ iColorNode.getAliases(),
+                        //$$ "color",
+                        //$$ true,
+                        //$$ (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
+                    //$$ )
+                //$$ );
+//#else
+//#endif
             }
             else
             {
@@ -99,15 +125,18 @@ public class NodeManager
                     );
                 }
                 // New Code
-                TagRegistry.registerDefault(
-                        TextTag.enclosing(
-                                iColorNode.getName(),
-                                List.of(""),
-                                "color",
-                                true,
-                                (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
-                        )
-                );
+//#if MC >= 12103
+                //$$ TagRegistry.registerDefault(
+                    //$$ TextTag.enclosing(
+                        //$$ iColorNode.getName(),
+                        //$$ List.of(""),
+                        //$$ "color",
+                        //$$ true,
+                        //$$ (nodes, data, parser) -> new ColorNode(nodes, finalIColorNode)
+                    //$$ )
+                //$$ );
+//#else
+//#endif
             }
         }
     }

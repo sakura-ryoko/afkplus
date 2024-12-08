@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "afkplus",
+  "version": "${version}",
+  "name": "AfkPlus",
+  "description": "Show which players are afk in the player list",
+  "authors": [
+    "sakura-ryoko",
+    "(based upon afkdisplay by beabfc)"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/afkplus",
+    "sources": "https://github.com/sakura-ryoko/afkplus",
+    "issues": "https://github.com/sakura-ryoko/afkplus/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/afkplus/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "server": [
+      "com.sakuraryoko.afkplus.AfkPlusServer"
+    ],
+    "client": [
+      "com.sakuraryoko.afkplus.AfkPlusClient"
+    ],
+    "main": []
+  },
+  "mixins": [
+    "afkplus.mixins.json"
+  ],
+  "depends": {
+    "placeholder-api": "*",
+    "fabric-permissions-api-v0": "*",
+    "minecraft": "1.21.4"
+  }
+}

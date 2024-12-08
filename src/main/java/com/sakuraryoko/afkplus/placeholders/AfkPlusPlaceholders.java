@@ -1,3 +1,23 @@
+/*
+ * This file is part of the AfkPlus project, licensed under the
+ * GNU Lesser General Public License v3.0
+ *
+ * Copyright (C) 2024  Sakura Ryoko and contributors
+ *
+ * AfkPlus is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AfkPlus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.sakuraryoko.afkplus.placeholders;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
@@ -17,7 +37,11 @@ public class AfkPlusPlaceholders
 {
     protected static void registerAfk()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "afk"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "afk"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "afk"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -34,7 +58,11 @@ public class AfkPlusPlaceholders
 
     protected static void registerDuration()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "duration"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "duration"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "duration"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -61,7 +89,11 @@ public class AfkPlusPlaceholders
 
     protected static void registerDisplayName()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "name"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "name"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "name"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -74,7 +106,11 @@ public class AfkPlusPlaceholders
                                : Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "display_name"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "display_name"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "display_name"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -91,7 +127,11 @@ public class AfkPlusPlaceholders
 
     protected static void registerReason()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "reason"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "reason"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "reason"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -108,7 +148,11 @@ public class AfkPlusPlaceholders
 
     protected static void registerTime()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "time"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "time"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "time"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {
@@ -125,7 +169,11 @@ public class AfkPlusPlaceholders
 
     protected static void registerInvulnerable()
     {
-        Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
+        //#if MC >= 12102
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(ModData.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
+        //#else
+        Placeholders.register(new ResourceLocation(ModData.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
+        //#endif
         {
             if (!ctx.hasPlayer())
             {

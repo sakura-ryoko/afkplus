@@ -1,3 +1,23 @@
+/*
+ * This file is part of the AfkPlus project, licensed under the
+ * GNU Lesser General Public License v3.0
+ *
+ * Copyright (C) 2024  Sakura Ryoko and contributors
+ *
+ * AfkPlus is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AfkPlus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.sakuraryoko.afkplus.commands;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -90,7 +110,11 @@ public class AfkPlusCommand
     {
         Component ModInfo = AfkPlusInfo.getModInfoText();
         String user = src.getTextName();
-        context.getSource().sendSuccess(() -> ModInfo, false);
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> ModInfo, false);
+        //#else
+        context.getSource().sendSuccess(ModInfo, false);
+        //#endif
         AfkPlusLogger.debug(user + " has executed /afkplus .");
         return 1;
     }
@@ -98,9 +122,15 @@ public class AfkPlusCommand
     private static int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
-        context.getSource().sendSuccess(FormattingExample::runBuiltInTest, false);
-        context.getSource().sendSuccess(FormattingExample::runAliasTest, false);
-        context.getSource().sendSuccess(FormattingExample::runColorsTest, false);
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(FormattingExample::runBuiltInTest, false);
+        //$$ context.getSource().sendSuccess(FormattingExample::runAliasTest, false);
+        //$$ context.getSource().sendSuccess(FormattingExample::runColorsTest, false);
+        //#else
+        context.getSource().sendSuccess(FormattingExample.runBuiltInTest(), false);
+        context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
+        context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
+        //#endif
         AfkPlusLogger.debug(user + " has executed /afkplus example .");
         return 1;
     }
@@ -109,7 +139,11 @@ public class AfkPlusCommand
     {
         String user = src.getTextName();
         ConfigManager.reloadConfig();
-        context.getSource().sendSuccess(() -> Component.literal("Reloaded config!"), false);
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> Component.literal("Reloaded config!"), false);
+        //#else
+        context.getSource().sendSuccess(Component.literal("Reloaded config!"), false);
+        //#endif
         AfkPlusLogger.info(user + " has reloaded the configuration.");
         return 1;
     }
@@ -120,7 +154,11 @@ public class AfkPlusCommand
         String user = src.getTextName();
         if (afkPlayer.afkplus$isAfk())
         {
-            context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal(afkPlayer.afkplus$getName() + " is already marked as AFK."), false);
+            //#endif
         }
         else
         {
@@ -128,7 +166,11 @@ public class AfkPlusCommand
             {
                 afkPlayer.afkplus$unsetNoAfkEnabled();
                 //AfkPlusLogger.info(user + " set player " + afkPlayer.afkplus$getName() + "'s NoAfk status OFF.");
-                context.getSource().sendSuccess(() -> Component.literal("Toggled player " + afkPlayer.afkplus$getName() + "'s NoAFK status OFF."), true);
+                //#if MC >= 12001
+                //$$ context.getSource().sendSuccess(() -> Component.literal("Toggled player " + afkPlayer.afkplus$getName() + "'s NoAFK status OFF."), true);
+                //#else
+                context.getSource().sendSuccess(Component.literal("Toggled player " + afkPlayer.afkplus$getName() + "'s NoAFK status OFF."), true);
+                //#endif
             }
             if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
             {
@@ -160,7 +202,11 @@ public class AfkPlusCommand
         }
         else
         {
-            context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#endif
         }
         return 1;
     }
@@ -173,13 +219,22 @@ public class AfkPlusCommand
         {
             String afkStatus = AfkPlayerInfo.getString(afkPlayer);
             Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
-            context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(afkStatus), false);
-            context.getSource().sendSuccess(() -> afkReason, false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(afkStatus), false);
+            //$$ context.getSource().sendSuccess(() -> afkReason, false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
+            context.getSource().sendSuccess(afkReason, false);
+            //#endif
             AfkPlusLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
         }
         else
         {
-            context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //#endif
         }
         return 1;
     }
@@ -191,12 +246,20 @@ public class AfkPlusCommand
         if (afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$unlockDamageDisabled();
-            context.getSource().sendSuccess(() -> Component.literal("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()), true);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()), true);
+            //#else
+            context.getSource().sendSuccess(Component.literal("Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName()), true);
+            //#endif
             //AfkPlusLogger.info(user + " Allowing Damage Disable feature for player " + afkPlayer.afkplus$getName());
         }
         else
         {
-            context.getSource().sendSuccess(() -> Component.literal("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()), false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal("Damage Disable is already allowed for player " + afkPlayer.afkplus$getName()), false);
+            //#endif
         }
         return 1;
     }
@@ -208,12 +271,20 @@ public class AfkPlusCommand
         if (!afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$lockDamageDisabled();
-            context.getSource().sendSuccess(() -> Component.literal("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()), true);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()), true);
+            //#else
+            context.getSource().sendSuccess(Component.literal("Force-Enabling Damage for player " + afkPlayer.afkplus$getName()), true);
+            //#endif
             //AfkPlusLogger.info(user + " Force-Enabling Damage for player " + afkPlayer.afkplus$getName());
         }
         else
         {
-            context.getSource().sendSuccess(() -> Component.literal("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()), false);
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal("Damage Disable is already disallowed for player " + afkPlayer.afkplus$getName()), false);
+            //#endif
         }
         return 1;
     }
@@ -223,7 +294,11 @@ public class AfkPlusCommand
         String user = src.getTextName();
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         afkPlayer.afkplus$updatePlayerList();
-        context.getSource().sendSuccess(() -> Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);
+        //#else
+        context.getSource().sendSuccess(Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);
+        //#endif
         AfkPlusLogger.info(user + " updated player list entry for " + afkPlayer.afkplus$getName());
         return 1;
     }

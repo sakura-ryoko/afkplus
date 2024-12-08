@@ -1,12 +1,29 @@
+/*
+ * This file is part of the AfkPlus project, licensed under the
+ * GNU Lesser General Public License v3.0
+ *
+ * Copyright (C) 2024  Sakura Ryoko and contributors
+ *
+ * AfkPlus is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AfkPlus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.sakuraryoko.afkplus.mixin;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.Connection;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +44,7 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void checkInvulnerable1(Connection connection, ServerPlayer player, CommonListenerCookie commonListenerCookie, CallbackInfo ci)
+    private void checkInvulnerable1(Connection connection, ServerPlayer player, CallbackInfo ci)
     {
         if (player == null)
         {
@@ -52,7 +69,7 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "getPlayerForLogin", at = @At("RETURN"))
-    private void checkInvulnerable2(GameProfile gameProfile, ClientInformation clientInformation, CallbackInfoReturnable<ServerPlayer> cir)
+    private void checkInvulnerable2(GameProfile gameProfile, CallbackInfoReturnable<ServerPlayer> cir)
     {
         ServerPlayer playerEntity = cir.getReturnValue();
         IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
@@ -76,7 +93,7 @@ public abstract class MixinPlayerList
     }
 
     @Inject(method = "respawn", at = @At("RETURN"))
-    private void checkInvulnerable3(ServerPlayer player, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
+    private void checkInvulnerable3(ServerPlayer player, boolean bl, CallbackInfoReturnable<ServerPlayer> cir)
     {
         ServerPlayer playerEntity = cir.getReturnValue();
         if (playerEntity == null)
