@@ -18,7 +18,7 @@ public class AfkPlusMod
 {
     public static void init()
     {
-        AFK_DEBUG = true;
+        AFK_DEBUG = false;
 
         AfkPlusLogger.initLogger();
         AfkPlusLogger.debug("Initializing Mod.");
