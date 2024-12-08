@@ -16,6 +16,9 @@ repositories {
 	maven {
 		url "https://maven.nucleoid.xyz/"
 	}
+	maven {
+		url 'https://oss.sonatype.org/content/repositories/snapshots'
+	}
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -43,14 +46,14 @@ dependencies {
 	modRuntimeOnly 'me.fallenbreath:mixin-auditor:0.1.0'
 
 	// dependencies
-	include(modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
+	modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version))
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	include(modImplementation("me.fallenbreath:conditional-mixin-fabric:${project.conditionalmixin_version}"))
 	include(annotationProcessor(implementation("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
 
 	// AFKPlus Specific
-	modImplementation include("eu.pb4:placeholder-api:${project.placeholder_api_version}")
 	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
+	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
 }
 
 String MIXIN_CONFIG_PATH = 'afkplus.mixins.json'
