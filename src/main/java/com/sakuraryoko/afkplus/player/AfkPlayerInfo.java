@@ -28,10 +28,9 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.TextUtils;
-import com.sakuraryoko.afkplus.util.AfkLogger;
-
-import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 public class AfkPlayerInfo
 {
@@ -44,16 +43,16 @@ public class AfkPlayerInfo
             duration = Util.getMillis() - afkPlayer.afkplus$getAfkTimeMs();
             AfkStatus = "<bold><magenta>AFK Information:"
                     + "<r>\nPlayer: " + afkPlayer.afkplus$getName()
-                    + "<r>\nAfk Since: " + CONFIG.PlaceholderOptions.afkTimePlaceholderFormatting
+                    + "<r>\nAfk Since: " + ConfigWrap.place().afkTimePlaceholderFormatting
                     + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)";
-            if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration)
+            if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
             {
-                AfkStatus = AfkStatus + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting;
+                AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
                 AfkStatus = AfkStatus + DurationFormatUtils.formatDurationWords(duration, true, true);
             }
-            else if (CONFIG.messageOptions.displayDuration)
+            else if (ConfigWrap.mess().displayDuration)
             {
-                AfkStatus = AfkStatus + "<r>\nDuration: " + CONFIG.PlaceholderOptions.afkDurationPlaceholderFormatting;
+                AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
                 AfkStatus = AfkStatus + DurationFormatUtils.formatDurationHMS(duration) + "<r>ms (Format:HH:mm:ss)";
             }
             else
@@ -85,7 +84,7 @@ public class AfkPlayerInfo
             {
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             }
-            AfkLogger.debug("AkfStatus.getString(): " + AfkStatus);
+            AfkPlusMod.debugLog("AkfStatus.getString(): {}", AfkStatus);
         }
         else if (afkPlayer.afkplus$isNoAfkEnabled())
         {
@@ -105,7 +104,7 @@ public class AfkPlayerInfo
         Component afkReason;
         if (afkPlayer.afkplus$isAfk())
         {
-            reasonFormat = "<r>Reason: " + CONFIG.PlaceholderOptions.afkReasonPlaceholderFormatting;
+            reasonFormat = "<r>Reason: " + ConfigWrap.place().afkReasonPlaceholderFormatting;
             if (afkPlayer.afkplus$getAfkReason().isEmpty())
             {
                 afkReason = TextUtils.formatTextSafe(reasonFormat + "none");
@@ -116,7 +115,7 @@ public class AfkPlayerInfo
                         TextUtils.formatTextSafe(reasonFormat + afkPlayer.afkplus$getAfkReason()),
                         PlaceholderContext.of(src));
             }
-            AfkLogger.debug("AkfStatus.getReason(): " + afkReason.toString());
+            AfkPlusMod.debugLog("AkfStatus.getReason(): {}", afkReason.toString());
         }
         else
         {

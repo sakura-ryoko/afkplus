@@ -24,8 +24,9 @@ import java.util.Collection;
 
 import net.minecraft.server.MinecraftServer;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.AfkConfigManager;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
-import com.sakuraryoko.afkplus.util.AfkLogger;
 
 public class ServerEvents
 {
@@ -33,36 +34,41 @@ public class ServerEvents
 
     public static void starting(MinecraftServer server)
     {
-        AfkLogger.debug("Server is starting. " + server.getServerModName());
+        AfkPlusMod.debugLog("Server is starting, {}", server.getServerModName());
     }
 
     public static void started(MinecraftServer server)
     {
         dpCollection = server.getPackRepository().getSelectedIds();
+
         if (!AfkPlusConflicts.checkDatapacks(dpCollection))
         {
-            AfkLogger.warn("MOD Data Pack test has FAILED.");
+            AfkPlusMod.LOGGER.warn("MOD Data Pack test has FAILED.");
         }
-        AfkLogger.debug("Server has started. " + server.getServerModName());
+
+        AfkPlusMod.debugLog("Server has started, {}", server.getServerModName());
     }
 
     public static void dpReload(MinecraftServer server)
     {
         dpCollection = server.getPackRepository().getSelectedIds();
+
         if (!AfkPlusConflicts.checkDatapacks(dpCollection))
         {
-            AfkLogger.warn("MOD Data Pack test has FAILED.");
+            AfkPlusMod.LOGGER.warn("MOD Data Pack test has FAILED.");
         }
-        AfkLogger.debug("Server has reloaded it's data packs. " + server.getServerModName());
+
+        AfkPlusMod.debugLog("Server has reloaded it's data packs, {}", server.getServerModName());
     }
 
     public static void stopping(MinecraftServer server)
     {
-        AfkLogger.debug("Server is stopping. " + server.getServerModName());
+        AfkPlusMod.debugLog("Server is stopping, {}", server.getServerModName());
+        AfkConfigManager.getInstance().saveAllConfigs();
     }
 
     public static void stopped(MinecraftServer server)
     {
-        AfkLogger.debug("Server has stopped. " + server.getServerModName());
+        AfkPlusMod.debugLog("Server has stopped, {}", server.getServerModName());
     }
 }

@@ -29,12 +29,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
-import com.sakuraryoko.afkplus.util.AfkLogger;
 
-import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -44,7 +44,7 @@ public class AfkInfoCommand
     {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("afkinfo")
-                        .requires(Permissions.require("afkplus.afkinfo", CONFIG.afkPlusOptions.afkInfoCommandPermissions))
+                        .requires(Permissions.require("afkplus.afkinfo", ConfigWrap.afk().afkInfoCommandPermissions))
                         .then(argument("player", EntityArgument.player())
                                       .executes(ctx -> infoAfkPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                         )
@@ -66,7 +66,7 @@ public class AfkInfoCommand
             context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
+            AfkPlusMod.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.afkplus$getName());
         }
         else
         {

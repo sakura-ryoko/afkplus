@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.sakuraryoko.afkplus.AfkPlusReference;
-import com.sakuraryoko.afkplus.config.ConfigManager;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
@@ -36,9 +36,9 @@ public class DisplayNamePlaceholder
     protected static void register()
     {
         //#if MC >= 12101
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.AFK_MOD_ID, "name"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "name"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(AfkPlusReference.AFK_MOD_ID, "name"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "name"), (ctx, arg) ->
                 //#endif
         {
             if (!ctx.hasPlayer())
@@ -48,14 +48,14 @@ public class DisplayNamePlaceholder
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Component result = player.afkplus$isAfk()
-                               ? Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
-                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
+                               ? Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholderAfk), ctx)
+                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
         //#if MC >= 12101
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.AFK_MOD_ID, "display_name"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "display_name"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(AfkPlusReference.AFK_MOD_ID, "display_name"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "display_name"), (ctx, arg) ->
                 //#endif
         {
             if (!ctx.hasPlayer())
@@ -65,8 +65,8 @@ public class DisplayNamePlaceholder
             IAfkPlayer player = (IAfkPlayer) ctx.player();
             assert player != null;
             Component result = player.afkplus$isAfk()
-                               ? Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholderAfk), ctx)
-                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkPlusNamePlaceholder), ctx);
+                               ? Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholderAfk), ctx)
+                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholder), ctx);
             return PlaceholderResult.value(result);
         });
     }

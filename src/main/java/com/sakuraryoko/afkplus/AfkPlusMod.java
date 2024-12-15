@@ -24,64 +24,72 @@ package com.sakuraryoko.afkplus;
 //$$ import com.sakuraryoko.afkplus.text.TextParser;
 //#else
 //#endif
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 import com.sakuraryoko.afkplus.commands.CommandManager;
-import com.sakuraryoko.afkplus.config.ConfigManager;
+import com.sakuraryoko.afkplus.config.AfkConfigManager;
 import com.sakuraryoko.afkplus.events.ServerEvents;
 import com.sakuraryoko.afkplus.text.nodes.NodeManager;
 import com.sakuraryoko.afkplus.text.placeholders.PlaceholderManager;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
-import com.sakuraryoko.afkplus.util.AfkLogger;
-
-import static com.sakuraryoko.afkplus.AfkPlusReference.AFK_DEBUG;
 
 public class AfkPlusMod
 {
+    public static Logger LOGGER = LogManager.getLogger(AfkPlusReference.MOD_ID);
+
     public static void init()
     {
-        AFK_DEBUG = false;
-
-        AfkLogger.initLogger();
-        AfkLogger.debug("Initializing Mod.");
+        debugLog("Initializing Mod.");
 
         AfkPlusInfo.initModInfo();
         AfkPlusInfo.displayModInfo();
 
         if (AfkPlusInfo.isClient())
         {
-            AfkLogger.info("MOD is running in a CLIENT Environment.");
+            LOGGER.info("MOD is running in a CLIENT Environment.");
         }
         if (!AfkPlusConflicts.checkMods())
         {
-            AfkLogger.warn("Mod conflicts check has FAILED.");
+            LOGGER.warn("Mod conflicts check has FAILED.");
         }
 
-        AfkLogger.debug("Config Initializing.");
-        ConfigManager.initConfig();
-        AfkLogger.debug("Loading Config.");
-        ConfigManager.loadConfig();
-        AfkLogger.debug("Initializing nodes.");
+        debugLog("Config Initializing.");
+        AfkConfigManager.getInstance().initAllConfigs();
+        debugLog("Loading Config.");
+        AfkConfigManager.getInstance().loadAllConfigs();
+        debugLog("Initializing nodes.");
         NodeManager.initNodes();
-        AfkLogger.debug("Registering nodes.");
+        debugLog("Registering nodes.");
         NodeManager.registerNodes();
-        AfkLogger.debug("Registering Placeholders.");
+        debugLog("Registering Placeholders.");
         PlaceholderManager.register();
         //#if MC >= 12006
-        //$$ AfkLogger.debug("Building Text Parser.");
+        //$$ debugLog("Building Text Parser.");
         //$$ TextParser.build();
         //#else
         //#endif
-        AfkLogger.debug("Registering commands.");
+        debugLog("Registering commands.");
         CommandManager.register();
 
-        AfkLogger.debug("Registering Server Events.");
+        debugLog("Registering Server Events.");
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
         ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
         ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
-        AfkLogger.debug("All Tasks Done.");
+        debugLog("All Tasks Done.");
+    }
+    
+    public static void debugLog(String key, Object... args)
+    {
+        if (AfkPlusReference.AFK_DEBUG)
+        {
+            LOGGER.info(String.format("[DEBUG] %s", key), args);
+        }
     }
 }

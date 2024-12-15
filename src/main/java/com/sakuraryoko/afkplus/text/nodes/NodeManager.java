@@ -34,9 +34,9 @@ import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 
 import net.minecraft.network.chat.TextColor;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.text.nodes.type.MoreColorNode;
-import com.sakuraryoko.afkplus.util.AfkLogger;
 
 //#if MC >= 12006
 //$$ @SuppressWarnings("deprecation")
@@ -52,7 +52,7 @@ public class NodeManager
         {
             iColorNode = iterator.next();
             // DataResult checked at initialization
-            AfkLogger.debug("registerColors(): register ColorNode: " + iColorNode.getName() + " // " + iColorNode.getHexCode());
+            AfkPlusMod.debugLog("registerColors(): register ColorNode: {} // {}", iColorNode.getName(), iColorNode.getHexCode());
             TextColor finalIColorNode = iColorNode.getColor();
             if (iColorNode.getAliases() != null)
             {

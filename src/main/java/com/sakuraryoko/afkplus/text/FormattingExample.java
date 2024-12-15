@@ -23,7 +23,7 @@ package com.sakuraryoko.afkplus.text;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.AfkPlusMod;
 
 public class FormattingExample
 {
@@ -156,7 +156,7 @@ public class FormattingExample
             testString = testString + "<r> <copy:'<italic>'><italic>" + test.getName();
         }
 
-        AfkLogger.debug("FormatTest.runBuiltInTest() --> testString: " + testString);
+        AfkPlusMod.debugLog("FormatTest.runBuiltInTest() --> testString: {}", testString);
         return TextUtils.formatText(testString);
     }
 
@@ -170,7 +170,7 @@ public class FormattingExample
         testString = testString + "<r>\n<green><hover:show_text:'hover text'>hover:show_text:'hover text'";
         testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
 
-        AfkLogger.debug("FormatTest.runAliasTest() --> testString: " + testString);
+        AfkPlusMod.debugLog("FormatTest.runAliasTest() --> testString: {}", testString);
         return TextUtils.formatText(testString);
     }
 
@@ -201,7 +201,7 @@ public class FormattingExample
         testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
         testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
 
-        AfkLogger.debug("FormatTest.runColorsTest() --> testString: " + testString);
+        AfkPlusMod.debugLog("FormatTest.runColorsTest() --> testString: {}", testString);
         return TextUtils.formatText(testString);
     }
 }

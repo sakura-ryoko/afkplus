@@ -25,6 +25,8 @@ import java.util.Collection;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+
 public class AfkPlusConflicts
 {
     public static boolean checkMods()
@@ -35,7 +37,7 @@ public class AfkPlusConflicts
         ModMetadata modData;
         boolean modCheck = true;
 
-        AfkLogger.debug("Checking for conflicting mods.");
+        AfkPlusMod.debugLog("Checking for conflicting mods.");
 
         // Check for svrutil --> /afk command primarily, the rest is ok
         modTarget = "svrutil";
@@ -44,8 +46,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please verify that the /afk command is disabled under config/svrutil/commands.json.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please verify that the /afk command is disabled under config/svrutil/commands.json.", modName, modVer);
             modCheck = false;
         }
 
@@ -57,8 +58,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please remove this mod to avoid AFK timeout confusion.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please remove this mod to avoid AFK timeout confusion.", modName, modVer);
             modCheck = false;
         }
 
@@ -69,8 +69,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please remove this mod to avoid AFK timeout confusion.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please remove this mod to avoid AFK timeout confusion.", modName, modVer);
             modCheck = false;
         }
 
@@ -81,8 +80,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please remove this mod to avoid AFK timeout confusion.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please remove this mod to avoid AFK timeout confusion.", modName, modVer);
             modCheck = false;
         }
         // Check for playtime-tracker --> changes timeout behavior's (Remove)
@@ -92,8 +90,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please remove this mod to avoid AFK timeout/player list confusion.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please remove this mod to avoid AFK timeout/player list confusion.", modName, modVer);
             modCheck = false;
         }
 
@@ -104,8 +101,7 @@ public class AfkPlusConflicts
             modData = FabricLoader.getInstance().getModContainer(modTarget).get().getMetadata();
             modVer = modData.getVersion().getFriendlyString();
             modName = modData.getName();
-            AfkLogger.warn(modName + "-" + modVer
-                    + " has been found, please remove this mod to avoid AFK timeout/player list confusion.");
+            AfkPlusMod.LOGGER.warn("{}-{} has been found, please remove this mod to avoid AFK timeout/player list confusion.", modName, modVer);
             modCheck = false;
         }
 
@@ -116,13 +112,12 @@ public class AfkPlusConflicts
     {
         boolean dpCheck = true;
         // Check for any data packs matching with "afk"
-        AfkLogger.debug("Data pack reload detected.  Checking for conflicting data packs.");
+        AfkPlusMod.debugLog("Data pack reload detected.  Checking for conflicting data packs.");
         for (String dpString : dpCollection)
         {
             if (dpString.contains("afk") || dpString.contains("Afk") || dpString.contains("AFK"))
             {
-                AfkLogger.warn(
-                        "Possible conflict found with data pack: " + dpString + " -- please remove/disable it.");
+                AfkPlusMod.LOGGER.warn("Possible conflict found with data pack: {} -- please remove/disable it.", dpString);
                 dpCheck = false;
             }
         }

@@ -26,7 +26,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import com.sakuraryoko.afkplus.config.ConfigManager;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 import static net.minecraft.commands.Commands.argument;
@@ -38,10 +38,10 @@ public class AfkCommand
     {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("afk")
-                        .requires(Permissions.require("afkplus.afk", 0))
+                        .requires(Permissions.require("afkplus.afk", ConfigWrap.afk().afkCommandPermissions))
                         .executes(ctx -> setAfk(ctx.getSource(), ""))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                      .requires(Permissions.require("afkplus.afk", 0))
+                                      .requires(Permissions.require("afkplus.afk", ConfigWrap.afk().afkCommandPermissions))
                                       .executes(ctx -> setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
                         )
         ));
@@ -54,13 +54,13 @@ public class AfkCommand
         {
             return 0;
         }
-        if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
+        if (reason == null && ConfigWrap.mess().defaultReason == null)
         {
             player.afkplus$registerAfk("via /afk");
         }
         else if (reason == null || reason.isEmpty())
         {
-            player.afkplus$registerAfk(ConfigManager.CONFIG.messageOptions.defaultReason);
+            player.afkplus$registerAfk(ConfigWrap.mess().defaultReason);
         }
         else
         {

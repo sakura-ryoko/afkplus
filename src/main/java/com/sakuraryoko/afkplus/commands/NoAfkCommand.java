@@ -27,7 +27,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import com.sakuraryoko.afkplus.config.ConfigManager;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 import static net.minecraft.commands.Commands.literal;
@@ -38,7 +38,7 @@ public class NoAfkCommand
     {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("noafk")
-                        .requires(Permissions.require("afkplus.noafk", ConfigManager.CONFIG.afkPlusOptions.noAfkCommandPermissions))
+                        .requires(Permissions.require("afkplus.noafk", ConfigWrap.afk().noAfkCommandPermissions))
                         .executes(ctx -> setNoAfk(ctx.getSource(), ctx))
         ));
     }

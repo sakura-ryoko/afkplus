@@ -18,34 +18,21 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.config.interfaces;
 
-import com.sakuraryoko.afkplus.config.ConfigWrap;
-
-public class CommandManager
+public interface IConfigDispatch
 {
-    public static void register()
-    {
-        if (ConfigWrap.afk().enableAfkCommand)
-        {
-            AfkCommand.register();
-        }
-
-        if (ConfigWrap.afk().enableNoAfkCommand)
-        {
-            NoAfkCommand.register();
-        }
-
-        if (ConfigWrap.afk().enableAfkInfoCommand)
-        {
-            AfkInfoCommand.register();
-        }
-
-        if (ConfigWrap.afk().enableAfkExCommand)
-        {
-            AfkExCommand.register();
-        }
-
-        AfkPlusCommand.register();
-    }
+    String getConfigRoot();
+    boolean useRootDir();
+    String getConfigName();
+    IConfigData newConfig();
+    IConfigData getConfig();
+    boolean isLoaded();
+    void onPreLoadConfig();
+    void onPostLoadConfig();
+    void onPreSaveConfig();
+    void onPostSaveConfig();
+    IConfigData defaults();
+    IConfigData update(IConfigData data);
+    void execute();
 }

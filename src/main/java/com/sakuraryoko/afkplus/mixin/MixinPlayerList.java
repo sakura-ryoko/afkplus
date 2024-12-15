@@ -43,9 +43,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
-import com.sakuraryoko.afkplus.util.AfkLogger;
 
 @Mixin(PlayerList.class)
 public abstract class MixinPlayerList
@@ -72,7 +72,7 @@ public abstract class MixinPlayerList
             if (serverPlayer.isInvulnerable())
             {
                 serverPlayer.setInvulnerable(false);
-                AfkLogger.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
+                AfkPlusMod.LOGGER.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: {} as vulnerable.", iPlayer.afkplus$getName());
             }
         }
         // This might simply initialize a player entry...
@@ -102,7 +102,7 @@ public abstract class MixinPlayerList
             if (playerEntity.isInvulnerable())
             {
                 playerEntity.setInvulnerable(false);
-                AfkLogger.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
+                AfkPlusMod.LOGGER.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", iPlayer.afkplus$getName());
             }
         }
         // This might simply initialize a player entry...
@@ -129,7 +129,7 @@ public abstract class MixinPlayerList
             if (playerEntity.isInvulnerable())
             {
                 IAfkPlayer iPlayer = (IAfkPlayer) playerEntity;
-                AfkLogger.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
+                AfkPlusMod.LOGGER.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", iPlayer.afkplus$getName());
                 playerEntity.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();
@@ -145,7 +145,7 @@ public abstract class MixinPlayerList
             if (serverPlayer.isInvulnerable())
             {
                 IAfkPlayer iPlayer = (IAfkPlayer) serverPlayer;
-                AfkLogger.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: " + iPlayer.afkplus$getName() + " as vulnerable.");
+                AfkPlusMod.LOGGER.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", iPlayer.afkplus$getName());
                 serverPlayer.setInvulnerable(false);
                 // This might simply initialize a player entry...
                 iPlayer.afkplus$unregisterAfk();

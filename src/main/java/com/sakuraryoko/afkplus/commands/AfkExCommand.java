@@ -26,8 +26,8 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
-import com.sakuraryoko.afkplus.config.ConfigManager;
-import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.FormattingExample;
 
 import static net.minecraft.commands.Commands.literal;
@@ -38,7 +38,7 @@ public class AfkExCommand
     {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("afkex")
-                        .requires(Permissions.require("afkplus.afkex", ConfigManager.CONFIG.afkPlusOptions.afkExCommandPermissions))
+                        .requires(Permissions.require("afkplus.afkex", ConfigWrap.afk().afkExCommandPermissions))
                         .executes(ctx -> afkExample(ctx.getSource(), ctx))
         ));
     }
@@ -55,7 +55,7 @@ public class AfkExCommand
         context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
         context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
         //#endif
-        AfkLogger.debug(user + " has executed /afkex (example) .");
+        AfkPlusMod.debugLog("{} has executed /afkex (example) .", user);
         return 1;
     }
 }

@@ -25,15 +25,15 @@ import java.io.File;
 import net.fabricmc.loader.api.FabricLoader;
 
 import com.moandjiezana.toml.Toml;
-import com.moandjiezana.toml.TomlWriter;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.AfkPlusReference;
-import com.sakuraryoko.afkplus.config.data.ConfigData;
-import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 
-public class ConfigManager
+@Deprecated
+public class TomlConfigManager
 {
-    public static ConfigData CONFIG = new ConfigData();
+    public static TomlConfigData CONFIG = new TomlConfigData();
 
     public static void initConfig()
     {
@@ -79,7 +79,7 @@ public class ConfigManager
         CONFIG.messageOptions.displayDuration = true;
         CONFIG.messageOptions.afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>";
         CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
-        AfkLogger.debug("Default config initialized.");
+        AfkPlusMod.debugLog("Default config initialized.");
     }
 
     public static void testConfig()
@@ -205,27 +205,27 @@ public class ConfigManager
         {
             CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
         }
-        AfkLogger.debug("Config checked for null values.");
+        AfkPlusMod.debugLog("Config checked for null values.");
     }
 
     public static void loadConfig()
     {
-        File conf = FabricLoader.getInstance().getConfigDir().resolve(AfkPlusReference.AFK_MOD_ID + ".toml").toFile();
+        File conf = FabricLoader.getInstance().getConfigDir().resolve(AfkPlusReference.MOD_ID + ".toml").toFile();
         try
         {
             if (conf.exists())
             {
-                CONFIG = new Toml().read(conf).to(ConfigData.class);
+                CONFIG = new Toml().read(conf).to(TomlConfigData.class);
             }
             else
             {
-                AfkLogger.info("Config " + AfkPlusReference.AFK_MOD_ID + ".toml not found, creating new file.");
+                AfkPlusMod.LOGGER.info("Config {}.toml not found, creating new file.", AfkPlusReference.MOD_ID);
                 //initConfig();
                 try
                 {
                     if (!conf.createNewFile())
                     {
-                        AfkLogger.error("Error creating config file " + AfkPlusReference.AFK_MOD_ID + ".toml .");
+                        AfkPlusMod.LOGGER.error("Error creating config file {}.toml .", AfkPlusReference.MOD_ID);
                     }
                 }
                 catch (Exception ignored)
@@ -233,7 +233,7 @@ public class ConfigManager
                 }
             }
             testConfig();
-            new TomlWriter().write(CONFIG, conf);
+            //new TomlWriter().write(CONFIG, conf);
         }
         catch (Exception ex)
         {
@@ -243,7 +243,7 @@ public class ConfigManager
 
     public static void reloadConfig()
     {
-        AfkLogger.info("Reloading Config.");
+        AfkPlusMod.LOGGER.info("Reloading Config.");
         loadConfig();
     }
 }

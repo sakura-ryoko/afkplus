@@ -30,11 +30,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkLogger;
-
-import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
-
 
 @Mixin(ServerPlayerGameMode.class)
 public abstract class MixinServerPlayerGameMode
@@ -49,14 +47,14 @@ public abstract class MixinServerPlayerGameMode
         IAfkPlayer afkPlayer = (IAfkPlayer) this.player;
         if (cir.getReturnValue())
         {
-            AfkLogger.debug("checkGameMode() -- Invoked for player " + afkPlayer.afkplus$getName() + " GameMode: " + gameType.getName());
+            AfkPlusMod.debugLog("checkGameMode() -- Invoked for player {} GameMode: {}", afkPlayer.afkplus$getName(), gameType.getName());
             if (afkPlayer.afkplus$isAfk())
             {
                 // Fixes uncommon de-sync when switching Game Modes.
                 afkPlayer.afkplus$unregisterAfk();
                 if (gameType == GameType.SURVIVAL)
                 {
-                    if (CONFIG.packetOptions.disableDamage)
+                    if (ConfigWrap.pack().disableDamage)
                     {
                         if (this.player.isInvulnerable())
                         {

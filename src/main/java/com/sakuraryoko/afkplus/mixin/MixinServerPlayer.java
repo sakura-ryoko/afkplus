@@ -44,11 +44,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
-import com.sakuraryoko.afkplus.util.AfkLogger;
-
-import static com.sakuraryoko.afkplus.config.ConfigManager.CONFIG;
 
 @Mixin(ServerPlayer.class)
 public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
@@ -145,14 +144,14 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             return;
         }
         setAfkTime();
-        if (reason == null && CONFIG.messageOptions.defaultReason == null)
+        if (reason == null && ConfigWrap.mess().defaultReason == null)
         {
             setAfkReason("<red>none");
         }
         else if (reason == null || reason.isEmpty())
         {
             setAfkReason("<red>none");
-            Component mess = Placeholders.parseText(TextUtils.formatTextSafe(CONFIG.messageOptions.whenAfk),
+            Component mess = Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.mess().whenAfk),
                                                     PlaceholderContext.of(this));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
@@ -161,11 +160,11 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
         else
         {
             setAfkReason(reason);
-            String mess1 = CONFIG.messageOptions.whenAfk + "<yellow>,<r> " + reason;
+            String mess1 = ConfigWrap.mess().whenAfk + "<yellow>,<r> " + reason;
             Component mess2 = Placeholders.parseText(TextUtils.formatTextSafe(mess1), PlaceholderContext.of(player));
             sendAfkMessage(mess2);
         }
-        if (CONFIG.packetOptions.disableDamage && CONFIG.packetOptions.disableDamageCooldown < 1)
+        if (ConfigWrap.pack().disableDamage && ConfigWrap.pack().disableDamageCooldown < 1)
         {
             afkplus$disableDamage();
         }
@@ -184,20 +183,20 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             clearAfkReason();
             return;
         }
-        if (CONFIG.messageOptions.prettyDuration && CONFIG.messageOptions.displayDuration)
+        if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
         {
             long duration = Util.getMillis() - (this.afkTimeMs);
-            String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
+            String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
             Component mess1 = TextUtils.formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this));
             sendAfkMessage(mess2);
         }
-        else if (CONFIG.messageOptions.displayDuration)
+        else if (ConfigWrap.mess().displayDuration)
         {
             long duration = Util.getMillis() - (this.afkTimeMs);
-            String ret = CONFIG.messageOptions.whenReturn + " <gray>(Gone for: <green>"
+            String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
             Component mess1 = TextUtils.formatTextSafe(ret);
@@ -206,7 +205,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
         }
         else
         {
-            String ret = CONFIG.messageOptions.whenReturn + "<r>";
+            String ret = ConfigWrap.mess().whenReturn + "<r>";
 
             Component mess1 = TextUtils.formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
@@ -226,7 +225,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     public void afkplus$updatePlayerList()
     {
         this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, player));
-        AfkLogger.debug("sending player list update for " + afkplus$getName());
+        AfkPlusMod.debugLog("sending player list update for {}", afkplus$getName());
         this.lastPlayerListTick = Util.getMillis();
     }
 
@@ -239,7 +238,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Unique
     private void sendAfkMessage(Component text)
     {
-        if (!CONFIG.messageOptions.enableMessages || text.getString().trim().isEmpty())
+        if (!ConfigWrap.mess().enableMessages || text.getString().trim().isEmpty())
         {
             return;
         }
@@ -292,7 +291,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Unique
     public void afkplus$disableDamage()
     {
-        AfkLogger.debug("disableDamage() has been invoked for: " + afkplus$getName());
+        AfkPlusMod.debugLog("disableDamage() has been invoked for: {}", afkplus$getName());
         if (player.isCreative())
         {
             return;
@@ -301,13 +300,13 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
         {
             return;
         }
-        if (!CONFIG.packetOptions.disableDamage)
+        if (!ConfigWrap.pack().disableDamage)
         {
             return;
         }
         if (afkplus$isLockDamageDisabled())
         {
-            AfkLogger.info("Disable Damage is locked from player: " + afkplus$getName());
+            AfkPlusMod.LOGGER.info("Disable Damage is locked from player: {}", afkplus$getName());
             return;
         }
         if (afkplus$isAfk())
@@ -318,12 +317,12 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!player.isInvulnerable())
                 {
                     player.setInvulnerable(true);
-                    AfkLogger.info("Damage Disabled for player: " + afkplus$getName());
+                    AfkPlusMod.LOGGER.info("Damage Disabled for player: {}", afkplus$getName());
                 }
                 // Send announcement
-                if (!CONFIG.messageOptions.whenDamageDisabled.isEmpty())
+                if (!ConfigWrap.mess().whenDamageDisabled.isEmpty())
                 {
-                    Component mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageDisabled);
+                    Component mess1 = TextUtils.formatTextSafe(ConfigWrap.mess().whenDamageDisabled);
                     Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
                     sendAfkMessage(mess2);
                 }
@@ -336,7 +335,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     public void afkplus$enableDamage()
     {
         // Doesn't matter if they are marked as AFK --> make them not Invulnerable.
-        AfkLogger.debug("enableDamage() has been invoked for: " + afkplus$getName());
+        AfkPlusMod.debugLog("enableDamage() has been invoked for: {}", afkplus$getName());
         if (player.isCreative())
         {
             return;
@@ -352,12 +351,12 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             if (player.isInvulnerable())
             {
                 player.setInvulnerable(false);
-                AfkLogger.info("Damage Enabled for player: " + afkplus$getName());
+                AfkPlusMod.LOGGER.info("Damage Enabled for player: {}", afkplus$getName());
             }
             // Send announcement
-            if (!CONFIG.messageOptions.whenDamageEnabled.isEmpty())
+            if (!ConfigWrap.mess().whenDamageEnabled.isEmpty())
             {
-                Component mess1 = TextUtils.formatTextSafe(CONFIG.messageOptions.whenDamageEnabled);
+                Component mess1 = TextUtils.formatTextSafe(ConfigWrap.mess().whenDamageEnabled);
                 Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(player));
                 sendAfkMessage(mess2);
             }
@@ -368,17 +367,17 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Unique
     public void afkplus$afkKick()
     {
-        if (afkplus$isAfk() && CONFIG.packetOptions.afkKickEnabled)
+        if (afkplus$isAfk() && ConfigWrap.pack().afkKickEnabled)
         {
-            if ((player.isCreative() || player.isSpectator()) && !CONFIG.packetOptions.afkKickNonSurvival)
+            if ((player.isCreative() || player.isSpectator()) && !ConfigWrap.pack().afkKickNonSurvival)
             {
                 return;
             }
-            else if (Permissions.check(player, "afkplus.kick.safe", CONFIG.packetOptions.afkKickSafePermissions))
+            else if (Permissions.check(player, "afkplus.kick.safe", ConfigWrap.pack().afkKickSafePermissions))
             {
                 return;
             }
-            else if (Permissions.check(player, "afkplus.afkplus", CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+            else if (Permissions.check(player, "afkplus.afkplus", ConfigWrap.afk().afkPlusCommandPermissions))
             {
                 return;
             }
@@ -389,25 +388,25 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 Component kickReason;
                 Component kickMessage;
 
-                if (CONFIG.messageOptions.whenKicked.isEmpty())
+                if (ConfigWrap.mess().whenKicked.isEmpty())
                 {
                     kickMessageString = "";
                 }
                 else
                 {
-                    kickMessageString = CONFIG.messageOptions.whenKicked;
+                    kickMessageString = ConfigWrap.mess().whenKicked;
                 }
 
-                AfkLogger.warn("Configured timeout has been reached for player " + afkplus$getName() + " --> removing from server.");
+                AfkPlusMod.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", afkplus$getName());
 
-                if (!CONFIG.messageOptions.afkKickMessage.isEmpty())
+                if (!ConfigWrap.mess().afkKickMessage.isEmpty())
                 {
-                    if (CONFIG.messageOptions.displayDuration)
+                    if (ConfigWrap.mess().displayDuration)
                     {
                         long afkDuration = Util.getMillis() - (player.getLastActionTime());
-                        if (CONFIG.messageOptions.prettyDuration)
+                        if (ConfigWrap.mess().prettyDuration)
                         {
-                            kickReasonString = CONFIG.messageOptions.afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
+                            kickReasonString = ConfigWrap.mess().afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
                                     + DurationFormatUtils.formatDurationWords(afkDuration, true, true) + "<gray>)<r>";
                             if (!kickMessageString.isEmpty())
                             {
@@ -417,7 +416,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                         }
                         else
                         {
-                            kickReasonString = CONFIG.messageOptions.afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
+                            kickReasonString = ConfigWrap.mess().afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
                                     + DurationFormatUtils.formatDurationHMS(afkDuration) + "<gray>)<r>";
                             if (!kickMessageString.isEmpty())
                             {
@@ -428,10 +427,10 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                     }
                     else
                     {
-                        kickReasonString = CONFIG.messageOptions.afkKickMessage;
+                        kickReasonString = ConfigWrap.mess().afkKickMessage;
                     }
                     kickReason = TextUtils.formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText((Component) kickReason, PlaceholderContext.of(player));
+                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(player));
 
                     setAfk(false);
                     clearAfkTime();
@@ -531,7 +530,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Override
     public void setPos(double x, double y, double z)
     {
-        if (CONFIG.packetOptions.resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
+        if (ConfigWrap.pack().resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
         {
             player.resetLastActionTime();
         }
@@ -541,12 +540,12 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
     private void replacePlayerListName(CallbackInfoReturnable<Component> cir)
     {
-        if (CONFIG.playerListOptions.enableListDisplay && afkplus$isAfk())
+        if (ConfigWrap.list().enableListDisplay && afkplus$isAfk())
         {
             Component listEntry = Placeholders.parseText(
-                    TextUtils.formatTextSafe(CONFIG.playerListOptions.afkPlayerName),
+                    TextUtils.formatTextSafe(ConfigWrap.list().afkPlayerName),
                     PlaceholderContext.of(this));
-            AfkLogger.debug("replacePlayerListName-listEntry().toString(): " + listEntry.getString());
+            AfkPlusMod.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());
             cir.setReturnValue(listEntry.copy());
         }
     }
@@ -560,7 +559,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
             {
                 return;
             }
-            if (this.afkplus$isAfk() && CONFIG.playerListOptions.updateInterval > 0)
+            if (this.afkplus$isAfk() && ConfigWrap.list().updateInterval > 0)
             {
                 if (this.lastPlayerListTick <= 0)
                 {
@@ -570,7 +569,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 {
                     long diff = Util.getMillis() - this.lastPlayerListTick;
 
-                    if (diff > CONFIG.playerListOptions.updateInterval * 1000L)
+                    if (diff > ConfigWrap.list().updateInterval * 1000L)
                     {
                         this.afkplus$updatePlayerList();
                     }
@@ -589,22 +588,22 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!this.afkplus$isDamageEnabled())
                 {
                     this.afkplus$enableDamage();
-                    AfkLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " because they are [UNLOCKED]. step 1.");
+                    AfkPlusMod.debugLog("checkAfk() - Damage Enabled for player: {} because they are [UNLOCKED]. step 1.", this.afkplus$getName());
                 }
             }
-            else if (this.afkplus$isAfk() && CONFIG.packetOptions.disableDamage)
+            else if (this.afkplus$isAfk() && ConfigWrap.pack().disableDamage)
             {
                 if (this.afkplus$isDamageEnabled())
                 {
                     // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
-                    int cooldownSeconds = CONFIG.packetOptions.disableDamageCooldown;
+                    int cooldownSeconds = ConfigWrap.pack().disableDamageCooldown;
                     if (cooldownSeconds > 0)
                     {
                         long diff = Util.getMillis() - this.afkTimeMs;
                         if (diff > cooldownSeconds * 1000L)
                         {
                             this.afkplus$disableDamage();
-                            AfkLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 2.");
+                            AfkPlusMod.debugLog("checkAfk() - Damage Disabled for player: {} step 2.", this.afkplus$getName());
                         }
                     }
                     else
@@ -612,7 +611,7 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                         if (!(this.player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
                         {
                             this.afkplus$disableDamage();
-                            AfkLogger.debug("checkAfk() - Damage Disabled for player: " + this.afkplus$getName() + " step 4.");
+                            AfkPlusMod.debugLog("checkAfk() - Damage Disabled for player: {} step 4.", this.afkplus$getName());
                         }
                     }
                 }
@@ -622,14 +621,14 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
                 if (!this.afkplus$isDamageEnabled())
                 {
                     this.afkplus$enableDamage();
-                    AfkLogger.debug("checkAfk() - Damage Enabled for player: " + this.afkplus$getName() + " step 5.");
+                    AfkPlusMod.debugLog("checkAfk() - Damage Enabled for player: {} step 5.", this.afkplus$getName());
                 }
             }
         }
         catch (Exception e)
         {
             // Sometimes the values are null, so offer a catch
-            AfkLogger.info("Caught exception during checkAfk(). (" + e.getMessage() + ")");
+            AfkPlusMod.LOGGER.info("Caught exception during checkAfk(). ({})", e.getMessage());
         }
     }
 }

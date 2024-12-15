@@ -30,12 +30,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.AfkConfigManager;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.TextUtils;
-import com.sakuraryoko.afkplus.config.ConfigManager;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
-import com.sakuraryoko.afkplus.util.AfkLogger;
 import com.sakuraryoko.afkplus.text.FormattingExample;
 
 import static net.minecraft.commands.Commands.argument;
@@ -47,56 +48,56 @@ public class AfkPlusCommand
     {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
                 literal("afkplus")
-                        .requires(Permissions.require("afkplus.afkplus", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                        .requires(Permissions.require("afkplus.afkplus", ConfigWrap.afk().afkPlusCommandPermissions))
                         .executes(ctx -> afkAbout(ctx.getSource(), ctx))
                         .then(literal("ex")
                                       .requires(Permissions.require("afkplus.afkplus.ex", 4))
                                       .executes(ctx -> afkExample(ctx.getSource(), ctx))
                         )
                         .then(literal("reload")
-                                      .requires(Permissions.require("afkplus.afkplus.reload", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.reload", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .executes(ctx -> afkReload(ctx.getSource(), ctx))
                         )
                         .then(literal("set")
-                                      .requires(Permissions.require("afkplus.afkplus.set", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.set", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player",
                                                      EntityArgument.player())
                                                     .executes((ctx) -> setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), "", ctx))
                                                     .then(argument("reason", StringArgumentType.greedyString())
-                                                                  .requires(Permissions.require("afkplus.afkplus.set", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                                  .requires(Permissions.require("afkplus.afkplus.set", ConfigWrap.afk().afkPlusCommandPermissions))
                                                                   .executes((ctx) -> setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "reason"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("clear")
-                                      .requires(Permissions.require("afkplus.afkplus.clear", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.clear", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> clearAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("info")
-                                      .requires(Permissions.require("afkplus.afkplus.info", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.info", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> infoAfkPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("damage")
-                                      .requires(Permissions.require("afkplus.afkplus.damage", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.damage", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(literal("disable")
-                                                    .requires(Permissions.require("afkplus.afkplus.damage.disable", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                    .requires(Permissions.require("afkplus.afkplus.damage.disable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
                                                                   .executes(ctx -> disableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                                       .then(literal("enable")
-                                                    .requires(Permissions.require("afkplus.afkplus.damage.enable", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                                    .requires(Permissions.require("afkplus.afkplus.damage.enable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
                                                                   .executes(ctx -> enableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("update")
-                                      .requires(Permissions.require("afkplus.afkplus.update", ConfigManager.CONFIG.afkPlusOptions.afkPlusCommandPermissions))
+                                      .requires(Permissions.require("afkplus.afkplus.update", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> updatePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx)
                                                     )
@@ -115,7 +116,7 @@ public class AfkPlusCommand
         //#else
         context.getSource().sendSuccess(ModInfo, false);
         //#endif
-        AfkLogger.debug(user + " has executed /afkplus .");
+        AfkPlusMod.debugLog("{} has executed /afkplus .", user);
         return 1;
     }
 
@@ -131,20 +132,21 @@ public class AfkPlusCommand
         context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
         context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
         //#endif
-        AfkLogger.debug(user + " has executed /afkplus example .");
+        AfkPlusMod.debugLog("{} has executed /afkplus example .", user);
         return 1;
     }
 
     private static int afkReload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
-        ConfigManager.reloadConfig();
+        //TomlConfigManager.reloadConfig();
+        AfkConfigManager.getInstance().reloadAllConfigs();
         //#if MC >= 12001
         //$$ context.getSource().sendSuccess(() -> Component.literal("Reloaded config!"), false);
         //#else
         context.getSource().sendSuccess(Component.literal("Reloaded config!"), false);
         //#endif
-        AfkLogger.info(user + " has reloaded the configuration.");
+        AfkPlusMod.LOGGER.info(user + " has reloaded the configuration.");
         return 1;
     }
 
@@ -172,20 +174,20 @@ public class AfkPlusCommand
                 context.getSource().sendSuccess(Component.literal("Toggled player " + afkPlayer.afkplus$getName() + "'s NoAFK status OFF."), true);
                 //#endif
             }
-            if (reason == null && ConfigManager.CONFIG.messageOptions.defaultReason == null)
+            if (reason == null && ConfigWrap.mess().defaultReason == null)
             {
                 afkPlayer.afkplus$registerAfk("via /afkplus set");
-                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK");
+                AfkPlusMod.LOGGER.info("{} set player {} as AFK", user, afkPlayer.afkplus$getName());
             }
             else if (reason == null || reason.isEmpty())
             {
-                afkPlayer.afkplus$registerAfk(ConfigManager.CONFIG.messageOptions.defaultReason);
-                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + ConfigManager.CONFIG.messageOptions.defaultReason);
+                afkPlayer.afkplus$registerAfk(ConfigWrap.mess().defaultReason);
+                AfkPlusMod.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.afkplus$getName(), ConfigWrap.mess().defaultReason);
             }
             else
             {
                 afkPlayer.afkplus$registerAfk(reason);
-                AfkLogger.info(user + " set player " + afkPlayer.afkplus$getName() + " as AFK for reason: " + reason);
+                AfkPlusMod.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.afkplus$getName(), reason);
             }
         }
         return 1;
@@ -198,7 +200,7 @@ public class AfkPlusCommand
         if (afkPlayer.afkplus$isAfk())
         {
             afkPlayer.afkplus$unregisterAfk();
-            AfkLogger.info(user + " cleared player " + afkPlayer.afkplus$getName() + " from AFK");
+            AfkPlusMod.LOGGER.info("{} cleared player {} from AFK", user, afkPlayer.afkplus$getName());
         }
         else
         {
@@ -226,7 +228,7 @@ public class AfkPlusCommand
             context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkLogger.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
+            AfkPlusMod.LOGGER.info(user + " displayed " + afkPlayer.afkplus$getName() + "'s AFK info.");
         }
         else
         {
@@ -299,7 +301,7 @@ public class AfkPlusCommand
         //#else
         context.getSource().sendSuccess(Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);
         //#endif
-        AfkLogger.info(user + " updated player list entry for " + afkPlayer.afkplus$getName());
+        AfkPlusMod.LOGGER.info("{} updated player list entry for {}", user, afkPlayer.afkplus$getName());
         return 1;
     }
 }

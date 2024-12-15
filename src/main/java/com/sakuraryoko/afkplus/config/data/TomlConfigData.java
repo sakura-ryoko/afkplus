@@ -20,7 +20,8 @@
 
 package com.sakuraryoko.afkplus.config.data;
 
-public class ConfigData
+@Deprecated
+public class TomlConfigData
 {
     public AfkPlusOptions afkPlusOptions = new AfkPlusOptions();
     public PacketOptions packetOptions = new PacketOptions();

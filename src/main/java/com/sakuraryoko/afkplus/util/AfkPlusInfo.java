@@ -30,72 +30,73 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
 
+import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.AfkPlusReference;
 
 public class AfkPlusInfo
 {
     private static final FabricLoader AFK_INST = FabricLoader.getInstance();
-    private static final ModContainer AFK_CONTAINER = AFK_INST.getModContainer(AfkPlusReference.AFK_MOD_ID).get();
+    private static final ModContainer AFK_CONTAINER = AFK_INST.getModContainer(AfkPlusReference.MOD_ID).get();
 
     public static void initModInfo()
     {
-        AfkPlusReference.AFK_MC_VERSION = DetectedVersion.BUILT_IN.getName();
-        AfkPlusReference.AFK_ENV = AFK_INST.getEnvironmentType();
+        AfkPlusReference.MC_VERSION = DetectedVersion.BUILT_IN.getName();
+        AfkPlusReference.MOD_ENV = AFK_INST.getEnvironmentType();
         ModMetadata AFK_METADATA = AFK_CONTAINER.getMetadata();
         AfkPlusReference.AFK_VERSION = AFK_METADATA.getVersion().getFriendlyString();
-        AfkPlusReference.AFK_NAME = AFK_METADATA.getName();
-        AfkPlusReference.AFK_DESC = AFK_METADATA.getDescription();
-        AfkPlusReference.AFK_AUTHOR = AFK_METADATA.getAuthors();
-        AfkPlusReference.AFK_CONTRIB = AFK_METADATA.getContributors();
-        AfkPlusReference.AFK_CONTACTS = AFK_METADATA.getContact();
-        AfkPlusReference.AFK_LICENSES = AFK_METADATA.getLicense();
-        AfkPlusReference.AFK_AUTHO_STRING = getAuthoString();
-        AfkPlusReference.AFK_CONTRIB_STRING = getContribString();
-        AfkPlusReference.AFK_LICENSES_STRING = getLicenseString();
-        AfkPlusReference.AFK_HOMEPAGE_STRING = getHomepageString();
-        AfkPlusReference.AFK_SOURCES_STRING = getSourcesString();
+        AfkPlusReference.MOD_NAME = AFK_METADATA.getName();
+        AfkPlusReference.MOD_DESC = AFK_METADATA.getDescription();
+        AfkPlusReference.MOD_AUTHOR = AFK_METADATA.getAuthors();
+        AfkPlusReference.MOD_CONTRIB = AFK_METADATA.getContributors();
+        AfkPlusReference.MOD_CONTACTS = AFK_METADATA.getContact();
+        AfkPlusReference.MOD_LICENSES = AFK_METADATA.getLicense();
+        AfkPlusReference.MOD_AUTHO_STRING = getAuthoString();
+        AfkPlusReference.MOD_CONTRIB_STRING = getContribString();
+        AfkPlusReference.MOD_LICENSES_STRING = getLicenseString();
+        AfkPlusReference.MOD_HOMEPAGE_STRING = getHomepageString();
+        AfkPlusReference.MOD_SOURCES_STRING = getSourcesString();
     }
 
     public static void displayModInfo()
     {
-        AfkLogger.info(AfkPlusReference.AFK_NAME + "-" + AfkPlusReference.AFK_MC_VERSION + "-" + AfkPlusReference.AFK_VERSION);
-        AfkLogger.info("Author: " + AfkPlusReference.AFK_AUTHO_STRING);
+        AfkPlusMod.LOGGER.info("{}-{}-{}", AfkPlusReference.MOD_NAME, AfkPlusReference.MC_VERSION, AfkPlusReference.AFK_VERSION);
+        AfkPlusMod.LOGGER.info("Author: {}", AfkPlusReference.MOD_AUTHO_STRING);
     }
 
     public static Component getModInfoText()
     {
-        String modInfo = AfkPlusReference.AFK_NAME + "-" + AfkPlusReference.AFK_MC_VERSION + "-" + AfkPlusReference.AFK_VERSION
-                + "\nAuthor: <pink>" + AfkPlusReference.AFK_AUTHO_STRING + "</pink>"
-                + "\nLicense: <yellow>" + AfkPlusReference.AFK_LICENSES_STRING + "</yellow>"
-                + "\nHomepage: <cyan><url:'" + AfkPlusReference.AFK_HOMEPAGE_STRING + "'>" + AfkPlusReference.AFK_HOMEPAGE_STRING + "</url></cyan>"
-                + "\nSource: <cyan><url:'" + AfkPlusReference.AFK_SOURCES_STRING + "'>" + AfkPlusReference.AFK_SOURCES_STRING + "</url></cyan>"
-                + "\nDescription: <light_blue>" + AfkPlusReference.AFK_DESC;
+        String modInfo = AfkPlusReference.MOD_NAME + "-" + AfkPlusReference.MC_VERSION + "-" + AfkPlusReference.AFK_VERSION
+                + "\nAuthor: <pink>" + AfkPlusReference.MOD_AUTHO_STRING + "</pink>"
+                + "\nLicense: <yellow>" + AfkPlusReference.MOD_LICENSES_STRING + "</yellow>"
+                + "\nHomepage: <cyan><url:'" + AfkPlusReference.MOD_HOMEPAGE_STRING + "'>" + AfkPlusReference.MOD_HOMEPAGE_STRING + "</url></cyan>"
+                + "\nSource: <cyan><url:'" + AfkPlusReference.MOD_SOURCES_STRING + "'>" + AfkPlusReference.MOD_SOURCES_STRING + "</url></cyan>"
+                + "\nDescription: <light_blue>" + AfkPlusReference.MOD_DESC;
         Component info = TextUtils.formatText(modInfo);
-        AfkLogger.debug(modInfo);
+        AfkPlusMod.debugLog(modInfo);
         return info;
     }
 
     public static boolean isServer()
     {
-        return AfkPlusReference.AFK_ENV == EnvType.SERVER;
+        return AfkPlusReference.MOD_ENV == EnvType.SERVER;
     }
 
     public static boolean isClient()
     {
-        return AfkPlusReference.AFK_ENV == EnvType.CLIENT;
+        return AfkPlusReference.MOD_ENV == EnvType.CLIENT;
     }
 
     private static String getAuthoString()
     {
         StringBuilder authoString = new StringBuilder();
-        if (AfkPlusReference.AFK_AUTHOR.isEmpty())
+        if (AfkPlusReference.MOD_AUTHOR.isEmpty())
         {
             return authoString.toString();
         }
         else
         {
-            final Iterator<Person> iterator = AfkPlusReference.AFK_AUTHOR.iterator();
+            final Iterator<Person> iterator = AfkPlusReference.MOD_AUTHOR.iterator();
             while (iterator.hasNext())
             {
                 if (authoString.isEmpty())
@@ -114,13 +115,13 @@ public class AfkPlusInfo
     private static String getContribString()
     {
         StringBuilder contribString = new StringBuilder();
-        if (AfkPlusReference.AFK_CONTRIB.isEmpty())
+        if (AfkPlusReference.MOD_CONTRIB.isEmpty())
         {
             return contribString.toString();
         }
         else
         {
-            final Iterator<Person> iterator = AfkPlusReference.AFK_CONTRIB.iterator();
+            final Iterator<Person> iterator = AfkPlusReference.MOD_CONTRIB.iterator();
             while (iterator.hasNext())
             {
                 if (contribString.isEmpty())
@@ -139,13 +140,13 @@ public class AfkPlusInfo
     private static String getLicenseString()
     {
         StringBuilder licsenseString = new StringBuilder();
-        if (AfkPlusReference.AFK_LICENSES.isEmpty())
+        if (AfkPlusReference.MOD_LICENSES.isEmpty())
         {
             return licsenseString.toString();
         }
         else
         {
-            final Iterator<String> iterator = AfkPlusReference.AFK_LICENSES.iterator();
+            final Iterator<String> iterator = AfkPlusReference.MOD_LICENSES.iterator();
             while (iterator.hasNext())
             {
                 if (licsenseString.isEmpty())
@@ -163,7 +164,7 @@ public class AfkPlusInfo
 
     private static String getHomepageString()
     {
-        String homepageString = AfkPlusReference.AFK_CONTACTS.asMap().get("homepage");
+        String homepageString = AfkPlusReference.MOD_CONTACTS.asMap().get("homepage");
         if (homepageString.isEmpty())
         {
             return "";
@@ -176,7 +177,7 @@ public class AfkPlusInfo
 
     private static String getSourcesString()
     {
-        String sourcesString = AfkPlusReference.AFK_CONTACTS.asMap().get("sources");
+        String sourcesString = AfkPlusReference.MOD_CONTACTS.asMap().get("sources");
         if (sourcesString.isEmpty())
         {
             return "";

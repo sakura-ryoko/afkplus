@@ -18,34 +18,34 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.config;
 
-import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.config.data.options.*;
 
-public class CommandManager
+public class ConfigWrap
 {
-    public static void register()
+    public static AfkPlusOptions afk()
     {
-        if (ConfigWrap.afk().enableAfkCommand)
-        {
-            AfkCommand.register();
-        }
+        return AfkConfigHandler.getInstance().getAfkPlusOptions();
+    }
 
-        if (ConfigWrap.afk().enableNoAfkCommand)
-        {
-            NoAfkCommand.register();
-        }
+    public static MessageOptions mess()
+    {
+        return AfkConfigHandler.getInstance().getMessageOptions();
+    }
 
-        if (ConfigWrap.afk().enableAfkInfoCommand)
-        {
-            AfkInfoCommand.register();
-        }
+    public static PacketOptions pack()
+    {
+        return AfkConfigHandler.getInstance().getPacketOptions();
+    }
 
-        if (ConfigWrap.afk().enableAfkExCommand)
-        {
-            AfkExCommand.register();
-        }
+    public static PlaceholderOptions place()
+    {
+        return AfkConfigHandler.getInstance().getPlaceholderOptions();
+    }
 
-        AfkPlusCommand.register();
+    public static PlayerListOptions list()
+    {
+        return AfkConfigHandler.getInstance().getPlayerListOptions();
     }
 }

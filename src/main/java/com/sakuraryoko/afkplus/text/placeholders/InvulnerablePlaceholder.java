@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.sakuraryoko.afkplus.AfkPlusReference;
-import com.sakuraryoko.afkplus.config.ConfigManager;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
@@ -36,9 +36,9 @@ public class InvulnerablePlaceholder
     protected static void register()
     {
         //#if MC >= 12101
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "invulnerable"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(AfkPlusReference.AFK_MOD_ID, "invulnerable"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "invulnerable"), (ctx, arg) ->
                 //#endif
         {
             if (!ctx.hasPlayer())
@@ -49,7 +49,7 @@ public class InvulnerablePlaceholder
             assert player != null;
             Component result = player.afkplus$isDamageEnabled()
                                ? Component.empty()
-                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigManager.CONFIG.PlaceholderOptions.afkInvulnerablePlaceholder + "<r>"), ctx);
+                               : Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.place().afkInvulnerablePlaceholder + "<r>"), ctx);
             return PlaceholderResult.value(result);
         });
     }

@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 //#endif
 import net.minecraft.network.chat.TextColor;
 
-import com.sakuraryoko.afkplus.util.AfkLogger;
+import com.sakuraryoko.afkplus.AfkPlusMod;
 
 public class MoreColorNode
 {
@@ -54,14 +54,14 @@ public class MoreColorNode
             //$$ }
             //$$ else
             //$$ {
-                //$$ AfkLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
+                //$$ AfkPlusMod.LOGGER.warn("MoreColor(" + name + ") unhandled error (color is null)");
                 //$$ this.name = "";
                 //$$ this.hexCode = "";
             //$$ }
         //$$ }
         //$$ else
         //$$ {
-            //$$ AfkLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
+            //$$ AfkPlusMod.LOGGER.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
             //$$ this.color = null;
@@ -83,14 +83,14 @@ public class MoreColorNode
             //$$ }
             //$$ else
             //$$ {
-                //$$ AfkLogger.warn("MoreColor(" + name + ") unhandled error (color is null)");
+                //$$ AfkPlusMod.LOGGER.warn("MoreColor(" + name + ") unhandled error (color is null)");
                 //$$ this.name = "";
                 //$$ this.hexCode = "";
             //$$ }
         //$$ }
         //$$ else
         //$$ {
-            //$$ AfkLogger.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
+            //$$ AfkPlusMod.LOGGER.warn("MoreColor(" + name + ") is Invalid, error: " + dr.error().toString());
             //$$ this.name = "";
             //$$ this.hexCode = "";
             //$$ this.color = null;
@@ -106,7 +106,7 @@ public class MoreColorNode
             this.hexCode = hexCode;
         }
         else {
-            AfkLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
+            AfkPlusMod.LOGGER.warn("MoreColor({}) unhandled error (color is null)", name);
             this.name = "";
             this.hexCode = "";
         }
@@ -122,7 +122,7 @@ public class MoreColorNode
             this.aliases = aliases;
         }
         else {
-            AfkLogger.warn("MoreColor("+ name +") unhandled error (color is null)");
+            AfkPlusMod.LOGGER.warn("MoreColor({}) unhandled error (color is null)", name);
             this.name = "";
             this.hexCode = "";
         }
