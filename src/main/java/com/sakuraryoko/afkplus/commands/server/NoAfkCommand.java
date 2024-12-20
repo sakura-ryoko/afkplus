@@ -18,32 +18,44 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.commands.server;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
+import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 import static net.minecraft.commands.Commands.literal;
 
-public class NoAfkCommand
+public class NoAfkCommand implements IServerCommand
 {
-    public static void register()
+    public static final NoAfkCommand INSTANCE = new NoAfkCommand();
+    
+    @Override
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("noafk")
-                        .requires(Permissions.require("afkplus.noafk", ConfigWrap.afk().noAfkCommandPermissions))
-                        .executes(ctx -> setNoAfk(ctx.getSource(), ctx))
-        ));
+        dispatcher.register(
+                literal(this.getName())
+                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().noAfkCommandPermissions))
+                        .executes(ctx -> this.setNoAfk(ctx.getSource(), ctx))
+        );
     }
 
-    private static int setNoAfk(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    @Override
+    public String getName()
+    {
+        return "noafk";
+    }
+
+    private int setNoAfk(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         //String user = src.getTextName();

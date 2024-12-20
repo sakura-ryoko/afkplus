@@ -33,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.AfkPlusReference;
 
@@ -45,13 +46,15 @@ public abstract class MixinServerGamePacketListenerImpl
     @Inject(method = "tick", at = @At("HEAD"))
     private void updateAfkStatus(CallbackInfo ci)
     {
+        PlayerEventsHandler.getInstance().onTickPacket(this.player);
+
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         int timeoutSeconds = ConfigWrap.pack().timeoutSeconds;
         long afkDuration = Util.getMillis() - this.player.getLastActionTime();
         if (afkPlayer.afkplus$isAfk() || timeoutSeconds <= 0)
         {
             if (ConfigWrap.pack().afkKickEnabled && ConfigWrap.pack().afkKickTimer > -1
-                    && AfkPlusReference.MOD_ENV.equals(EnvType.SERVER))
+                && AfkPlusReference.MOD_ENV.equals(EnvType.SERVER))
             {
                 if ((afkPlayer.afkplus$isCreative() || afkPlayer.afkplus$isSpectator()) && !ConfigWrap.pack().afkKickNonSurvival)
                 {
@@ -88,6 +91,8 @@ public abstract class MixinServerGamePacketListenerImpl
     @Inject(method = "handleMovePlayer", at = @At("HEAD"))
     private void checkPlayerLook(ServerboundMovePlayerPacket packet, CallbackInfo ci)
     {
+        PlayerEventsHandler.getInstance().onMovement(this.player, packet);
+
         if (ConfigWrap.pack().resetOnLook && packet.hasRotation())
         {
             player.getEyeY();

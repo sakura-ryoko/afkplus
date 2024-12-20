@@ -28,11 +28,9 @@ package com.sakuraryoko.afkplus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-
 import com.sakuraryoko.afkplus.commands.CommandManager;
 import com.sakuraryoko.afkplus.config.AfkConfigManager;
-import com.sakuraryoko.afkplus.events.ServerEvents;
+import com.sakuraryoko.afkplus.events.HandlerRegistry;
 import com.sakuraryoko.afkplus.text.nodes.NodeManager;
 import com.sakuraryoko.afkplus.text.placeholders.PlaceholderManager;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
@@ -41,6 +39,7 @@ import com.sakuraryoko.afkplus.util.AfkPlusInfo;
 public class AfkPlusMod
 {
     public static Logger LOGGER = LogManager.getLogger(AfkPlusReference.MOD_ID);
+    public static HandlerRegistry REGISTRY = new HandlerRegistry();
 
     public static void init()
     {
@@ -73,15 +72,19 @@ public class AfkPlusMod
         //$$ TextParser.build();
         //#else
         //#endif
+        debugLog("Registering Handlers.");
+        REGISTRY.init();
         debugLog("Registering commands.");
         CommandManager.register();
 
-        debugLog("Registering Server Events.");
-        ServerLifecycleEvents.SERVER_STARTING.register(ServerEvents::starting);
-        ServerLifecycleEvents.SERVER_STARTED.register(ServerEvents::started);
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEvents.dpReload(server));
-        ServerLifecycleEvents.SERVER_STOPPING.register(ServerEvents::stopping);
-        ServerLifecycleEvents.SERVER_STOPPED.register(ServerEvents::stopped);
+        //debugLog("Registering Events.");
+        /*
+        ServerLifecycleEvents.SERVER_STARTING.register(ServerEventsHandler::onStarting);
+        ServerLifecycleEvents.SERVER_STARTED.register(ServerEventsHandler::onStarted);
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEventsHandler.onReload(server));
+        ServerLifecycleEvents.SERVER_STOPPING.register(ServerEventsHandler::onStopping);
+        ServerLifecycleEvents.SERVER_STOPPED.register(ServerEventsHandler::onStopped);
+         */
         debugLog("All Tasks Done.");
     }
     

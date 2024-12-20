@@ -46,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
@@ -524,12 +525,14 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Inject(method = "resetLastActionTime", at = @At("TAIL"))
     private void onActionTimeUpdate(CallbackInfo ci)
     {
+        PlayerEventsHandler.getInstance().onResetLastAction(this.player);
         afkplus$unregisterAfk();
     }
 
     @Override
     public void setPos(double x, double y, double z)
     {
+        PlayerEventsHandler.getInstance().onSetPos(this.player, x, y, z);
         if (ConfigWrap.pack().resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
         {
             player.resetLastActionTime();
@@ -540,6 +543,9 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
     private void replacePlayerListName(CallbackInfoReturnable<Component> cir)
     {
+        PlayerEventsHandler.onUpdateDisplayName(this.player, cir.getReturnValue());
+        // setReturnValue()
+
         if (ConfigWrap.list().enableListDisplay && afkplus$isAfk())
         {
             Component listEntry = Placeholders.parseText(
@@ -553,6 +559,8 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Inject(method = "tick", at = @At("HEAD"))
     private void checkAfk(CallbackInfo ci)
     {
+        PlayerEventsHandler.getInstance().onTickPlayer(this.player, this.lastPlayerListTick);
+
         try
         {
             if (!this.player.connection.isAcceptingMessages())

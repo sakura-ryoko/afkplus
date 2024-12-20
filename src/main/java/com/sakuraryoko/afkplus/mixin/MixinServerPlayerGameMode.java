@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 @Mixin(ServerPlayerGameMode.class)
@@ -44,6 +45,8 @@ public abstract class MixinServerPlayerGameMode
     @Inject(method = "changeGameModeForPlayer", at = @At("RETURN"))
     private void checkGameMode(GameType gameType, CallbackInfoReturnable<Boolean> cir)
     {
+        PlayerEventsHandler.getInstance().onChangeGameMode(this.player, gameType, cir.getReturnValue());
+
         IAfkPlayer afkPlayer = (IAfkPlayer) this.player;
         if (cir.getReturnValue())
         {

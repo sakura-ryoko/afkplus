@@ -80,7 +80,7 @@ public class AfkConfigManager
 
             if (Files.exists(file))
             {
-                AfkPlusMod.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}.toml]; importing ...", file.toString());
+                AfkPlusMod.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", file.getFileName().toString());
                 AfkConfigHandler.getInstance().defaults();
 
                 // Load TOML Config (Without saving it)
@@ -101,7 +101,7 @@ public class AfkConfigManager
                 AfkConfigHandler.getInstance().onPostSaveConfig();
 
                 // Delete it, never to be seen again :)
-                AfkPlusMod.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}.toml]", file.toString());
+                AfkPlusMod.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}]", file.getFileName().toString());
                 Files.delete(file);
             }
         }
@@ -141,7 +141,7 @@ public class AfkConfigManager
             {
                 var data = JsonParser.parseString(Files.readString(file));
                 conf = GSON.fromJson(data, conf.getClass());
-                AfkPlusMod.LOGGER.info("loadEach(): Read config for [{}.json]", config.getConfigName());
+                AfkPlusMod.LOGGER.info("loadEach(): Read config for [{}]", file.getFileName().toString());
             }
             else
             {
@@ -187,7 +187,7 @@ public class AfkConfigManager
 
             if (Files.exists(file))
             {
-                AfkPlusMod.LOGGER.info("saveEach(): Deleting existing config file: [{}]", file.toString());
+                AfkPlusMod.LOGGER.info("saveEach(): Deleting existing config file: [{}]", file.getFileName().toString());
                 Files.delete(file);
             }
 

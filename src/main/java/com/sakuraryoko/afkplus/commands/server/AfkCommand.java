@@ -18,36 +18,48 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.commands.server;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.Commands;
 
+import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
-public class AfkCommand
+public class AfkCommand implements IServerCommand
 {
-    public static void register()
+    public static final AfkCommand INSTANCE = new AfkCommand();
+
+    @Override
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("afk")
-                        .requires(Permissions.require("afkplus.afk", ConfigWrap.afk().afkCommandPermissions))
-                        .executes(ctx -> setAfk(ctx.getSource(), ""))
+        dispatcher.register(
+                literal(this.getName())
+                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
+                        .executes(ctx -> this.setAfk(ctx.getSource(), ""))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                      .requires(Permissions.require("afkplus.afk", ConfigWrap.afk().afkCommandPermissions))
-                                      .executes(ctx -> setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
+                                      .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
+                                      .executes(ctx -> this.setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
                         )
-        ));
+        );
     }
 
-    private static int setAfk(CommandSourceStack src, String reason)
+    @Override
+    public String getName()
+    {
+        return "afk";
+    }
+
+    private int setAfk(CommandSourceStack src, String reason)
     {
         IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         if (player == null)

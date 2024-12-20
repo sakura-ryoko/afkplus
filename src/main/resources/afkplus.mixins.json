@@ -4,14 +4,18 @@
   "package": "com.sakuraryoko.afkplus.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MixinCommands",
+    "MixinMinecraftServer",
     "MixinPhantomSpawner",
     "MixinPlayerList",
+    "MixinServerGamePacketListenerImpl",
     "MixinServerPlayer",
     "MixinServerPlayerGameMode",
-    "MixinServerGamePacketListenerImpl",
     "MixinSleepStatus"
   ],
-  "client": [],
+  "client": [
+    "MixinIntegratedServer"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

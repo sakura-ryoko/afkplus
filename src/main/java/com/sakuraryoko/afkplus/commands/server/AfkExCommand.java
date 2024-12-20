@@ -18,32 +18,44 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.commands.server;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.Commands;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.FormattingExample;
 
 import static net.minecraft.commands.Commands.literal;
 
-public class AfkExCommand
+public class AfkExCommand implements IServerCommand
 {
-    public static void register()
+    public static final AfkExCommand INSTANCE = new AfkExCommand();
+
+    @Override
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("afkex")
-                        .requires(Permissions.require("afkplus.afkex", ConfigWrap.afk().afkExCommandPermissions))
-                        .executes(ctx -> afkExample(ctx.getSource(), ctx))
-        ));
+        dispatcher.register(
+                literal(this.getName())
+                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkExCommandPermissions))
+                        .executes(ctx -> AfkExCommand.INSTANCE.afkExample(ctx.getSource(), ctx))
+        );
     }
 
-    private static int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    @Override
+    public String getName()
+    {
+        return "afkex";
+    }
+
+    private int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
         //#if MC >= 12001

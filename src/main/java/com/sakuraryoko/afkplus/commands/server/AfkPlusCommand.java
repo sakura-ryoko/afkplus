@@ -18,96 +18,108 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands;
+package com.sakuraryoko.afkplus.commands.server;
 
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.config.AfkConfigManager;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.text.TextUtils;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
-import com.sakuraryoko.afkplus.util.AfkPlusInfo;
+import com.sakuraryoko.afkplus.player.IAfkPlayer;
 import com.sakuraryoko.afkplus.text.FormattingExample;
+import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.afkplus.util.AfkPlusInfo;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
-public class AfkPlusCommand
+public class AfkPlusCommand implements IServerCommand
 {
-    public static void register()
+    public static final AfkPlusCommand INSTANCE = new AfkPlusCommand();
+    
+    @Override
+    public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
-                literal("afkplus")
-                        .requires(Permissions.require("afkplus.afkplus", ConfigWrap.afk().afkPlusCommandPermissions))
-                        .executes(ctx -> afkAbout(ctx.getSource(), ctx))
+        dispatcher.register(
+                literal(this.getName())
+                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkPlusCommandPermissions))
+                        .executes(ctx -> this.afkAbout(ctx.getSource(), ctx))
                         .then(literal("ex")
-                                      .requires(Permissions.require("afkplus.afkplus.ex", 4))
-                                      .executes(ctx -> afkExample(ctx.getSource(), ctx))
+                                      .requires(Permissions.require(this.getNode()+".ex", 4))
+                                      .executes(ctx -> this.afkExample(ctx.getSource(), ctx))
                         )
                         .then(literal("reload")
-                                      .requires(Permissions.require("afkplus.afkplus.reload", ConfigWrap.afk().afkPlusCommandPermissions))
-                                      .executes(ctx -> afkReload(ctx.getSource(), ctx))
+                                      .requires(Permissions.require(this.getNode()+".reload", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .executes(ctx -> this.afkReload(ctx.getSource(), ctx))
                         )
                         .then(literal("set")
-                                      .requires(Permissions.require("afkplus.afkplus.set", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player",
                                                      EntityArgument.player())
-                                                    .executes((ctx) -> setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), "", ctx))
+                                                    .executes((ctx) -> this.setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), "", ctx))
                                                     .then(argument("reason", StringArgumentType.greedyString())
-                                                                  .requires(Permissions.require("afkplus.afkplus.set", ConfigWrap.afk().afkPlusCommandPermissions))
-                                                                  .executes((ctx) -> setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "reason"), ctx))
+                                                                  .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                                  .executes((ctx) -> this.setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "reason"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("clear")
-                                      .requires(Permissions.require("afkplus.afkplus.clear", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(Permissions.require(this.getNode()+".clear", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
-                                                    .executes(ctx -> clearAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
+                                                    .executes(ctx -> this.clearAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("info")
-                                      .requires(Permissions.require("afkplus.afkplus.info", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(Permissions.require(this.getNode()+".info", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
-                                                    .executes(ctx -> infoAfkPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
+                                                    .executes(ctx -> this.infoAfkPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("damage")
-                                      .requires(Permissions.require("afkplus.afkplus.damage", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(Permissions.require(this.getNode()+".damage", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(literal("disable")
-                                                    .requires(Permissions.require("afkplus.afkplus.damage.disable", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                    .requires(Permissions.require(this.getNode()+".damage.disable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
-                                                                  .executes(ctx -> disableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
+                                                                  .executes(ctx -> this.disableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                                       .then(literal("enable")
-                                                    .requires(Permissions.require("afkplus.afkplus.damage.enable", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                    .requires(Permissions.require(this.getNode()+".damage.enable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
-                                                                  .executes(ctx -> enableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
+                                                                  .executes(ctx -> this.enableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("update")
-                                      .requires(Permissions.require("afkplus.afkplus.update", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(Permissions.require(this.getNode()+".update", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
-                                                    .executes(ctx -> updatePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx)
+                                                    .executes(ctx -> this.updatePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx)
                                                     )
                                       )
                         )
 
-        ));
+        );
     }
 
-    private static int afkAbout(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    @Override
+    public String getName()
+    {
+        return "afkplus";
+    }
+
+    private int afkAbout(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         Component ModInfo = AfkPlusInfo.getModInfoText();
         String user = src.getTextName();
@@ -120,7 +132,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    private int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
         //#if MC >= 12001
@@ -136,7 +148,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int afkReload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    private int afkReload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
         //TomlConfigManager.reloadConfig();
@@ -150,7 +162,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int setAfk(CommandSourceStack src, ServerPlayer player, String reason, CommandContext<CommandSourceStack> context)
+    private int setAfk(CommandSourceStack src, ServerPlayer player, String reason, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getTextName();
@@ -193,7 +205,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int clearAfk(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
+    private int clearAfk(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getTextName();
@@ -213,7 +225,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int infoAfkPlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
+    private int infoAfkPlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getTextName();
@@ -241,7 +253,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int disableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
+    private int disableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         //String user = src.getTextName();
@@ -266,7 +278,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int enableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
+    private int enableDamagePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         //String user = src.getTextName();
@@ -291,7 +303,7 @@ public class AfkPlusCommand
         return 1;
     }
 
-    private static int updatePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
+    private int updatePlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
         IAfkPlayer afkPlayer = (IAfkPlayer) player;

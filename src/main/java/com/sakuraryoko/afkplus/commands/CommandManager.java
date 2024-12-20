@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.commands;
 
+import com.sakuraryoko.afkplus.commands.server.*;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 
 public class CommandManager
@@ -28,24 +29,24 @@ public class CommandManager
     {
         if (ConfigWrap.afk().enableAfkCommand)
         {
-            AfkCommand.register();
+            CommandHandler.getInstance().registerCommand(new AfkCommand());
         }
 
         if (ConfigWrap.afk().enableNoAfkCommand)
         {
-            NoAfkCommand.register();
+            CommandHandler.getInstance().registerCommand(new NoAfkCommand());
         }
 
         if (ConfigWrap.afk().enableAfkInfoCommand)
         {
-            AfkInfoCommand.register();
+            CommandHandler.getInstance().registerCommand(new AfkInfoCommand());
         }
 
         if (ConfigWrap.afk().enableAfkExCommand)
         {
-            AfkExCommand.register();
+            CommandHandler.getInstance().registerCommand(new AfkExCommand());
         }
 
-        AfkPlusCommand.register();
+        CommandHandler.getInstance().registerCommand(new AfkPlusCommand());
     }
 }
