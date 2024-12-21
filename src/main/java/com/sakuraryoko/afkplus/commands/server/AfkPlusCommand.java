@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
+import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.AfkConfigManager;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
@@ -166,6 +167,17 @@ public class AfkPlusCommand implements IServerCommand
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getTextName();
+
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            String response = afkPlayer.afkplus$getName() + " <red>is vanished, and shouldn't be going afk ...<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
+        }
         if (afkPlayer.afkplus$isAfk())
         {
             //#if MC >= 12001
@@ -209,6 +221,17 @@ public class AfkPlusCommand implements IServerCommand
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         String user = src.getTextName();
+
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            String response = afkPlayer.afkplus$getName() + " <red>is vanished, and shouldn't be afk ...<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
+        }
         if (afkPlayer.afkplus$isAfk())
         {
             afkPlayer.afkplus$unregisterAfk();
@@ -257,6 +280,17 @@ public class AfkPlusCommand implements IServerCommand
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         //String user = src.getTextName();
+
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            String response = afkPlayer.afkplus$getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
+        }
         if (afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$unlockDamageDisabled();
@@ -282,6 +316,16 @@ public class AfkPlusCommand implements IServerCommand
     {
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
         //String user = src.getTextName();
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            String response = afkPlayer.afkplus$getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
+        }
         if (!afkPlayer.afkplus$isLockDamageDisabled())
         {
             afkPlayer.afkplus$lockDamageDisabled();
@@ -307,6 +351,16 @@ public class AfkPlusCommand implements IServerCommand
     {
         String user = src.getTextName();
         IAfkPlayer afkPlayer = (IAfkPlayer) player;
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            String response = afkPlayer.afkplus$getName() + "<red>is vanished, and shouldn't be updating their player list status.<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
+        }
         afkPlayer.afkplus$updatePlayerList();
         //#if MC >= 12001
         //$$ context.getSource().sendSuccess(() -> Component.literal("Updating player list entry for " + afkPlayer.afkplus$getName()), false);

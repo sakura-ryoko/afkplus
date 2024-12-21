@@ -33,7 +33,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -523,36 +522,26 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     }
 
     @Inject(method = "resetLastActionTime", at = @At("TAIL"))
-    private void onActionTimeUpdate(CallbackInfo ci)
+    private void afkplus$onResetLastAction(CallbackInfo ci)
     {
         PlayerEventsHandler.getInstance().onResetLastAction(this.player);
-        afkplus$unregisterAfk();
     }
 
     @Override
     public void setPos(double x, double y, double z)
     {
         PlayerEventsHandler.getInstance().onSetPos(this.player, x, y, z);
-        if (ConfigWrap.pack().resetOnMovement && (this.getX() != x || this.getY() != y || this.getZ() != z))
-        {
-            player.resetLastActionTime();
-        }
         super.setPos(x, y, z);
     }
 
     @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
     private void replacePlayerListName(CallbackInfoReturnable<Component> cir)
     {
-        PlayerEventsHandler.onUpdateDisplayName(this.player, cir.getReturnValue());
-        // setReturnValue()
+        Component listEntry = PlayerEventsHandler.getInstance().onUpdateDisplayName(this.player, cir.getReturnValue());
 
-        if (ConfigWrap.list().enableListDisplay && afkplus$isAfk())
+        if (listEntry != null)
         {
-            Component listEntry = Placeholders.parseText(
-                    TextUtils.formatTextSafe(ConfigWrap.list().afkPlayerName),
-                    PlaceholderContext.of(this));
-            AfkPlusMod.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());
-            cir.setReturnValue(listEntry.copy());
+            cir.setReturnValue(listEntry);
         }
     }
 
@@ -560,83 +549,5 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     private void checkAfk(CallbackInfo ci)
     {
         PlayerEventsHandler.getInstance().onTickPlayer(this.player, this.lastPlayerListTick);
-
-        try
-        {
-            if (!this.player.connection.isAcceptingMessages())
-            {
-                return;
-            }
-            if (this.afkplus$isAfk() && ConfigWrap.list().updateInterval > 0)
-            {
-                if (this.lastPlayerListTick <= 0)
-                {
-                    this.afkplus$updatePlayerList();
-                }
-                else
-                {
-                    long diff = Util.getMillis() - this.lastPlayerListTick;
-
-                    if (diff > ConfigWrap.list().updateInterval * 1000L)
-                    {
-                        this.afkplus$updatePlayerList();
-                    }
-                }
-            }
-            if (this.player.isCreative())
-            {
-                return;
-            }
-            if (this.player.isSpectator())
-            {
-                return;
-            }
-            if (this.afkplus$isLockDamageDisabled())
-            {
-                if (!this.afkplus$isDamageEnabled())
-                {
-                    this.afkplus$enableDamage();
-                    AfkPlusMod.debugLog("checkAfk() - Damage Enabled for player: {} because they are [UNLOCKED]. step 1.", this.afkplus$getName());
-                }
-            }
-            else if (this.afkplus$isAfk() && ConfigWrap.pack().disableDamage)
-            {
-                if (this.afkplus$isDamageEnabled())
-                {
-                    // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
-                    int cooldownSeconds = ConfigWrap.pack().disableDamageCooldown;
-                    if (cooldownSeconds > 0)
-                    {
-                        long diff = Util.getMillis() - this.afkTimeMs;
-                        if (diff > cooldownSeconds * 1000L)
-                        {
-                            this.afkplus$disableDamage();
-                            AfkPlusMod.debugLog("checkAfk() - Damage Disabled for player: {} step 2.", this.afkplus$getName());
-                        }
-                    }
-                    else
-                    {
-                        if (!(this.player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
-                        {
-                            this.afkplus$disableDamage();
-                            AfkPlusMod.debugLog("checkAfk() - Damage Disabled for player: {} step 4.", this.afkplus$getName());
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (!this.afkplus$isDamageEnabled())
-                {
-                    this.afkplus$enableDamage();
-                    AfkPlusMod.debugLog("checkAfk() - Damage Enabled for player: {} step 5.", this.afkplus$getName());
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            // Sometimes the values are null, so offer a catch
-            AfkPlusMod.LOGGER.info("Caught exception during checkAfk(). ({})", e.getMessage());
-        }
     }
 }

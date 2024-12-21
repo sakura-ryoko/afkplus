@@ -31,17 +31,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 
 @Mixin(SleepStatus.class)
 public class MixinSleepStatus
 {
-    @Shadow
-    private int activePlayers;
-    @Shadow
-    private int sleepingPlayers;
+    @Shadow private int activePlayers;
+    @Shadow private int sleepingPlayers;
 
     @Inject(method = "update(Ljava/util/List;)Z",
             at = @At(value = "INVOKE",
@@ -51,12 +47,8 @@ public class MixinSleepStatus
     private void checkSleepCount(List<ServerPlayer> players, CallbackInfoReturnable<Boolean> cir,
                                  @Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local ServerPlayer serverPlayerEntity)
     {
-        // Count AFK Players into the total, they can't be marked as Sleeping, so don't increment that value.
-        IAfkPlayer player = (IAfkPlayer) serverPlayerEntity;
-        AfkPlusMod.debugLog("checkSleepCount(): Current values i:{} j:{} // total: {} sleeping: {}", i, j, this.activePlayers, this.sleepingPlayers);
-        if (player.afkplus$isAfk() && ConfigWrap.pack().bypassSleepCount)
+        if (PlayerEventsHandler.getInstance().onCheckSleepCount(serverPlayerEntity, i, j, this.activePlayers, this.sleepingPlayers))
         {
-            AfkPlusMod.LOGGER.info("AFK Player: {} is being excluded from the sleep requirements.", player.afkplus$getName());
             --this.activePlayers;
         }
     }

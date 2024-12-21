@@ -76,15 +76,6 @@ public class AfkPlusMod
         REGISTRY.init();
         debugLog("Registering commands.");
         CommandManager.register();
-
-        //debugLog("Registering Events.");
-        /*
-        ServerLifecycleEvents.SERVER_STARTING.register(ServerEventsHandler::onStarting);
-        ServerLifecycleEvents.SERVER_STARTED.register(ServerEventsHandler::onStarted);
-        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> ServerEventsHandler.onReload(server));
-        ServerLifecycleEvents.SERVER_STOPPING.register(ServerEventsHandler::onStopping);
-        ServerLifecycleEvents.SERVER_STOPPED.register(ServerEventsHandler::onStopped);
-         */
         debugLog("All Tasks Done.");
     }
     

@@ -24,13 +24,16 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
+import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.text.TextUtils;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -45,10 +48,10 @@ public class AfkCommand implements IServerCommand
         dispatcher.register(
                 literal(this.getName())
                         .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
-                        .executes(ctx -> this.setAfk(ctx.getSource(), ""))
+                        .executes(ctx -> this.setAfk(ctx.getSource(), "", ctx))
                         .then(argument("reason", StringArgumentType.greedyString())
                                       .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
-                                      .executes(ctx -> this.setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason")))
+                                      .executes(ctx -> this.setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason"), ctx))
                         )
         );
     }
@@ -59,25 +62,46 @@ public class AfkCommand implements IServerCommand
         return "afk";
     }
 
-    private int setAfk(CommandSourceStack src, String reason)
+    private int setAfk(CommandSourceStack src, String reason, CommandContext<CommandSourceStack> context)
     {
         IAfkPlayer player = (IAfkPlayer) src.getPlayer();
+
         if (player == null)
         {
             return 0;
         }
-        if (reason == null && ConfigWrap.mess().defaultReason == null)
+
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(src.getPlayer()))
         {
-            player.afkplus$registerAfk("via /afk");
+            String response = "<red>You are vanished, and shouldn't be using the /afk command ...<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
         }
-        else if (reason == null || reason.isEmpty())
+
+        if (player.afkplus$isAfk())
         {
-            player.afkplus$registerAfk(ConfigWrap.mess().defaultReason);
+            player.afkplus$unregisterAfk();
         }
         else
         {
-            player.afkplus$registerAfk(reason);
+            if (reason == null && ConfigWrap.mess().defaultReason == null)
+            {
+                player.afkplus$registerAfk(null);
+            }
+            else if (reason == null || reason.isEmpty())
+            {
+                player.afkplus$registerAfk(ConfigWrap.mess().defaultReason);
+            }
+            else
+            {
+                player.afkplus$registerAfk(reason);
+            }
         }
+
         return 1;
     }
 }

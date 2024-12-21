@@ -30,8 +30,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
+import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.text.TextUtils;
 
 import static net.minecraft.commands.Commands.literal;
 
@@ -62,6 +64,16 @@ public class NoAfkCommand implements IServerCommand
         if (player == null)
         {
             return 0;
+        }
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(src.getPlayer()))
+        {
+            String response = "<red>You are vanished, and shouldn't be using the /noafk command ...<r>";
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //#else
+            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            //#endif
+            return 1;
         }
         if (player.afkplus$isNoAfkEnabled())
         {

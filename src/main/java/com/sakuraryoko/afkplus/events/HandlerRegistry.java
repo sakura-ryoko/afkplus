@@ -20,10 +20,13 @@
 
 package com.sakuraryoko.afkplus.events;
 
+import com.sakuraryoko.afkplus.compat.vanish.VanishEventsCompat;
+
 public class HandlerRegistry
 {
     public static ServerEventsHandler SERVER_EVENTS;
     public static PlayerEventsHandler PLAYER_EVENTS;
+    public static VanishEventsCompat VANISH_EVENTS;
 
     public HandlerRegistry()
     {
@@ -34,5 +37,12 @@ public class HandlerRegistry
     {
         SERVER_EVENTS = new ServerEventsHandler();
         PLAYER_EVENTS = new PlayerEventsHandler();
+        VANISH_EVENTS = new VanishEventsCompat();
+
+        // Vanish Compat
+        if (VANISH_EVENTS.hasVanish())
+        {
+            VANISH_EVENTS.registerEvents();
+        }
     }
 }

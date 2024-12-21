@@ -19,6 +19,9 @@ repositories {
 	maven {
 		url 'https://oss.sonatype.org/content/repositories/snapshots'
 	}
+	maven {
+		url "https://api.modrinth.com/maven"
+	}
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -55,6 +58,7 @@ dependencies {
 	// AFKPlus Specific
 	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
 	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
+	modCompileOnly "maven.modrinth:vanish:${project.vanish_compat_version}"
 }
 
 String MIXIN_CONFIG_PATH = 'afkplus.mixins.json'
