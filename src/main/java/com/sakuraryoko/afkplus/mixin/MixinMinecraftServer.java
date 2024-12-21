@@ -45,7 +45,11 @@ public abstract class MixinMinecraftServer
 
     @Inject(method = "runServer",
             at = @At(value = "INVOKE",
-                     target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;",
+                     //#if MC >= 11904
+                     //$$ target = "Lnet/minecraft/server/MinecraftServer;buildServerStatus()Lnet/minecraft/network/protocol/status/ServerStatus;",
+                     //#else
+                     target = "Lnet/minecraft/server/MinecraftServer;updateStatusIcon(Lnet/minecraft/network/protocol/status/ServerStatus;)V",
+                     //#endif
                      ordinal = 0))
     private void afkplus$onServerStarted(CallbackInfo ci)
     {

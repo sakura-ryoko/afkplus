@@ -214,7 +214,11 @@ public class PlayerEventsHandler
         // checkAfk
         try
         {
-            if (!player.connection.isAcceptingMessages())
+            //#if MC >= 11904
+            //$$ if (!player.connection.isAcceptingMessages())
+            //#else
+            if (!player.connection.getConnection().isConnected())
+            //#endif
             {
                 return;
             }

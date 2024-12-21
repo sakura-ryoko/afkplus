@@ -81,6 +81,10 @@ public class TextUtils
 
     public static Component translate(String translateStr, @Nullable String fallback)
     {
-        return Component.translatableWithFallback(translateStr, fallback);
+        //#if MC > 11903
+        //$$ return Component.translatableWithFallback(translateStr, fallback);
+        //#else
+        return Component.translatable(translateStr);
+        //#endif
     }
 }

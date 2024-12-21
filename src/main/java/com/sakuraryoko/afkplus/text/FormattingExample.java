@@ -129,7 +129,11 @@ public class FormattingExample
         test = ChatFormatting.getByName("obfuscated");
         if (test != null)
         {
-            testString = testString + "<r>\n<u><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
+            //#if MC >= 11904
+            //$$ testString = testString + "<r>\n<u><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
+            //#else
+            testString = testString + "<r>\n<underline><copy:'<obfuscated>'>obfuscated:<r> <obfuscated>" + test.getName();
+            //#endif
         }
 
         test = ChatFormatting.getByName("bold");
@@ -168,7 +172,11 @@ public class FormattingExample
         testString = testString + "<r> <copy:'<rainbow>'><rainbow>rainbow";
         testString = testString + "<r> <copy:'<gradient:#76C610:#DE8BB4>'><gradient:#76C610:#DE8BB4>gradient:#76C610:#DE8BB4";
         testString = testString + "<r>\n<green><hover:show_text:'hover text'>hover:show_text:'hover text'";
-        testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
+        //#if MC >= 11904
+        //$$ testString = testString + "<r> <u><aqua><url:'https://github.io'>url:'https://github.io'";
+        //#else
+        testString = testString + "<r> <underline><aqua><url:'https://github.io'>url:'https://github.io'";
+        //#endif
 
         AfkPlusMod.debugLog("FormatTest.runAliasTest() --> testString: {}", testString);
         return TextUtils.formatText(testString);
@@ -176,30 +184,50 @@ public class FormattingExample
 
     public static Component runColorsTest()
     {
-        String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
-        testString = testString + "<r>\n<copy:'<bluetiful>'><bluetiful>bluetiful";
+        //#if MC >= 11904
+        //$$ String testString = "<r><b><i><salmon>*** <u>AFKPLUS ONLY!</u>:";
+        //#else
+        String testString = "<r><b><i><salmon>*** <underline>AFKPLUS ONLY!</underline>:";
+        //#endif
+        testString = testString + "<r>\n<copy:'<aztec_gold>'><aztec_gold>aztec_gold";
+        testString = testString + "<r> <copy:'<bluetiful>'><bluetiful>bluetiful";
         testString = testString + "<r> <copy:'<brown>'><brown>brown";
         testString = testString + "<r> <copy:'<burnt_orange>'><burnt_orange>burnt_orange";
         testString = testString + "<r> <copy:'<canary>'><canary>canary";
         testString = testString + "<r> <copy:'<cool_mint>'><cool_mint>cool_mint";
         testString = testString + "<r> <copy:'<copper>'><copper>copper";
+        testString = testString + "<r> <copy:'<cotton_candy>'><cotton_candy>cotton_candy";
         testString = testString + "<r> <copy:'<cyan>'><cyan>cyan";
         testString = testString + "<r> <copy:'<dark_brown>'><dark_brown>dark_brown";
         testString = testString + "<r> <copy:'<dark_pink>'><dark_pink>dark_pink";
+        testString = testString + "<r> <copy:'<lavender>'><lavender>lavender";
         testString = testString + "<r> <copy:'<light_blue>'><light_blue>light_blue";
         testString = testString + "<r> <copy:'<light_brown>'><light_brown>light_brown";
         testString = testString + "<r> <copy:'<light_gray>'><light_gray>light_gray";
         testString = testString + "<r> <copy:'<light_pink>'><light_pink>light_pink";
         testString = testString + "<r> <copy:'<lime>'><lime>lime";
         testString = testString + "<r> <copy:'<magenta>'><magenta>magenta";
+        testString = testString + "<r> <copy:'<maroon>'><maroon>maroon";
+        testString = testString + "<r> <copy:'<pacific_blue>'><pacific_blue>pacific_blue";
+        testString = testString + "<r> <copy:'<peach>'><peach>peach";
+        testString = testString + "<r> <copy:'<plum>'><plum>plum";
         testString = testString + "<r> <copy:'<powder_blue>'><powder_blue>powder_blue";
         testString = testString + "<r> <copy:'<purple>'><purple>purple";
         testString = testString + "<r> <copy:'<royal_purple>'><royal_purple>royal_purple";
         testString = testString + "<r> <copy:'<salmon>'><salmon>salmon";
+        testString = testString + "<r> <copy:'<scarlet>'><scarlet>scarlet";
+        testString = testString + "<r> <copy:'<sea_green>'><sea_green>sea_green";
+        testString = testString + "<r> <copy:'<sepia>'><sepia>sepia";
         testString = testString + "<r> <copy:'<shamrock>'><shamrock>shamrock";
+        testString = testString + "<r> <copy:'<sunset_orange>'><sunset_orange>sunset_orange";
         testString = testString + "<r> <copy:'<tickle_me_pink>'><tickle_me_pink>tickle_me_pink";
+        testString = testString + "<r> <copy:'<timberwolf>'><timberwolf>timberwolf";
         testString = testString + "<r> <copy:'<ultramarine_blue>'><ultramarine_blue>ultramarine_blue";
-        testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
+        //#if MC >= 11904
+        //$$ testString = testString + "<r>\n<i><u><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
+        //#else
+        testString = testString + "<r>\n<i><underline><gray>* You can click on most of these options to copy the tag to your Clipboard ***";
+        //#endif
 
         AfkPlusMod.debugLog("FormatTest.runColorsTest() --> testString: {}", testString);
         return TextUtils.formatText(testString);

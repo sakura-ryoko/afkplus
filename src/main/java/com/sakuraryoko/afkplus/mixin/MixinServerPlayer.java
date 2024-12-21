@@ -27,7 +27,11 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+//#if MC >= 11903
+//$$ import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
+//#else
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+//#endif
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -224,7 +228,11 @@ public abstract class MixinServerPlayer extends Entity implements IAfkPlayer
     @Unique
     public void afkplus$updatePlayerList()
     {
-        this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, player));
+        //#if MC >= 11903
+        //$$ this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, player));
+        //#else
+        this.server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, player));
+        //#endif
         AfkPlusMod.debugLog("sending player list update for {}", afkplus$getName());
         this.lastPlayerListTick = Util.getMillis();
     }

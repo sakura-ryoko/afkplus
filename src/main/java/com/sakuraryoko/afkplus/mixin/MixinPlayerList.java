@@ -34,6 +34,10 @@ import net.minecraft.server.level.ServerPlayer;
 //$$ import net.minecraft.world.entity.Entity;
 //#endif
 import net.minecraft.server.players.PlayerList;
+//#if MC >= 11903
+//#else
+import net.minecraft.world.entity.player.ProfilePublicKey;
+//#endif
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -62,8 +66,10 @@ public abstract class MixinPlayerList
     @Inject(method = "getPlayerForLogin", at = @At("RETURN"))
     //#if MC >= 12002
     //$$ private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, ClientInformation clientInformation, CallbackInfoReturnable<ServerPlayer> cir)
+    //#elseif MC >= 11903
+    //$$ private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, CallbackInfoReturnable<ServerPlayer> cir)
     //#else
-    private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, CallbackInfoReturnable<ServerPlayer> cir)
+    private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, ProfilePublicKey profilePublicKey, CallbackInfoReturnable<ServerPlayer> cir)
     //#endif
     {
         PlayerEventsHandler.getInstance().onCreatePlayer(cir.getReturnValue(), gameProfile);
