@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
+import java.util.Objects;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -34,8 +35,9 @@ import net.minecraft.server.level.ServerPlayer;
 import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
 import static net.minecraft.commands.Commands.argument;
@@ -65,9 +67,10 @@ public class AfkInfoCommand implements IServerCommand
 
     private int infoAfkPlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
-        IAfkPlayer afkPlayer = (IAfkPlayer) player;
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
         String user = src.getTextName();
-        if (afkPlayer.afkplus$isAfk())
+
+        if (afkPlayer.isAfk())
         {
             String afkStatus = AfkPlayerInfo.getString(afkPlayer);
             Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
@@ -78,14 +81,14 @@ public class AfkInfoCommand implements IServerCommand
             context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkPlusMod.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.afkplus$getName());
+            AfkPlusMod.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
         }
         else
         {
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.getName() + " is not marked as AFK."), false);
             //#else
-            context.getSource().sendSuccess(Component.literal(afkPlayer.afkplus$getName() + " is not marked as AFK."), false);
+            context.getSource().sendSuccess(Component.literal(afkPlayer.getName() + " is not marked as AFK."), false);
             //#endif
         }
         return 1;

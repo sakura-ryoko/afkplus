@@ -28,7 +28,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.sakuraryoko.afkplus.AfkPlusReference;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
 public class TimePlaceholder
@@ -39,17 +40,18 @@ public class TimePlaceholder
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "time"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "time"), (ctx, arg) ->
-                //#endif
+        //#endif
         {
-            if (!ctx.hasPlayer())
+            if (!ctx.hasPlayer() || ctx.player() == null)
             {
                 return PlaceholderResult.invalid("No player!");
             }
-            IAfkPlayer player = (IAfkPlayer) ctx.player();
-            assert player != null;
-            Component result = player.afkplus$isAfk()
-                               ? TextUtils.formatTextSafe(ConfigWrap.place().afkTimePlaceholderFormatting + player.afkplus$getAfkTimeString() + "<r>")
+
+            AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
+            Component result = afkPlayer.isAfk()
+                               ? TextUtils.formatTextSafe(ConfigWrap.place().afkTimePlaceholderFormatting + afkPlayer.getAfkTimeString() + "<r>")
                                : TextUtils.formatTextSafe("");
+
             return PlaceholderResult.value(result);
         });
     }

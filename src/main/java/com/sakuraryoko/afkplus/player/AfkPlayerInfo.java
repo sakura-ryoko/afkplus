@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.player;
 
+import javax.annotation.Nonnull;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -34,17 +35,19 @@ import com.sakuraryoko.afkplus.text.TextUtils;
 
 public class AfkPlayerInfo
 {
-    public static String getString(IAfkPlayer afkPlayer)
+    public static String getString(@Nonnull AfkPlayer afkPlayer)
     {
         String AfkStatus;
         long duration;
-        if (afkPlayer.afkplus$isAfk())
+
+        if (afkPlayer.isAfk())
         {
-            duration = Util.getMillis() - afkPlayer.afkplus$getAfkTimeMs();
+            duration = Util.getMillis() - afkPlayer.getAfkTimeMs();
             AfkStatus = "<bold><magenta>AFK Information:"
-                    + "<r>\nPlayer: " + afkPlayer.afkplus$getName()
+                    + "<r>\nPlayer: " + afkPlayer.getName()
                     + "<r>\nAfk Since: " + ConfigWrap.place().afkTimePlaceholderFormatting
-                    + afkPlayer.afkplus$getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)";
+                    + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)";
+
             if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
             {
                 AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
@@ -60,15 +63,15 @@ public class AfkPlayerInfo
                 AfkStatus = AfkStatus + "<r>\nDuration: <copper>DISABLED";
                 AfkStatus = AfkStatus + "<r>";
             }
-            if (afkPlayer.afkplus$isCreative())
+            if (afkPlayer.getPlayer().isCreative())
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <light_blue>CREATIVE";
             }
-            else if (afkPlayer.afkplus$isSpectator())
+            else if (afkPlayer.getPlayer().isSpectator())
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <gray>SPECTATOR";
             }
-            else if (afkPlayer.afkplus$isDamageEnabled())
+            else if (afkPlayer.isDamageEnabled())
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <green>Enabled";
             }
@@ -76,7 +79,7 @@ public class AfkPlayerInfo
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <red>Disabled";
             }
-            if (afkPlayer.afkplus$isLockDamageDisabled())
+            if (afkPlayer.isLockDamageEnabled())
             {
                 AfkStatus = AfkStatus + " <red>[RESTRICTED]";
             }
@@ -84,43 +87,48 @@ public class AfkPlayerInfo
             {
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             }
+
             AfkPlusMod.debugLog("AkfStatus.getString(): {}", AfkStatus);
         }
-        else if (afkPlayer.afkplus$isNoAfkEnabled())
+        else if (afkPlayer.isNoAfkEnabled())
         {
-            AfkStatus = "Player: " + afkPlayer.afkplus$getName()
-                    + "<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)";
+            AfkStatus = "Player: " + afkPlayer.getName() + "<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)";
         }
         else
         {
             AfkStatus = "";
         }
+
         return AfkStatus;
     }
 
-    public static Component getReason(IAfkPlayer afkPlayer, CommandSourceStack src)
+    public static Component getReason(@Nonnull AfkPlayer afkPlayer, CommandSourceStack src)
     {
         String reasonFormat;
         Component afkReason;
-        if (afkPlayer.afkplus$isAfk())
+
+        if (afkPlayer.isAfk())
         {
             reasonFormat = "<r>Reason: " + ConfigWrap.place().afkReasonPlaceholderFormatting;
-            if (afkPlayer.afkplus$getAfkReason().isEmpty())
+
+            if (afkPlayer.getAfkReason().isEmpty())
             {
                 afkReason = TextUtils.formatTextSafe(reasonFormat + "none");
             }
             else
             {
                 afkReason = Placeholders.parseText(
-                        TextUtils.formatTextSafe(reasonFormat + afkPlayer.afkplus$getAfkReason()),
+                        TextUtils.formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
                         PlaceholderContext.of(src));
             }
+
             AfkPlusMod.debugLog("AkfStatus.getReason(): {}", afkReason.toString());
         }
         else
         {
             afkReason = Component.empty();
         }
+
         return afkReason;
     }
 }

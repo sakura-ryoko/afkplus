@@ -22,30 +22,53 @@ package com.sakuraryoko.afkplus.player;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.server.level.ServerPlayer;
+
 public class AfkPlayer
 {
-    private IAfkPlayer player;
-    private final int entityId;
+    private ServerPlayer player;
+    private AfkHandler handler;
+    private int entityId;
     private boolean afkEnabled;
     private boolean damageEnabled;
     private boolean lockDamageEnabled;
     private boolean noAfkEnabled;
     private long lastPlayerTick;
-    private long afkTime;
+    private long afkTimeMs;
+    private String afkTimeString;
+    private String afkReason;
 
-    public AfkPlayer(@Nonnull IAfkPlayer player)
+    private AfkPlayer(@Nonnull ServerPlayer player)
     {
         this.player = player;
-        this.entityId = player.afkplus$getEntityId();
+        this.entityId = player.getId();
         this.afkEnabled = false;
         this.damageEnabled = true;
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;
-        this.afkTime = 0;
+        this.afkTimeMs = 0;
         this.lastPlayerTick = 0;
+        this.afkTimeString = "";
+        this.afkReason = "";
+        this.handler = new AfkHandler(this);
     }
 
-    public IAfkPlayer getPlayer()
+    public static AfkPlayer init(@Nonnull ServerPlayer player)
+    {
+        return new AfkPlayer(player);
+    }
+
+    public AfkHandler getHandler()
+    {
+        if (this.handler == null)
+        {
+            this.handler = new AfkHandler(this);
+        }
+
+        return this.handler;
+    }
+
+    public ServerPlayer getPlayer()
     {
         return this.player;
     }
@@ -57,22 +80,12 @@ public class AfkPlayer
 
     public String getName()
     {
-        return this.player.afkplus$getName();
+        return this.player.getName().getString();
     }
 
     public boolean isAfk()
     {
         return this.afkEnabled;
-    }
-
-    public boolean isCreative()
-    {
-        return this.player.afkplus$isCreative();
-    }
-
-    public boolean isSpectator()
-    {
-        return this.player.afkplus$isSpectator();
     }
 
     public boolean isDamageEnabled()
@@ -95,9 +108,19 @@ public class AfkPlayer
         return this.lastPlayerTick;
     }
 
-    public long getAfkTime()
+    public long getAfkTimeMs()
     {
-        return this.afkTime;
+        return this.afkTimeMs;
+    }
+
+    public String getAfkTimeString()
+    {
+        return this.afkTimeString;
+    }
+
+    public String getAfkReason()
+    {
+        return this.afkReason;
     }
 
     public void setAfk(boolean toggle)
@@ -120,29 +143,53 @@ public class AfkPlayer
         this.noAfkEnabled = toggle;
     }
 
+    public void setAfkTimeString(String timeString)
+    {
+        this.afkTimeString = timeString;
+    }
+
+    public void setAfkReason(String reason)
+    {
+        this.afkReason = reason;
+    }
+
+    public void setAfkTimeMs(long time)
+    {
+        this.afkTimeMs = time;
+    }
+
     public void tickPlayer(long time)
     {
         this.lastPlayerTick = time;
     }
 
-    public void setAfkTime(long time)
-    {
-        this.afkTime = time;
-    }
-
-    public AfkPlayer setPlayer(@Nonnull IAfkPlayer player)
+    public AfkPlayer setPlayer(@Nonnull ServerPlayer player)
     {
         this.player = player;
+        this.entityId = player.getId();
         return this;
     }
 
-    public static AfkPlayer init(@Nonnull IAfkPlayer player)
+    public boolean matches(@Nonnull ServerPlayer player)
     {
-        return new AfkPlayer(player);
+        return player.getId() == this.entityId || this.player.getName().equals(player.getName()) || this.player.equals(player);
     }
 
-    public boolean matches(@Nonnull IAfkPlayer player)
+    public void clearAfkValues()
     {
-        return player.afkplus$getEntityId() == this.entityId || this.getName().equals(player.afkplus$getName()) || this.player.equals(player);
+        this.afkTimeMs = 0;
+        this.afkTimeString = "";
+        this.afkReason = "";
+    }
+
+    public void reset()
+    {
+        this.handler.reset();
+        this.afkEnabled = false;
+        this.damageEnabled = true;
+        this.lockDamageEnabled = false;
+        this.noAfkEnabled = false;
+        this.lastPlayerTick = 0;
+        this.clearAfkValues();
     }
 }

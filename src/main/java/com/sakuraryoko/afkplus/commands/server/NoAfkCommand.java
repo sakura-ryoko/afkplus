@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
+import java.util.Objects;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -32,7 +33,8 @@ import net.minecraft.network.chat.Component;
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
 import static net.minecraft.commands.Commands.literal;
@@ -59,9 +61,8 @@ public class NoAfkCommand implements IServerCommand
 
     private int setNoAfk(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
-        IAfkPlayer player = (IAfkPlayer) src.getPlayer();
         //String user = src.getTextName();
-        if (player == null)
+        if (src.getPlayer() == null)
         {
             return 0;
         }
@@ -75,9 +76,12 @@ public class NoAfkCommand implements IServerCommand
             //#endif
             return 1;
         }
-        if (player.afkplus$isNoAfkEnabled())
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(src.getPlayer());
+
+        if (afkPlayer.isNoAfkEnabled())
         {
-            player.afkplus$unsetNoAfkEnabled();
+            afkPlayer.setNoAfkEnabled(false);
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> Component.literal("No AFK Mode Disabled. (Timeouts enabled)"), true);
             //#else
@@ -87,7 +91,7 @@ public class NoAfkCommand implements IServerCommand
         }
         else
         {
-            player.afkplus$setNoAfkEnabled();
+            afkPlayer.setNoAfkEnabled(true);
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> Component.literal("No AFK Mode Enabled. (Timeouts disabled)"), true);
             //#else

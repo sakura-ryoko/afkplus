@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
+import java.util.Objects;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -32,7 +33,8 @@ import net.minecraft.commands.Commands;
 import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
 import static net.minecraft.commands.Commands.argument;
@@ -64,9 +66,7 @@ public class AfkCommand implements IServerCommand
 
     private int setAfk(CommandSourceStack src, String reason, CommandContext<CommandSourceStack> context)
     {
-        IAfkPlayer player = (IAfkPlayer) src.getPlayer();
-
-        if (player == null)
+        if (src.getPlayer() == null)
         {
             return 0;
         }
@@ -82,23 +82,25 @@ public class AfkCommand implements IServerCommand
             return 1;
         }
 
-        if (player.afkplus$isAfk())
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(src.getPlayer());
+
+        if (afkPlayer.isAfk())
         {
-            player.afkplus$unregisterAfk();
+            afkPlayer.getHandler().unregisterAfk();
         }
         else
         {
             if (reason == null && ConfigWrap.mess().defaultReason == null)
             {
-                player.afkplus$registerAfk(null);
+                afkPlayer.getHandler().registerAfk(null);
             }
             else if (reason == null || reason.isEmpty())
             {
-                player.afkplus$registerAfk(ConfigWrap.mess().defaultReason);
+                afkPlayer.getHandler().registerAfk(ConfigWrap.mess().defaultReason);
             }
             else
             {
-                player.afkplus$registerAfk(reason);
+                afkPlayer.getHandler().registerAfk(reason);
             }
         }
 

@@ -26,6 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 //#if MC >= 12001
 //$$ import net.minecraft.server.level.ServerPlayer;
 //#else
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 //#endif
 import net.minecraft.world.level.levelgen.PhantomSpawner;
@@ -37,13 +38,11 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
 
 @Mixin(PhantomSpawner.class)
 public class MixinPhantomSpawner
 {
-    @Unique
-    private IAfkPlayer afkPlayer;
+    @Unique private ServerPlayer afkPlayer;
 
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
             at = @At(value = "INVOKE",
@@ -61,9 +60,9 @@ public class MixinPhantomSpawner
                                       //#endif
     {
         //#if MC >= 12001
-        //$$ afkPlayer = (IAfkPlayer) serverPlayer;
+        //$$ afkPlayer = serverPlayer;
         //#else
-        afkPlayer = (IAfkPlayer) player;
+        afkPlayer = (ServerPlayer) player;
         //#endif
     }
 

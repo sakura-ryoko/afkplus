@@ -30,7 +30,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.sakuraryoko.afkplus.AfkPlusReference;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.player.IAfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayer;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
 public class DurationPlaceholder
@@ -41,27 +42,29 @@ public class DurationPlaceholder
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "duration"), (ctx, arg) ->
         //#else
         Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "duration"), (ctx, arg) ->
-                //#endif
+        //#endif
         {
-            if (!ctx.hasPlayer())
+            if (!ctx.hasPlayer() || ctx.player() == null)
             {
                 return PlaceholderResult.invalid("No player!");
             }
-            IAfkPlayer player = (IAfkPlayer) ctx.player();
-            assert player != null;
+
+            AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
             Component result;
+
             if (ConfigWrap.place().afkDurationPretty)
             {
-                result = player.afkplus$isAfk()
-                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationWords(Util.getMillis() - player.afkplus$getAfkTimeMs(), true, true) + "<r>")
+                result = afkPlayer.isAfk()
+                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationWords(Util.getMillis() - afkPlayer.getAfkTimeMs(), true, true) + "<r>")
                          : TextUtils.formatTextSafe("");
             }
             else
             {
-                result = player.afkplus$isAfk()
-                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationHMS(Util.getMillis() - player.afkplus$getAfkTimeMs()) + "<r>")
+                result = afkPlayer.isAfk()
+                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationHMS(Util.getMillis() - afkPlayer.getAfkTimeMs()) + "<r>")
                          : Component.empty();
             }
+
             return PlaceholderResult.value(result);
         });
     }

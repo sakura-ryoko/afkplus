@@ -25,34 +25,24 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.Util;
+import net.minecraft.server.level.ServerPlayer;
+
+import com.sakuraryoko.afkplus.AfkPlusMod;
+
 public class AfkPlayerList
 {
     private static final AfkPlayerList INSTANCE = new AfkPlayerList();
     public static AfkPlayerList getInstance() { return INSTANCE; }
 
-    private List<AfkPlayer> afkPlayers;
+    private final List<AfkPlayer> afkPlayers;
 
     public AfkPlayerList()
     {
         this.afkPlayers = new ArrayList<>();
     }
 
-    public @Nullable AfkPlayer addPlayer(@Nonnull IAfkPlayer player)
-    {
-        for (AfkPlayer entry : this.afkPlayers)
-        {
-            if (entry.matches(player))
-            {
-                return null;
-            }
-        }
-
-        AfkPlayer newEntry = new AfkPlayer(player);
-        this.afkPlayers.add(newEntry);
-        return newEntry;
-    }
-
-    public @Nullable AfkPlayer getPlayer(IAfkPlayer player)
+    public @Nullable AfkPlayer getPlayer(@Nonnull ServerPlayer player)
     {
         for (AfkPlayer entry : this.afkPlayers)
         {
@@ -62,42 +52,65 @@ public class AfkPlayerList
             }
         }
 
-        return this.addPlayer(player);
+        return null;
     }
 
-    public void removePlayer(IAfkPlayer player)
+    public AfkPlayer addOrGetPlayer(@Nonnull ServerPlayer player)
+    {
+        AfkPlayer afkPlayer = this.getPlayer(player);
+
+        if (afkPlayer == null)
+        {
+            afkPlayer = AfkPlayer.init(player);
+            this.afkPlayers.add(afkPlayer);
+            AfkPlusMod.debugLog("AfkPlayerList(): addOrGetPlayer({}) --> ADD", afkPlayer.getName());
+        }
+
+        return afkPlayer;
+    }
+
+    public void removePlayer(@Nonnull ServerPlayer player)
     {
         for (AfkPlayer entry : this.afkPlayers)
         {
             if (entry.matches(player))
             {
+                AfkPlusMod.debugLog("AfkPlayerList(): removePlayer({}) --> REMOVE", entry.getName());
+                entry.reset();
                 this.afkPlayers.remove(entry);
                 break;
             }
         }
     }
 
-    public void tickPlayers()
+    public void removeAllPlayers()
     {
-        this.afkPlayers.forEach(this::tickEach);
+        AfkPlusMod.debugLog("AfkPlayerList(): removeAllPlayers()");
+
+        for (AfkPlayer entry : this.afkPlayers)
+        {
+            entry.reset();
+        }
+
+        this.clear();
     }
 
-    public boolean tickEachByPlayer(@Nonnull IAfkPlayer player)
+    public void tickPlayers()
+    {
+        this.afkPlayers.forEach((afkPlayer) -> afkPlayer.tickPlayer(Util.getMillis()));
+    }
+
+    public boolean tickEachByPlayer(@Nonnull ServerPlayer player)
     {
         AfkPlayer afkPlayer = this.getPlayer(player);
 
         if (afkPlayer != null)
         {
-            this.tickEach(afkPlayer);
+            afkPlayer.getHandler().tickPlayer(player);
             return true;
         }
 
         return false;
-    }
-
-    private void tickEach(AfkPlayer player)
-    {
-        // Do Something
     }
 
     public void clear()
