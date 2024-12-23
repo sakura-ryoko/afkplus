@@ -30,6 +30,7 @@ import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.AfkPlusReference;
 import com.sakuraryoko.afkplus.config.interfaces.IConfigData;
 import com.sakuraryoko.afkplus.config.interfaces.IConfigDispatch;
+import com.sakuraryoko.afkplus.text.config.MoreColorConfigHandler;
 
 public class AfkConfigManager
 {
@@ -44,13 +45,20 @@ public class AfkConfigManager
 
     public void loadAllConfigs()
     {
+        // Main Config
         AfkConfigHandler.getInstance().onPreLoadConfig();
         this.loadEach(AfkConfigHandler.getInstance());
         AfkConfigHandler.getInstance().onPostLoadConfig();
+
+        // More Colors
+        MoreColorConfigHandler.getInstance().onPreLoadConfig();
+        this.loadEach(MoreColorConfigHandler.getInstance());
+        MoreColorConfigHandler.getInstance().onPostLoadConfig();
     }
 
     public void saveAllConfigs()
     {
+        // Main Config
         if (AfkConfigHandler.getInstance().isLoaded())
         {
             AfkConfigHandler.getInstance().onPreSaveConfig();
@@ -64,11 +72,27 @@ public class AfkConfigManager
             this.loadEach(AfkConfigHandler.getInstance());
             AfkConfigHandler.getInstance().onPostLoadConfig();
         }
+
+        // More Colors
+        if (MoreColorConfigHandler.getInstance().isLoaded())
+        {
+            MoreColorConfigHandler.getInstance().onPreSaveConfig();
+            this.saveEach(MoreColorConfigHandler.getInstance());
+            MoreColorConfigHandler.getInstance().onPostSaveConfig();
+        }
+        else
+        {
+            // Also saves the file
+            MoreColorConfigHandler.getInstance().onPreLoadConfig();
+            this.loadEach(MoreColorConfigHandler.getInstance());
+            MoreColorConfigHandler.getInstance().onPostLoadConfig();
+        }
     }
 
     public void reloadAllConfigs()
     {
         this.loadEach(AfkConfigHandler.getInstance());
+        this.loadEach(MoreColorConfigHandler.getInstance());
     }
 
     @SuppressWarnings("deprecation")

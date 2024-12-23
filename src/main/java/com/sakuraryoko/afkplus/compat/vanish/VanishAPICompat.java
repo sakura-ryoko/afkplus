@@ -34,46 +34,10 @@ import com.sakuraryoko.afkplus.AfkPlusMod;
 
 public class VanishAPICompat
 {
-    /*
-    private static MethodHandle isVanishedEntity;
-    private static MethodHandle isVanishedUUID;
-    private static MethodHandle broadcastHiddenMessage;
-    private static MethodHandle sendHiddenMessage;
-     */
     private static final boolean hasVanish;
 
     static
     {
-    /*
-        try
-        {
-            Class<?> vanishApi = Class.forName("me.drex.vanish.api.VanishAPI");
-
-            isVanishedEntity =
-                    MethodHandles.lookup().findStatic(vanishApi,
-                                                      "isVanished",
-                                                      MethodType.methodType(boolean.class, Entity.class));
-            isVanishedUUID =
-                    MethodHandles.lookup().findStatic(vanishApi,
-                                                      "isVanished",
-                                                      MethodType.methodType(boolean.class, MinecraftServer.class, UUID.class));
-            broadcastHiddenMessage =
-                    MethodHandles.lookup().findStatic(vanishApi,
-                                                      "broadcastHiddenMessage",
-                                                      MethodType.methodType(void.class, ServerPlayer.class, Component.class));
-            sendHiddenMessage =
-                    MethodHandles.lookup().findStatic(vanishApi,
-                                                      "sendHiddenMessage",
-                                                      MethodType.methodType(void.class, ServerPlayer.class, ServerPlayer.class, Component.class));
-            hasVanish = true;
-        }
-        catch (Throwable e)
-        {
-            AfkPlusMod.LOGGER.error("VanishCompat: has thrown an error: [{}]", e.getMessage());
-            hasVanish = false;
-        }
-     */
-
         hasVanish = FabricLoader.getInstance().isModLoaded("melius-vanish");
     }
 
@@ -91,7 +55,6 @@ public class VanishAPICompat
 
         try
         {
-            //return (boolean) isVanishedEntity.invokeWithArguments(entity);
             return VanishAPI.isVanished(entity);
         }
         catch (Throwable e)
@@ -111,7 +74,6 @@ public class VanishAPICompat
 
         try
         {
-            //return (boolean) isVanishedUUID.invokeWithArguments(server, uuid);
             return VanishAPI.isVanished(server, uuid);
         }
         catch (Throwable e)
@@ -131,7 +93,6 @@ public class VanishAPICompat
 
         try
         {
-            //broadcastHiddenMessage.invokeWithArguments(player, message);
             VanishAPI.broadcastHiddenMessage(player, message);
         }
         catch (Throwable e)
@@ -150,7 +111,6 @@ public class VanishAPICompat
 
         //$$ try
         //$$ {
-            //sendHiddenMessage.invokeWithArguments(sender, observer, message);
             //$$ VanishAPI.sendHiddenMessage(sender, observer, message);
         //$$ }
         //$$ catch (Throwable e)

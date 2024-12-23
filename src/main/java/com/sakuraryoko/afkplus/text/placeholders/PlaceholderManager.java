@@ -20,6 +20,8 @@
 
 package com.sakuraryoko.afkplus.text.placeholders;
 
+import com.sakuraryoko.afkplus.text.placeholders.options.*;
+
 public class PlaceholderManager
 {
     public static void register()

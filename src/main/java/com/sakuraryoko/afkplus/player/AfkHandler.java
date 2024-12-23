@@ -21,10 +21,12 @@
 package com.sakuraryoko.afkplus.player;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.Util;
@@ -33,10 +35,12 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.api.AfkPlusEvents;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.interfaces.IPlayerInvoker;
 import com.sakuraryoko.afkplus.text.TextUtils;
 
+@ApiStatus.Internal
 public class AfkHandler
 {
     private AfkPlayer player;
@@ -46,7 +50,8 @@ public class AfkHandler
         this.player = afkPlayer;
     }
 
-    public void registerAfk(String reason)
+    @ApiStatus.Internal
+    public void registerAfk(@Nullable String reason)
     {
         if (this.player.isAfk())
         {
@@ -77,6 +82,9 @@ public class AfkHandler
             this.sendAfkMessage(mess2);
         }
 
+        AfkPlusEvents.AFK_EVENT.invoker().onAfk(this.invoker().afkplus$player(),
+                                                Placeholders.parseText(TextUtils.formatTextSafe(this.player.getAfkReason()), PlaceholderContext.of(this.player.getPlayer())));
+
         if (ConfigWrap.pack().disableDamage && ConfigWrap.pack().disableDamageCooldown < 1)
         {
             this.disableDamage();
@@ -86,14 +94,17 @@ public class AfkHandler
         this.player.setAfk(true);
     }
 
+    @ApiStatus.Internal
     public void unregisterAfkSilently()
     {
+        AfkPlusEvents.AFK_RETURN_EVENT.invoker().onReturn(this.invoker().afkplus$player(), Util.getMillis() - this.player.getAfkTimeMs());
         this.player.setAfk(false);
         this.player.setAfkTimeMs(0L);
         this.player.setAfkTimeString("");
         this.player.setAfkReason("");
     }
 
+    @ApiStatus.Internal
     public void unregisterAfk()
     {
         if (!this.player.isAfk())
@@ -107,9 +118,10 @@ public class AfkHandler
             return;
         }
 
+        long duration = Util.getMillis() - (this.player.getAfkTimeMs());
+
         if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
         {
-            long duration = Util.getMillis() - (this.player.getAfkTimeMs());
             String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
@@ -119,7 +131,6 @@ public class AfkHandler
         }
         else if (ConfigWrap.mess().displayDuration)
         {
-            long duration = Util.getMillis() - (this.player.getAfkTimeMs());
             String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
@@ -135,6 +146,7 @@ public class AfkHandler
             this.sendAfkMessage(mess2);
         }
 
+        AfkPlusEvents.AFK_RETURN_EVENT.invoker().onReturn(this.invoker().afkplus$player(), duration);
         this.player.setAfk(false);
         this.player.setAfkTimeMs(0L);
         this.player.setAfkTimeString("");
@@ -148,6 +160,7 @@ public class AfkHandler
         this.updatePlayerList();
     }
 
+    @ApiStatus.Internal
     public void enableDamage()
     {
         // Doesn't matter if they are marked as AFK --> make them not Invulnerable.
@@ -176,11 +189,14 @@ public class AfkHandler
                 Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                 this.sendAfkMessage(mess2);
             }
+
+            AfkPlusEvents.AFK_ENABLE_DAMAGE.invoker().onDamageEnabled(this.invoker().afkplus$player());
         }
 
         this.updatePlayerList();
     }
 
+    @ApiStatus.Internal
     public void disableDamage()
     {
         AfkPlusMod.debugLog("disableDamage() has been invoked for: {}", this.player.getName());
@@ -215,12 +231,15 @@ public class AfkHandler
                     Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                     this.sendAfkMessage(mess2);
                 }
+
+                AfkPlusEvents.AFK_DISABLE_DAMAGE.invoker().onDamageDisabled(this.invoker().afkplus$player());
             }
 
             this.updatePlayerList();
         }
     }
 
+    @ApiStatus.Internal
     public void lockDamageEnabled()
     {
         this.player.setLockDamageEnabled(true);
@@ -231,12 +250,14 @@ public class AfkHandler
         }
     }
 
+    @ApiStatus.Internal
     public void unlockDamageEnabled()
     {
         this.player.setLockDamageEnabled(false);
         this.player.tickPlayer(Util.getMillis());
     }
 
+    @ApiStatus.Internal
     public void afkKick()
     {
         if (this.player.isAfk() && ConfigWrap.pack().afkKickEnabled)
@@ -359,6 +380,7 @@ public class AfkHandler
         }
     }
 
+    @ApiStatus.Internal
     public void updatePlayerList()
     {
         //#if MC >= 11903
@@ -387,24 +409,16 @@ public class AfkHandler
     private void toggleInvulnerable(boolean toggle)
     {
         this.invoker().afkplus$setInvulnerable(toggle);
-
-        /*
-        for (ServerPlayer player : this.invoker().afkplus$server().getPlayerList().getPlayers())
-        {
-            if (this.player.matches(player))
-            {
-                player.setInvulnerable(toggle);
-            }
-        }
-         */
     }
 
+    @ApiStatus.Internal
     public void tickPlayer(@NotNull ServerPlayer player)
     {
         this.player = this.player.setPlayer(player);
         this.player.tickPlayer(Util.getMillis());
     }
 
+    @ApiStatus.Internal
     public void reset()
     {
         if (this.invoker().afkplus$player().isInvulnerable())

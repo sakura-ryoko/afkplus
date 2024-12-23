@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.text.placeholders;
+package com.sakuraryoko.afkplus.text.placeholders.options;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
@@ -34,7 +34,7 @@ import com.sakuraryoko.afkplus.text.TextUtils;
 
 public class ReasonPlaceholder
 {
-    protected static void register()
+    public static void register()
     {
         //#if MC >= 12101
         //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "reason"), (ctx, arg) ->

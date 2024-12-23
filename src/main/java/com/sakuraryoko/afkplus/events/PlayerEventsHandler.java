@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.Util;
@@ -44,17 +45,20 @@ import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.util.AfkPlusInfo;
 
+@ApiStatus.Internal
 public class PlayerEventsHandler
 {
     private static final PlayerEventsHandler INSTANCE = new PlayerEventsHandler();
     public static PlayerEventsHandler getInstance() { return INSTANCE; }
 
+    @ApiStatus.Internal
     public PlayerEventsHandler()
     {
         // NO-OP
     }
     
     // Player List Events
+    @ApiStatus.Internal
     public void onConnection(@Nonnull SocketAddress addr, @Nonnull GameProfile profile, @Nullable Component result)
     {
         if (result == null)
@@ -67,6 +71,7 @@ public class PlayerEventsHandler
         }
     }
 
+    @ApiStatus.Internal
     public void onCreatePlayer(@Nonnull ServerPlayer player, @Nonnull GameProfile profile)
     {
         AfkPlusMod.debugLog("onCreatePlayer(): Player created [{}] // Profile [{}]", player.getName().getString(), profile.getName());
@@ -82,19 +87,16 @@ public class PlayerEventsHandler
                 AfkPlusMod.LOGGER.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
             }
         }
-
-        // This might simply initialize a player entry...
-        //afkPlayer.getHandler().unregisterAfk();
-
         // checkInvulnerable2
     }
 
+    @ApiStatus.Internal
     public void onJoinPre(@Nonnull ServerPlayer player, @Nonnull Connection connection)
     {
         AfkPlusMod.debugLog("onJoinPre(): Player [{}] // Joining", player.getName().getString());
     }
 
-    // ConnectedClientData ?
+    @ApiStatus.Internal
     public void onJoinPost(@Nonnull ServerPlayer player, @Nonnull Connection connection)
     {
         AfkPlusMod.debugLog("onJoinPost(): Player [{}] // Joined", player.getName().getString());
@@ -116,9 +118,6 @@ public class PlayerEventsHandler
             return;
         }
 
-        // This might simply initialize a player entry...
-        //afkPlayer.getHandler().unregisterAfk();
-
         // Fixes some quirky-ness of Styled Player List
         if (AfkPlusInfo.isServer())
         {
@@ -127,6 +126,7 @@ public class PlayerEventsHandler
         // checkInvulnerable1
     }
 
+    @ApiStatus.Internal
     public void onRespawn(@Nonnull ServerPlayer player)
     {
         AfkPlusMod.debugLog("onRespawn(): Player [{}] // Respawned", player.getName().getString());
@@ -146,9 +146,6 @@ public class PlayerEventsHandler
                     return;
                 }
 
-                // This might simply initialize a player entry...
-                //afkPlayer.getHandler().unregisterAfk();
-
                 // Fixes some quirky-ness of Styled Player List
                 if (AfkPlusInfo.isServer())
                 {
@@ -159,18 +156,21 @@ public class PlayerEventsHandler
         // checkInvulnerable3
     }
 
+    @ApiStatus.Internal
     public void onLeave(@Nonnull ServerPlayer player)
     {
         AfkPlusMod.debugLog("onRespawn(): Player [{}] // Disconnected", player.getName().getString());
         AfkPlayerList.getInstance().removePlayer(player);
     }
 
+    @ApiStatus.Internal
     public void onDisconnectAll()
     {
         AfkPlusMod.debugLog("onDisconnectAll()");
         AfkPlayerList.getInstance().removeAllPlayers();
     }
 
+    @ApiStatus.Internal
     public void onTickPacket(@Nonnull ServerPlayer player)
     {
         // updateAfkStatus
@@ -222,6 +222,7 @@ public class PlayerEventsHandler
         // updateAfkStatus
     }
 
+    @ApiStatus.Internal
     public void onTickPlayer(@Nonnull ServerPlayer player)
     {
         // checkAfk
@@ -319,6 +320,7 @@ public class PlayerEventsHandler
         // checkAfk
     }
 
+    @ApiStatus.Internal
     public void onMovement(@Nonnull ServerPlayer player, ServerboundMovePlayerPacket packet)
     {
         //AfkPlusMod.debugLog("onMovement(): Player [{}] // (moved)", player.getName().getString());
@@ -342,6 +344,7 @@ public class PlayerEventsHandler
         // checkPlayerLook
     }
 
+    @ApiStatus.Internal
     public void onChangeGameMode(@Nonnull ServerPlayer player, GameType mode, boolean result)
     {
         AfkPlusMod.debugLog("onChangeGameMode(): Player [{}] // newGameMode [{}]", player.getName().getString(), mode.getName());
@@ -380,6 +383,7 @@ public class PlayerEventsHandler
         // checkGameMode
     }
 
+    @ApiStatus.Internal
     public void onResetLastAction(@Nonnull ServerPlayer player)
     {
         // onActionTimeUpdate
@@ -398,6 +402,7 @@ public class PlayerEventsHandler
         // onActionTimeUpdate
     }
 
+    @ApiStatus.Internal
     public void onSetPos(@Nullable ServerPlayer player, double x, double y, double z)
     {
         if (player != null)
@@ -416,6 +421,7 @@ public class PlayerEventsHandler
         }
     }
 
+    @ApiStatus.Internal
     public boolean onCheckIfPushable(@Nonnull ServerPlayer player, boolean value)
     {
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
@@ -428,6 +434,7 @@ public class PlayerEventsHandler
         return value;
     }
 
+    @ApiStatus.Internal
     public @Nullable Component onUpdateDisplayName(@Nonnull ServerPlayer player, @Nullable Component name)
     {
         //AfkPlusMod.debugLog("onUpdateDisplayName(): Player [{}] // setName [{}]", player.getName().getString(), name != null ? name.getString() : "<empty>");
@@ -456,6 +463,7 @@ public class PlayerEventsHandler
         return null;
     }
 
+    @ApiStatus.Internal
     public boolean onCheckSleepCount(@Nonnull ServerPlayer player, int countActive, int countSleeping, int totalActive, int totalSleeping)
     {
         // checkSleepCount
@@ -475,7 +483,7 @@ public class PlayerEventsHandler
         return false;
     }
 
-    // Fixme IAfkPlayer
+    @ApiStatus.Internal
     public int onCheckBypassInsomnia(@Nullable ServerPlayer player, int currentValue)
     {
         // checkForAfkPlayer
@@ -505,6 +513,7 @@ public class PlayerEventsHandler
         // checkForAfkPlayer
     }
 
+    @ApiStatus.Internal
     public void onVanish(@Nonnull ServerPlayer player, boolean isVanished)
     {
         AfkPlusMod.debugLog("onVanish(): Player [{}] / Vanish [{}]", player.getName().getString(), isVanished);
@@ -517,6 +526,7 @@ public class PlayerEventsHandler
         }
     }
 
+    @ApiStatus.Internal
     public @Nullable Component getVanishMessage(@Nonnull ServerPlayer player)
     {
         AfkPlusMod.debugLog("getVanishMessage(): Player [{}] / Message Callback [???]", player.getName().getString());
@@ -531,6 +541,7 @@ public class PlayerEventsHandler
         return null;
     }
 
+    @ApiStatus.Internal
     public @Nullable Component getUnVanishMessage(@Nonnull ServerPlayer player)
     {
         AfkPlusMod.debugLog("getUnVanishMessage(): Player [{}] / Message Callback [???]", player.getName().getString());

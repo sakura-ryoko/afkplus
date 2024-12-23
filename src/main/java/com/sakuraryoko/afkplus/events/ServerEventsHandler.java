@@ -33,6 +33,7 @@ import com.sakuraryoko.afkplus.AfkPlusMod;
 import com.sakuraryoko.afkplus.config.AfkConfigManager;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
 
+@ApiStatus.Internal
 public class ServerEventsHandler
 {
     private static final ServerEventsHandler INSTANCE = new ServerEventsHandler();

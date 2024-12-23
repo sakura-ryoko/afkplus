@@ -61,8 +61,8 @@ public class AfkPlusMod
         AfkConfigManager.getInstance().initAllConfigs();
         debugLog("Loading Config.");
         AfkConfigManager.getInstance().loadAllConfigs();
-        debugLog("Initializing nodes.");
-        NodeManager.initNodes();
+        //debugLog("Initializing nodes.");
+        //NodeManager.initNodes();
         debugLog("Registering nodes.");
         NodeManager.registerNodes();
         debugLog("Registering Placeholders.");

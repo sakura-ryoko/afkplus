@@ -36,7 +36,7 @@ public class AfkConfigHandler implements IConfigDispatch
     private static final AfkConfigHandler INSTANCE = new AfkConfigHandler();
     public static AfkConfigHandler getInstance() { return INSTANCE; }
     private final AfkConfigData CONFIG = newConfig();
-    private final String CONFIG_ROOT = ".";
+    private final String CONFIG_ROOT = AfkPlusReference.MOD_ID;
     private final String CONFIG_NAME = AfkPlusReference.MOD_ID;
     private boolean loaded = false;
 
@@ -49,7 +49,7 @@ public class AfkConfigHandler implements IConfigDispatch
     @Override
     public boolean useRootDir()
     {
-        return true;
+        return false;
     }
 
     @Override

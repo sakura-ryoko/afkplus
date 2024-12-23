@@ -35,6 +35,7 @@ import eu.pb4.placeholders.impl.textparser.TextParserImpl;
 import net.minecraft.network.chat.TextColor;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.text.TextUtils;
 import com.sakuraryoko.afkplus.text.nodes.type.MoreColorNode;
 
@@ -46,8 +47,10 @@ public class NodeManager
 {
     private static void registerColors()
     {
-        final Iterator<MoreColorNode> iterator = MoreColorNodes.COLORS.iterator();
+        //final Iterator<MoreColorNode> iterator = MoreColorNodes.COLORS.iterator();
+        final Iterator<MoreColorNode> iterator = ConfigWrap.colors().iterator();
         MoreColorNode iColorNode;
+
         while (iterator.hasNext())
         {
             iColorNode = iterator.next();
@@ -117,7 +120,6 @@ public class NodeManager
 
     public static void initNodes()
     {
-        MoreColorNodes.register();
     }
 
     public static void registerNodes()

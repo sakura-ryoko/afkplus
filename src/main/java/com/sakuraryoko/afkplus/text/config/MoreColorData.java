@@ -18,36 +18,23 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.events;
+package com.sakuraryoko.afkplus.text.config;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-import com.sakuraryoko.afkplus.compat.vanish.VanishEventsCompat;
+import com.sakuraryoko.afkplus.config.interfaces.IConfigData;
+import com.sakuraryoko.afkplus.text.nodes.type.MoreColorNode;
 
-@ApiStatus.Internal
-public class HandlerRegistry
+public class MoreColorData implements IConfigData
 {
-    public static ServerEventsHandler SERVER_EVENTS;
-    public static PlayerEventsHandler PLAYER_EVENTS;
-    public static VanishEventsCompat VANISH_EVENTS;
+    @SerializedName("___comment")
+    public String comment = "AFK Plus (More Color Nodes) Config";
 
-    @ApiStatus.Internal
-    public HandlerRegistry()
-    {
-        // NO-OP
-    }
+    @SerializedName("config_date")
+    public String config_date;
 
-    @ApiStatus.Internal
-    public void init()
-    {
-        SERVER_EVENTS = new ServerEventsHandler();
-        PLAYER_EVENTS = new PlayerEventsHandler();
-        VANISH_EVENTS = new VanishEventsCompat();
-
-        // Vanish Compat
-        if (VANISH_EVENTS.hasVanish())
-        {
-            VANISH_EVENTS.registerEvents();
-        }
-    }
+    @SerializedName("more_colors")
+    public List<MoreColorNode> COLORS = new ArrayList<>();
 }
