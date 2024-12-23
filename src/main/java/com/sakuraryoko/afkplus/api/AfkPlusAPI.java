@@ -23,10 +23,12 @@ package com.sakuraryoko.afkplus.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
+import com.sakuraryoko.afkplus.text.FormattingExample;
 
 public interface AfkPlusAPI
 {
@@ -86,5 +88,20 @@ public interface AfkPlusAPI
             afkplayer.getHandler().registerAfk(reason);
             return true;
         }
+    }
+
+    static Component getBuiltInFormattingTest()
+    {
+        return FormattingExample.runBuiltInTest();
+    }
+
+    static Component getPlaceholderAPIFormattingTest()
+    {
+        return FormattingExample.runPlaceholderAPITest();
+    }
+
+    static Component getMoreColorsFormattingTest()
+    {
+        return FormattingExample.runMoreColorsTest();
     }
 }

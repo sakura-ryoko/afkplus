@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import com.sakuraryoko.afkplus.AfkPlusMod;
@@ -40,7 +41,10 @@ public class AfkConfigManager
 
     public void initAllConfigs()
     {
+        // Check for "configs/afkplus.toml"
         this.checkForTomlFile();
+        // Check for "configs/afkplus.json" -> Move to "configs/afkplus/afkplus.json"
+        this.checkForRootConfig();
     }
 
     public void loadAllConfigs()
@@ -100,11 +104,11 @@ public class AfkConfigManager
     {
         try
         {
-            var file = AfkPlusReference.CONFIG_DIR.resolve(AfkPlusReference.MOD_ID +".toml");
+            Path tomlFile = AfkPlusReference.CONFIG_DIR.resolve(AfkPlusReference.MOD_ID +".toml");
 
-            if (Files.exists(file))
+            if (Files.exists(tomlFile))
             {
-                AfkPlusMod.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", file.getFileName().toString());
+                AfkPlusMod.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", tomlFile.getFileName().toString());
                 AfkConfigHandler.getInstance().defaults();
 
                 // Load TOML Config (Without saving it)
@@ -125,8 +129,8 @@ public class AfkConfigManager
                 AfkConfigHandler.getInstance().onPostSaveConfig();
 
                 // Delete it, never to be seen again :)
-                AfkPlusMod.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}]", file.getFileName().toString());
-                Files.delete(file);
+                AfkPlusMod.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}]", tomlFile.getFileName().toString());
+                Files.delete(tomlFile);
             }
         }
         catch (Exception err)
@@ -135,11 +139,49 @@ public class AfkConfigManager
         }
     }
 
+    private void checkForRootConfig()
+    {
+        try
+        {
+            Path oldFile = AfkPlusReference.CONFIG_DIR.resolve(AfkPlusReference.MOD_ID +".json");
+
+            // json file found in the root instead of thr afkplus subfolder.
+            if (Files.exists(oldFile))
+            {
+                AfkPlusMod.LOGGER.warn("checkForRootConfig(): Found Root Config file [{}]", oldFile.getFileName().toString());
+                Path newDir = AfkPlusReference.CONFIG_DIR.resolve(AfkConfigHandler.getInstance().getConfigRoot());
+
+                if (!Files.isDirectory(newDir))
+                {
+                    Files.createDirectory(newDir);
+                }
+
+                Path newFile = newDir.resolve(AfkConfigHandler.getInstance().getConfigName() + ".json");
+
+                if (Files.exists(newFile))
+                {
+                    // A new config exists, just delete the old
+                    AfkPlusMod.LOGGER.warn("checkForRootConfig(): New config exists [{}/{}], deleting Root Config file [{}] ...", newFile.getParent().getFileName().toString(), newFile.getFileName().toString(), oldFile.getFileName().toString());
+                    Files.delete(oldFile);
+                }
+                else
+                {
+                    // Move the file
+                    AfkPlusMod.LOGGER.warn("checkForRootConfig(): Moving Root Config file [{}] to [{}/{}] ...", oldFile.getFileName().toString(), newFile.getParent().getFileName().toString(), newFile.getFileName().toString());
+                    Files.move(oldFile, newFile);
+                }
+            }
+        }
+        catch (Exception err)
+        {
+            AfkPlusMod.LOGGER.error("checkForRootConfig(): Error moving Root Config file // {}", err.getMessage());
+        }
+    }
+
     private void loadEach(IConfigDispatch config)
     {
         IConfigData conf = config.newConfig();
-
-        AfkPlusMod.debugLog("loadEach(): --> [{}.json]", config.getConfigName());
+        AfkPlusMod.debugLog("loadEach(): --> [{}/{}.json]", config.getConfigRoot(), config.getConfigName());
 
         try
         {
@@ -159,18 +201,18 @@ public class AfkConfigManager
                 Files.createDirectory(dir);
             }
 
-            var file = dir.resolve(config.getConfigName() + ".json");
+            Path file = dir.resolve(config.getConfigName() + ".json");
 
             if (Files.exists(file))
             {
-                var data = JsonParser.parseString(Files.readString(file));
+                JsonElement data = JsonParser.parseString(Files.readString(file));
                 conf = GSON.fromJson(data, conf.getClass());
-                AfkPlusMod.LOGGER.info("loadEach(): Read config for [{}]", file.getFileName().toString());
+                AfkPlusMod.LOGGER.info("loadEach(): Read config for [{}/{}]", dir.getFileName().toString(), file.getFileName().toString());
             }
             else
             {
                 conf = config.defaults();
-                AfkPlusMod.LOGGER.info("loadEach(): Config defaults for [{}.json]", config.getConfigName());
+                AfkPlusMod.LOGGER.info("loadEach(): Config defaults for [{}/{}.json]", config.getConfigRoot(), config.getConfigName());
             }
 
             conf = config.update(conf);
@@ -179,7 +221,7 @@ public class AfkConfigManager
         }
         catch (Exception e)
         {
-            AfkPlusMod.LOGGER.error("loadEach(): Error reading config [{}.json] // {}", config.getConfigName(), e.getMessage());
+            AfkPlusMod.LOGGER.error("loadEach(): Error reading config [{}/{}.json] // {}", config.getConfigRoot(), config.getConfigName(), e.getMessage());
         }
     }
 
@@ -187,7 +229,7 @@ public class AfkConfigManager
     {
         IConfigData conf;
 
-        AfkPlusMod.debugLog("saveEach(): --> [{}.json]", config.getConfigName());
+        AfkPlusMod.debugLog("saveEach(): --> [{}/{}.json]", config.getConfigRoot(), config.getConfigName());
 
         try
         {
@@ -207,11 +249,11 @@ public class AfkConfigManager
                 Files.createDirectory(dir);
             }
 
-            var file = dir.resolve(config.getConfigName() + ".json");
+            Path file = dir.resolve(config.getConfigName() + ".json");
 
             if (Files.exists(file))
             {
-                AfkPlusMod.LOGGER.info("saveEach(): Deleting existing config file: [{}]", file.getFileName().toString());
+                AfkPlusMod.LOGGER.info("saveEach(): Deleting existing config file: [{}/{}]", dir.getFileName().toString(), file.getFileName().toString());
                 Files.delete(file);
             }
 
@@ -220,16 +262,16 @@ public class AfkConfigManager
             if (conf != null)
             {
                 Files.writeString(file, GSON.toJson(conf));
-                AfkPlusMod.LOGGER.info("saveEach(): Wrote config for [{}.json]", config.getConfigName());
+                AfkPlusMod.LOGGER.info("saveEach(): Wrote config for [{}/{}.json]", config.getConfigRoot(), config.getConfigName());
             }
             else
             {
-                AfkPlusMod.LOGGER.error("saveEach(): Error saving config file [{}.json] // config is empty!", config.getConfigName());
+                AfkPlusMod.LOGGER.error("saveEach(): Error saving config file [{}/{}.json] // config is empty!", config.getConfigRoot(), config.getConfigName());
             }
         }
         catch (Exception e)
         {
-            AfkPlusMod.LOGGER.error("saveEach(): Error saving config file [{}.json] // {}", config.getConfigName(), e.getMessage());
+            AfkPlusMod.LOGGER.error("saveEach(): Error saving config file [{}/{}.json] // {}", config.getConfigRoot(), config.getConfigName(), e.getMessage());
         }
     }
 }

@@ -139,12 +139,12 @@ public class AfkPlusCommand implements IServerCommand
         String user = src.getTextName();
         //#if MC >= 12001
         //$$ context.getSource().sendSuccess(FormattingExample::runBuiltInTest, false);
-        //$$ context.getSource().sendSuccess(FormattingExample::runAliasTest, false);
-        //$$ context.getSource().sendSuccess(FormattingExample::runColorsTest, false);
+        //$$ context.getSource().sendSuccess(FormattingExample::runPlaceholderAPITest, false);
+        //$$ context.getSource().sendSuccess(FormattingExample::runMoreColorsTest, false);
         //#else
         context.getSource().sendSuccess(FormattingExample.runBuiltInTest(), false);
-        context.getSource().sendSuccess(FormattingExample.runAliasTest(), false);
-        context.getSource().sendSuccess(FormattingExample.runColorsTest(), false);
+        context.getSource().sendSuccess(FormattingExample.runPlaceholderAPITest(), false);
+        context.getSource().sendSuccess(FormattingExample.runMoreColorsTest(), false);
         //#endif
         AfkPlusMod.debugLog("{} has executed /afkplus example .", user);
         return 1;
