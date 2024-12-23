@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "${id}",
   "version": "${version}",
-
   "name": "${name}",
   "description": "Show which players are afk in the player list",
   "authors": [
@@ -16,7 +15,6 @@
   },
   "license": "MIT",
   "icon": "assets/afkplus/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "server": [
@@ -30,9 +28,10 @@
   "mixins": [
     "afkplus.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.11.4",
+    "placeholder-api": "*",
+    "fabric-permissions-api-v0": "*",
     "minecraft": "${minecraft_dependency}"
   }
 }
