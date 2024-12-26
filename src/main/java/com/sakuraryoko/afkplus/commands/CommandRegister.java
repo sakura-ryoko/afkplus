@@ -18,9 +18,31 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands.interfaces;
+package com.sakuraryoko.afkplus.commands;
 
-public interface ICommandManager
+import com.sakuraryoko.afkplus.commands.server.*;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.corelib.impl.commands.CommandManager;
+
+public class CommandRegister
 {
-    void registerCommand(IServerCommand command);
+    public static void register()
+    {
+        if (ConfigWrap.afk().enableAfkCommand)
+        {
+            CommandManager.getInstance().registerCommandHandler(new AfkCommand());
+        }
+
+        if (ConfigWrap.afk().enableNoAfkCommand)
+        {
+            CommandManager.getInstance().registerCommandHandler(new NoAfkCommand());
+        }
+
+        if (ConfigWrap.afk().enableAfkInfoCommand)
+        {
+            CommandManager.getInstance().registerCommandHandler(new AfkInfoCommand());
+        }
+
+        CommandManager.getInstance().registerCommandHandler(new AfkPlusCommand());
+    }
 }

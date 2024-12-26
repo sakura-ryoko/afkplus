@@ -34,11 +34,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.api.AfkPlusEvents;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.interfaces.IPlayerInvoker;
-import com.sakuraryoko.afkplus.text.TextUtils;
 
 @ApiStatus.Internal
 public class AfkHandler
@@ -68,7 +68,7 @@ public class AfkHandler
         else if (reason == null || reason.isEmpty())
         {
             this.player.setAfkReason("<red>none");
-            Component mess = Placeholders.parseText(TextUtils.formatTextSafe(ConfigWrap.mess().whenAfk),
+            Component mess = Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenAfk),
                                                     PlaceholderContext.of(this.player.getPlayer()));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
@@ -78,12 +78,12 @@ public class AfkHandler
         {
             this.player.setAfkReason(reason);
             String mess1 = ConfigWrap.mess().whenAfk + "<yellow>,<r> " + reason;
-            Component mess2 = Placeholders.parseText(TextUtils.formatTextSafe(mess1), PlaceholderContext.of(this.player.getPlayer()));
+            Component mess2 = Placeholders.parseText(TextHandler.getInstance().formatTextSafe(mess1), PlaceholderContext.of(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
 
         AfkPlusEvents.AFK_EVENT.invoker().onAfk(this.invoker().afkplus$player(),
-                                                Placeholders.parseText(TextUtils.formatTextSafe(this.player.getAfkReason()), PlaceholderContext.of(this.player.getPlayer())));
+                                                Placeholders.parseText(TextHandler.getInstance().formatTextSafe(this.player.getAfkReason()), PlaceholderContext.of(this.player.getPlayer())));
 
         if (ConfigWrap.pack().disableDamage && ConfigWrap.pack().disableDamageCooldown < 1)
         {
@@ -125,7 +125,7 @@ public class AfkHandler
             String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
 
-            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
@@ -134,14 +134,14 @@ public class AfkHandler
             String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
                     + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
 
-            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
         else
         {
             String ret = ConfigWrap.mess().whenReturn + "<r>";
-            Component mess1 = TextUtils.formatTextSafe(ret);
+            Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
@@ -164,7 +164,7 @@ public class AfkHandler
     public void enableDamage()
     {
         // Doesn't matter if they are marked as AFK --> make them not Invulnerable.
-        AfkPlusMod.debugLog("enableDamage() has been invoked for: {}", this.player.getName());
+        AfkPlus.debugLog("enableDamage() has been invoked for: {}", this.player.getName());
 
         if (this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator())
         {
@@ -179,13 +179,13 @@ public class AfkHandler
             if (this.invoker().afkplus$player().isInvulnerable())
             {
                 this.toggleInvulnerable(false);
-                AfkPlusMod.LOGGER.info("Damage Enabled for player: {}", this.player.getName());
+                AfkPlus.LOGGER.info("Damage Enabled for player: {}", this.player.getName());
             }
 
             // Send announcement
             if (!ConfigWrap.mess().whenDamageEnabled.isEmpty())
             {
-                Component mess1 = TextUtils.formatTextSafe(ConfigWrap.mess().whenDamageEnabled);
+                Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenDamageEnabled);
                 Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                 this.sendAfkMessage(mess2);
             }
@@ -199,7 +199,7 @@ public class AfkHandler
     @ApiStatus.Internal
     public void disableDamage()
     {
-        AfkPlusMod.debugLog("disableDamage() has been invoked for: {}", this.player.getName());
+        AfkPlus.debugLog("disableDamage() has been invoked for: {}", this.player.getName());
 
         if (this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator() || !ConfigWrap.pack().disableDamage)
         {
@@ -208,7 +208,7 @@ public class AfkHandler
 
         if (this.player.isLockDamageEnabled())
         {
-            AfkPlusMod.LOGGER.info("Disable Damage is locked from player: {}", this.player.getName());
+            AfkPlus.LOGGER.info("Disable Damage is locked from player: {}", this.player.getName());
             return;
         }
 
@@ -221,13 +221,13 @@ public class AfkHandler
                 if (!this.invoker().afkplus$player().isInvulnerable())
                 {
                     this.toggleInvulnerable(true);
-                    AfkPlusMod.LOGGER.info("Damage Disabled for player: {}", this.player.getName());
+                    AfkPlus.LOGGER.info("Damage Disabled for player: {}", this.player.getName());
                 }
 
                 // Send announcement
                 if (!ConfigWrap.mess().whenDamageDisabled.isEmpty())
                 {
-                    Component mess1 = TextUtils.formatTextSafe(ConfigWrap.mess().whenDamageDisabled);
+                    Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenDamageDisabled);
                     Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                     this.sendAfkMessage(mess2);
                 }
@@ -290,7 +290,7 @@ public class AfkHandler
                     kickMessageString = ConfigWrap.mess().whenKicked;
                 }
 
-                AfkPlusMod.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getAfkTimeString());
+                AfkPlus.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getAfkTimeString());
 
                 if (!ConfigWrap.mess().afkKickMessage.isEmpty())
                 {
@@ -326,7 +326,7 @@ public class AfkHandler
                         kickReasonString = ConfigWrap.mess().afkKickMessage;
                     }
 
-                    kickReason = TextUtils.formatTextSafe(kickReasonString);
+                    kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
                     kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
 
                     this.player.setAfk(false);
@@ -343,7 +343,7 @@ public class AfkHandler
 
                     if (!kickMessageString.isEmpty())
                     {
-                        kickMessage = TextUtils.formatTextSafe(kickMessageString);
+                        kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
                         kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
 
                         this.sendAfkMessage(kickMessage);
@@ -353,7 +353,7 @@ public class AfkHandler
                 {
                     kickReasonString = "<copper>AFK timeout<r>";
 
-                    kickReason = TextUtils.formatTextSafe(kickReasonString);
+                    kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
                     kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
 
                     this.player.setAfk(false);
@@ -370,7 +370,7 @@ public class AfkHandler
 
                     if (!kickMessageString.isEmpty())
                     {
-                        kickMessage = TextUtils.formatTextSafe(kickMessageString);
+                        kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
                         kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
 
                         this.sendAfkMessage(kickMessage);
@@ -388,7 +388,7 @@ public class AfkHandler
         //#else
         this.invoker().afkplus$server().getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, this.player.getPlayer()));
         //#endif
-        AfkPlusMod.debugLog("sending player list update for {}", this.player.getName());
+        AfkPlus.debugLog("sending player list update for {}", this.player.getName());
     }
 
     private void sendAfkMessage(Component message)

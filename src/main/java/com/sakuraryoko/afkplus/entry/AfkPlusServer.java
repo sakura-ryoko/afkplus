@@ -22,19 +22,21 @@ package com.sakuraryoko.afkplus.entry;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
+import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
 
-import static com.sakuraryoko.afkplus.AfkPlusReference.AFK_INIT;
-
+/*
 public class AfkPlusServer implements DedicatedServerModInitializer
 {
     @Override
     public void onInitializeServer()
     {
-        if (!AFK_INIT)
+        if (!AfkPlus.MOD_INIT)
         {
-            AFK_INIT = true;
-            AfkPlusMod.init();
+            ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
+            AfkPlus.MOD_INIT = true;
         }
     }
 }
+ */

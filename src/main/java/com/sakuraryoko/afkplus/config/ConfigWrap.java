@@ -20,11 +20,7 @@
 
 package com.sakuraryoko.afkplus.config;
 
-import java.util.List;
-
 import com.sakuraryoko.afkplus.config.data.options.*;
-import com.sakuraryoko.afkplus.text.config.MoreColorConfigHandler;
-import com.sakuraryoko.afkplus.text.nodes.type.MoreColorNode;
 
 public class ConfigWrap
 {
@@ -51,10 +47,5 @@ public class ConfigWrap
     public static PlayerListOptions list()
     {
         return AfkConfigHandler.getInstance().getPlayerListOptions();
-    }
-
-    public static List<MoreColorNode> colors()
-    {
-        return MoreColorConfigHandler.getInstance().getColors();
     }
 }

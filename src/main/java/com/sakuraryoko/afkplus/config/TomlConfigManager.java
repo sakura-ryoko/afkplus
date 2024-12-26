@@ -26,8 +26,8 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import com.moandjiezana.toml.Toml;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 
 @Deprecated
@@ -79,7 +79,7 @@ public class TomlConfigManager
         CONFIG.messageOptions.displayDuration = true;
         CONFIG.messageOptions.afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>";
         CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
-        AfkPlusMod.debugLog("Default config initialized.");
+        AfkPlus.debugLog("Default config initialized.");
     }
 
     public static void testConfig()
@@ -205,12 +205,12 @@ public class TomlConfigManager
         {
             CONFIG.messageOptions.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
         }
-        AfkPlusMod.debugLog("Config checked for null values.");
+        AfkPlus.debugLog("Config checked for null values.");
     }
 
     public static void loadConfig()
     {
-        File conf = FabricLoader.getInstance().getConfigDir().resolve(AfkPlusReference.MOD_ID + ".toml").toFile();
+        File conf = Reference.CONFIG_DIR.resolve(Reference.MOD_ID + ".toml").toFile();
         try
         {
             if (conf.exists())
@@ -219,13 +219,13 @@ public class TomlConfigManager
             }
             else
             {
-                AfkPlusMod.LOGGER.info("Config {}.toml not found, creating new file.", AfkPlusReference.MOD_ID);
+                AfkPlus.LOGGER.info("Config {}.toml not found, creating new file.", Reference.MOD_ID);
                 //initConfig();
                 try
                 {
                     if (!conf.createNewFile())
                     {
-                        AfkPlusMod.LOGGER.error("Error creating config file {}.toml .", AfkPlusReference.MOD_ID);
+                        AfkPlus.LOGGER.error("Error creating config file {}.toml .", Reference.MOD_ID);
                     }
                 }
                 catch (Exception ignored)
@@ -243,7 +243,7 @@ public class TomlConfigManager
 
     public static void reloadConfig()
     {
-        AfkPlusMod.LOGGER.info("Reloading Config.");
+        AfkPlus.LOGGER.info("Reloading Config.");
         loadConfig();
     }
 }

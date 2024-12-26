@@ -21,8 +21,9 @@
 package com.sakuraryoko.afkplus.config.data.options;
 
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigOption;
 
-public class MessageOptions
+public class MessageOptions implements IConfigOption
 {
     public boolean enableMessages;
     public String whenAfk;
@@ -54,8 +55,11 @@ public class MessageOptions
         this.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
     }
 
-    public MessageOptions copy(MessageOptions opts)
+    @Override
+    public MessageOptions copy(IConfigOption opt)
     {
+        MessageOptions opts = (MessageOptions) opt;
+
         this.enableMessages = opts.enableMessages;
         this.whenAfk = opts.whenAfk;
         this.whenReturn = opts.whenReturn;
@@ -71,7 +75,7 @@ public class MessageOptions
     }
 
     @SuppressWarnings("deprecation")
-    public void fromToml(TomlConfigData.MessageOptions opts)
+    public MessageOptions fromToml(TomlConfigData.MessageOptions opts)
     {
         this.enableMessages = opts.enableMessages;
         this.whenAfk = opts.whenAfk;
@@ -83,5 +87,7 @@ public class MessageOptions
         this.displayDuration = opts.displayDuration;
         this.afkKickMessage = opts.afkKickMessage;
         this.whenKicked = opts.whenKicked;
+
+        return this;
     }
 }

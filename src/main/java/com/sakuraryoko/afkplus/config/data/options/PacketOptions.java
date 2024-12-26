@@ -21,8 +21,9 @@
 package com.sakuraryoko.afkplus.config.data.options;
 
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigOption;
 
-public class PacketOptions
+public class PacketOptions implements IConfigOption
 {
     public int timeoutSeconds;
     public boolean resetOnMovement;
@@ -56,8 +57,11 @@ public class PacketOptions
         this.afkKickSafePermissions = 3;
     }
 
-    public PacketOptions copy(PacketOptions opts)
+    @Override
+    public PacketOptions copy(IConfigOption opt)
     {
+        PacketOptions opts = (PacketOptions) opt;
+
         this.resetOnLook = opts.resetOnLook;
         this.resetOnMovement = opts.resetOnMovement;
         this.timeoutSeconds = opts.timeoutSeconds;
@@ -74,7 +78,7 @@ public class PacketOptions
     }
 
     @SuppressWarnings("deprecation")
-    public void fromToml(TomlConfigData.PacketOptions opts)
+    public PacketOptions fromToml(TomlConfigData.PacketOptions opts)
     {
         this.resetOnLook = opts.resetOnLook;
         this.resetOnMovement = opts.resetOnMovement;
@@ -87,5 +91,7 @@ public class PacketOptions
         this.afkKickNonSurvival = opts.afkKickNonSurvival;
         this.afkKickTimer = opts.afkKickTimer;
         this.afkKickSafePermissions = opts.afkKickSafePermissions;
+
+        return this;
     }
 }

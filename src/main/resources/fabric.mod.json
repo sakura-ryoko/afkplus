@@ -5,8 +5,7 @@
   "name": "${name}",
   "description": "Show which players are afk in the player list",
   "authors": [
-    "sakura-ryoko",
-    "(based upon afkdisplay by beabfc)"
+    "sakura-ryoko"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/afkplus",
@@ -17,20 +16,20 @@
   "icon": "assets/afkplus/icon.png",
   "environment": "*",
   "entrypoints": {
-    "server": [
-      "com.sakuraryoko.afkplus.entry.AfkPlusServer"
-    ],
-    "client": [
-      "com.sakuraryoko.afkplus.entry.AfkPlusClient"
-    ],
-    "main": []
+    "server": [],
+    "client": [],
+    "main": [
+      "com.sakuraryoko.afkplus.AfkPlus"
+    ]
   },
   "mixins": [
     "afkplus.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11.4",
+    "corelib": "*",
     "placeholder-api": "*",
+    "more-color-api": "*",
     "fabric-permissions-api-v0": "*",
     "minecraft": "${minecraft_dependency}"
   }

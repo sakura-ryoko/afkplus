@@ -21,8 +21,9 @@
 package com.sakuraryoko.afkplus.config.data.options;
 
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigOption;
 
-public class PlaceholderOptions
+public class PlaceholderOptions implements IConfigOption
 {
     public String afkPlaceholder;
     public String afkPlusNamePlaceholderAfk;
@@ -50,8 +51,11 @@ public class PlaceholderOptions
         this.afkInvulnerablePlaceholder = ":<red>I<r>";
     }
 
-    public PlaceholderOptions copy(PlaceholderOptions opts)
+    @Override
+    public PlaceholderOptions copy(IConfigOption opt)
     {
+        PlaceholderOptions opts = (PlaceholderOptions) opt;
+
         this.afkPlaceholder = opts.afkPlaceholder;
         this.afkPlusNamePlaceholder = opts.afkPlusNamePlaceholder;
         this.afkPlusNamePlaceholderAfk = opts.afkPlusNamePlaceholderAfk;
@@ -65,7 +69,7 @@ public class PlaceholderOptions
     }
 
     @SuppressWarnings("deprecation")
-    public void fromToml(TomlConfigData.PlaceholderOptions opts)
+    public PlaceholderOptions fromToml(TomlConfigData.PlaceholderOptions opts)
     {
         this.afkPlaceholder = opts.afkPlaceholder;
         this.afkPlusNamePlaceholder = opts.afkPlusNamePlaceholder;
@@ -75,5 +79,7 @@ public class PlaceholderOptions
         this.afkReasonPlaceholderFormatting = opts.afkReasonPlaceholderFormatting;
         this.afkDurationPretty = opts.afkDurationPretty;
         this.afkInvulnerablePlaceholder = opts.afkInvulnerablePlaceholder;
+
+        return this;
     }
 }

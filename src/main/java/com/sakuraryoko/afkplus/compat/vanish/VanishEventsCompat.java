@@ -28,7 +28,8 @@ import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 
 public class VanishEventsCompat
 {
-    public static final VanishEventsCompat INSTANCE = new VanishEventsCompat();
+    private static final VanishEventsCompat INSTANCE = new VanishEventsCompat();
+    public static VanishEventsCompat getInstance() { return INSTANCE; }
     private final boolean hasVanish;
 
     public VanishEventsCompat()
@@ -47,8 +48,10 @@ public class VanishEventsCompat
         {
             // Register
             VanishEvents.VANISH_EVENT.register(PlayerEventsHandler.getInstance()::onVanish);
+            /*
             VanishEvents.VANISH_MESSAGE_EVENT.register(PlayerEventsHandler.getInstance()::getVanishMessage);
             VanishEvents.UN_VANISH_MESSAGE_EVENT.register(PlayerEventsHandler.getInstance()::getUnVanishMessage);
+             */
         }
     }
 }

@@ -18,28 +18,19 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.commands.interfaces;
+package com.sakuraryoko.afkplus.placeholders;
 
-import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.commands.CommandBuildContext;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
+import com.sakuraryoko.afkplus.placeholders.options.*;
 
-import com.sakuraryoko.afkplus.AfkPlusReference;
-
-public interface IServerCommand
+public class PlaceholderManager
 {
-    /**
-     * Register a Server Side command, in either Dedicated, or Integrated Servers
-     */
-    void register(CommandDispatcher<CommandSourceStack> dispatcher,
-                  CommandBuildContext registryAccess,
-                  Commands.CommandSelection environment);
-
-    String getName();
-
-    default String getNode()
+    public static void register()
     {
-        return AfkPlusReference.MOD_ID + "." + this.getName();
+        AfkPlaceholder.register();
+        DisplayNamePlaceholder.register();
+        DurationPlaceholder.register();
+        InvulnerablePlaceholder.register();
+        ReasonPlaceholder.register();
+        TimePlaceholder.register();
     }
 }

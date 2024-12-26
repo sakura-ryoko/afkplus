@@ -29,9 +29,9 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.text.TextUtils;
 
 public class AfkPlayerInfo
 {
@@ -88,7 +88,7 @@ public class AfkPlayerInfo
                 AfkStatus = AfkStatus + " <green>[ALLOWED]";
             }
 
-            AfkPlusMod.debugLog("AkfStatus.getString(): {}", AfkStatus);
+            AfkPlus.debugLog("AkfStatus.getString(): {}", AfkStatus);
         }
         else if (afkPlayer.isNoAfkEnabled())
         {
@@ -113,16 +113,16 @@ public class AfkPlayerInfo
 
             if (afkPlayer.getAfkReason().isEmpty())
             {
-                afkReason = TextUtils.formatTextSafe(reasonFormat + "none");
+                afkReason = TextHandler.getInstance().formatTextSafe(reasonFormat + "none");
             }
             else
             {
                 afkReason = Placeholders.parseText(
-                        TextUtils.formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
+                        TextHandler.getInstance().formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
                         PlaceholderContext.of(src));
             }
 
-            AfkPlusMod.debugLog("AkfStatus.getReason(): {}", afkReason.toString());
+            AfkPlus.debugLog("AkfStatus.getReason(): {}", afkReason.toString());
         }
         else
         {

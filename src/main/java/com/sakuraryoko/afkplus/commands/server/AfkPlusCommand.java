@@ -20,6 +20,7 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
+import java.util.List;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -32,39 +33,45 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
-import com.sakuraryoko.afkplus.config.AfkConfigManager;
+import com.sakuraryoko.afkplus.config.AfkConfigHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-import com.sakuraryoko.afkplus.text.FormattingExample;
-import com.sakuraryoko.afkplus.text.TextUtils;
-import com.sakuraryoko.afkplus.util.AfkPlusInfo;
+//import com.sakuraryoko.afkplus.text.FormattingExample;
+import com.sakuraryoko.corelib.api.commands.IServerCommand;
+import com.sakuraryoko.corelib.api.modinit.ModInitData;
+import com.sakuraryoko.corelib.impl.config.ConfigManager;
+import com.sakuraryoko.morecolors.impl.modinit.MoreColorInit;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class AfkPlusCommand implements IServerCommand
 {
-    public static final AfkPlusCommand INSTANCE = new AfkPlusCommand();
-    
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
         dispatcher.register(
                 literal(this.getName())
                         .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkPlusCommandPermissions))
-                        .executes(ctx -> this.afkAbout(ctx.getSource(), ctx))
-                        .then(literal("ex")
-                                      .requires(Permissions.require(this.getNode()+".ex", 4))
-                                      .executes(ctx -> this.afkExample(ctx.getSource(), ctx))
-                        )
+                        .executes(ctx -> this.about(ctx.getSource(), ctx))
                         .then(literal("reload")
                                       .requires(Permissions.require(this.getNode()+".reload", ConfigWrap.afk().afkPlusCommandPermissions))
-                                      .executes(ctx -> this.afkReload(ctx.getSource(), ctx))
+                                      .executes(ctx -> this.reload(ctx.getSource(), ctx))
+                        )
+                        .then(literal("save")
+                                      .requires(Permissions.require(this.getNode()+".save", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .executes(ctx -> this.save(ctx.getSource(), ctx))
+                        )
+                        .then(literal("defaults")
+                                      .requires(Permissions.require(this.getNode()+".defaults", 4))
+                                      .executes(ctx -> this.reload(ctx.getSource(), ctx))
                         )
                         .then(literal("set")
                                       .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
@@ -118,49 +125,69 @@ public class AfkPlusCommand implements IServerCommand
     @Override
     public String getName()
     {
-        return "afkplus";
+        return this.getModId();
     }
 
-    private int afkAbout(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    @Override
+    public String getModId()
     {
-        Component ModInfo = AfkPlusInfo.getModInfoText();
+        return Reference.MOD_ID;
+    }
+
+    private int about(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    {
+        List<Component> info = AfkPlusInit.getInstance().getPlaceholderFormatted(ModInitData.ALL_INFO);
         String user = src.getTextName();
-        //#if MC >= 12001
-        //$$ context.getSource().sendSuccess(() -> ModInfo, false);
-        //#else
-        context.getSource().sendSuccess(ModInfo, false);
-        //#endif
-        AfkPlusMod.debugLog("{} has executed /afkplus .", user);
+
+        for (Component entry : info)
+        {
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> entry, false);
+            //#else
+            context.getSource().sendSuccess(entry, false);
+            //#endif
+        }
+
+        AfkPlus.debugLog("{} has executed /afkplus .", user);
         return 1;
     }
 
-    private int afkExample(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    private int reload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {
         String user = src.getTextName();
-        //#if MC >= 12001
-        //$$ context.getSource().sendSuccess(FormattingExample::runBuiltInTest, false);
-        //$$ context.getSource().sendSuccess(FormattingExample::runPlaceholderAPITest, false);
-        //$$ context.getSource().sendSuccess(FormattingExample::runMoreColorsTest, false);
-        //#else
-        context.getSource().sendSuccess(FormattingExample.runBuiltInTest(), false);
-        context.getSource().sendSuccess(FormattingExample.runPlaceholderAPITest(), false);
-        context.getSource().sendSuccess(FormattingExample.runMoreColorsTest(), false);
-        //#endif
-        AfkPlusMod.debugLog("{} has executed /afkplus example .", user);
-        return 1;
-    }
-
-    private int afkReload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
-    {
-        String user = src.getTextName();
-        //TomlConfigManager.reloadConfig();
-        AfkConfigManager.getInstance().reloadAllConfigs();
+        ConfigManager.getInstance().reloadEach(AfkConfigHandler.getInstance());
         //#if MC >= 12001
         //$$ context.getSource().sendSuccess(() -> Component.literal("Reloaded config!"), false);
         //#else
         context.getSource().sendSuccess(Component.literal("Reloaded config!"), false);
         //#endif
-        AfkPlusMod.LOGGER.info("{} has reloaded the configuration.", user);
+        AfkPlus.LOGGER.info("{} has reloaded the configuration.", user);
+        return 1;
+    }
+
+    private int save(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    {
+        String user = src.getTextName();
+        ConfigManager.getInstance().saveEach(AfkConfigHandler.getInstance());
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> Component.literal("Saving config!"), false);
+        //#else
+        context.getSource().sendSuccess(Component.literal("Saving config!"), false);
+        //#endif
+        AfkPlus.LOGGER.info("{} has saved the configuration.", user);
+        return 1;
+    }
+
+    private int defaults(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    {
+        String user = src.getTextName();
+        ConfigManager.getInstance().defaultEach(AfkConfigHandler.getInstance());
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> Component.literal("Set config defaults!"), false);
+        //#else
+        context.getSource().sendSuccess(Component.literal("Set config defaults!"), false);
+        //#endif
+        AfkPlus.LOGGER.info("{} has set the default configuration.", user);
         return 1;
     }
 
@@ -173,9 +200,9 @@ public class AfkPlusCommand implements IServerCommand
         {
             String response = afkPlayer.getName() + " <red>is vanished, and shouldn't be going afk ...<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
             //#endif
             return 1;
         }
@@ -204,17 +231,17 @@ public class AfkPlusCommand implements IServerCommand
             if (reason == null && ConfigWrap.mess().defaultReason == null)
             {
                 afkPlayer.getHandler().registerAfk("via /afkplus set");
-                AfkPlusMod.LOGGER.info("{} set player {} as AFK", user, afkPlayer.getName());
+                AfkPlus.LOGGER.info("{} set player {} as AFK", user, afkPlayer.getName());
             }
             else if (reason == null || reason.isEmpty())
             {
                 afkPlayer.getHandler().registerAfk(ConfigWrap.mess().defaultReason);
-                AfkPlusMod.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.getName(), ConfigWrap.mess().defaultReason);
+                AfkPlus.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.getName(), ConfigWrap.mess().defaultReason);
             }
             else
             {
                 afkPlayer.getHandler().registerAfk(reason);
-                AfkPlusMod.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.getName(), reason);
+                AfkPlus.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.getName(), reason);
             }
         }
         return 1;
@@ -229,9 +256,9 @@ public class AfkPlusCommand implements IServerCommand
         {
             String response = afkPlayer.getName() + " <red>is vanished, and shouldn't be afk ...<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
             //#endif
             return 1;
         }
@@ -239,7 +266,7 @@ public class AfkPlusCommand implements IServerCommand
         if (afkPlayer.isAfk())
         {
             afkPlayer.getHandler().unregisterAfk();
-            AfkPlusMod.LOGGER.info("{} cleared player {} from AFK", user, afkPlayer.getName());
+            AfkPlus.LOGGER.info("{} cleared player {} from AFK", user, afkPlayer.getName());
         }
         else
         {
@@ -262,13 +289,13 @@ public class AfkPlusCommand implements IServerCommand
             String afkStatus = AfkPlayerInfo.getString(afkPlayer);
             Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(afkStatus), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(afkStatus), false);
             //$$ context.getSource().sendSuccess(() -> afkReason, false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkPlusMod.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
+            AfkPlus.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
         }
         else
         {
@@ -290,9 +317,9 @@ public class AfkPlusCommand implements IServerCommand
         {
             String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
             //#endif
             return 1;
         }
@@ -304,7 +331,7 @@ public class AfkPlusCommand implements IServerCommand
             //#else
             context.getSource().sendSuccess(Component.literal("Allowing Damage Disable feature for player " + afkPlayer.getName()), true);
             //#endif
-            AfkPlusMod.LOGGER.info("{} Allowing Damage Disable feature for player {}", user, afkPlayer.getName());
+            AfkPlus.LOGGER.info("{} Allowing Damage Disable feature for player {}", user, afkPlayer.getName());
         }
         else
         {
@@ -326,9 +353,9 @@ public class AfkPlusCommand implements IServerCommand
         {
             String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
             //#endif
             return 1;
         }
@@ -340,7 +367,7 @@ public class AfkPlusCommand implements IServerCommand
             //#else
             context.getSource().sendSuccess(Component.literal("Force-Enabling Damage for player " + afkPlayer.getName()), true);
             //#endif
-            AfkPlusMod.LOGGER.info("{} Force-Enabling Damage for player {}", user, afkPlayer.getName());
+            AfkPlus.LOGGER.info("{} Force-Enabling Damage for player {}", user, afkPlayer.getName());
         }
         else
         {
@@ -362,9 +389,9 @@ public class AfkPlusCommand implements IServerCommand
         {
             String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be updating their player list status.<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
             //#endif
             return 1;
         }
@@ -375,7 +402,7 @@ public class AfkPlusCommand implements IServerCommand
         //#else
         context.getSource().sendSuccess(Component.literal("Updating player list entry for " + afkPlayer.getName()), false);
         //#endif
-        AfkPlusMod.LOGGER.info("{} updated player list entry for {}", user, afkPlayer.getName());
+        AfkPlus.LOGGER.info("{} updated player list entry for {}", user, afkPlayer.getName());
         return 1;
     }
 }

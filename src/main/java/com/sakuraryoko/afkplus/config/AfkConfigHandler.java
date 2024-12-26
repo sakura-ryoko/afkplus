@@ -20,24 +20,28 @@
 
 package com.sakuraryoko.afkplus.config;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.config.data.AfkConfigData;
 import com.sakuraryoko.afkplus.config.data.options.*;
-import com.sakuraryoko.afkplus.config.interfaces.IConfigData;
-import com.sakuraryoko.afkplus.config.interfaces.IConfigDispatch;
+import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
+import com.sakuraryoko.corelib.api.config.IConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigDispatch;
+import com.sakuraryoko.corelib.impl.config.ConfigManager;
 
 public class AfkConfigHandler implements IConfigDispatch
 {
     private static final AfkConfigHandler INSTANCE = new AfkConfigHandler();
     public static AfkConfigHandler getInstance() { return INSTANCE; }
     private final AfkConfigData CONFIG = newConfig();
-    private final String CONFIG_ROOT = AfkPlusReference.MOD_ID;
-    private final String CONFIG_NAME = AfkPlusReference.MOD_ID;
+    private final String CONFIG_ROOT = ".";
+    private final String CONFIG_NAME = Reference.MOD_ID;
     private boolean loaded = false;
 
     @Override
@@ -49,7 +53,7 @@ public class AfkConfigHandler implements IConfigDispatch
     @Override
     public boolean useRootDir()
     {
-        return false;
+        return true;
     }
 
     @Override
@@ -102,6 +106,85 @@ public class AfkConfigHandler implements IConfigDispatch
     }
 
     @Override
+    public void initConfig()
+    {
+        // Check for "configs/afkplus.toml"
+        this.checkForTomlFile();
+        // Check for "configs/afkplus.json" -> Move to "configs/afkplus/afkplus.json"
+        this.checkForRootConfig();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void checkForTomlFile()
+    {
+        try
+        {
+            Path tomlFile = Reference.CONFIG_DIR.resolve(Reference.MOD_ID +".toml");
+
+            if (Files.exists(tomlFile))
+            {
+                AfkPlus.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", tomlFile.getFileName().toString());
+                this.defaults();
+
+                // Load TOML Config (Without saving it)
+                TomlConfigManager.initConfig();
+                TomlConfigManager.loadConfig();
+
+                // Copy
+                ConfigWrap.afk().fromToml(TomlConfigManager.CONFIG.afkPlusOptions);
+                ConfigWrap.mess().fromToml(TomlConfigManager.CONFIG.messageOptions);
+                ConfigWrap.pack().fromToml(TomlConfigManager.CONFIG.packetOptions);
+                ConfigWrap.place().fromToml(TomlConfigManager.CONFIG.PlaceholderOptions);
+                ConfigWrap.list().fromToml(TomlConfigManager.CONFIG.playerListOptions);
+
+                // Save As Json
+                this.onPreSaveConfig();
+                ConfigManager.getInstance().saveEach(this);
+                this.execute(true);
+                this.onPostSaveConfig();
+
+                // Delete it, never to be seen again :)
+                AfkPlus.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}]", tomlFile.getFileName().toString());
+                Files.delete(tomlFile);
+            }
+        }
+        catch (Exception err)
+        {
+            AfkPlus.LOGGER.error("checkForTomlFile(): Error converting legacy TOML file // {}", err.getMessage());
+        }
+    }
+
+    private void checkForRootConfig()
+    {
+        try
+        {
+            Path dir = Reference.CONFIG_DIR.resolve(Reference.MOD_ID);
+
+            // json file found in the afkplus subfolder instead of the root
+            if (Files.isDirectory(dir))
+            {
+                AfkPlus.LOGGER.warn("checkForRootConfig(): Found Sub Config dir [{}]", dir.getFileName().toString());
+
+                Path oldFile = dir.resolve(this.getConfigName() + ".json");
+
+                if (Files.exists(oldFile))
+                {
+                    Path newFile = Reference.CONFIG_DIR.resolve(Reference.MOD_ID +".json");
+                    // Move the file
+                    AfkPlus.LOGGER.warn("checkForRootConfig(): Moving Root Config file [{}/{}] to [{}] ...", dir.getFileName().toString(), oldFile.getFileName().toString(), newFile.getFileName().toString());
+                    Files.move(oldFile, newFile);
+                }
+
+                Files.delete(dir);
+            }
+        }
+        catch (Exception err)
+        {
+            AfkPlus.LOGGER.error("checkForRootConfig(): Error moving Root Config file // {}", err.getMessage());
+        }
+    }
+
+    @Override
     public void onPreLoadConfig()
     {
         this.loaded = false;
@@ -129,7 +212,7 @@ public class AfkConfigHandler implements IConfigDispatch
     public AfkConfigData defaults()
     {
         AfkConfigData config = this.newConfig();
-        AfkPlusMod.debugLog("AfkConfigHandler#defaults(): Setting default config.");
+        AfkPlus.debugLog("AfkConfigHandler#defaults(): Setting default config.");
 
         // Set default values
         config.config_date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT).format(ZonedDateTime.now());
@@ -146,12 +229,12 @@ public class AfkConfigHandler implements IConfigDispatch
     public AfkConfigData update(IConfigData newConfig)
     {
         AfkConfigData newConf = (AfkConfigData) newConfig;
-        AfkPlusMod.debugLog("AfkConfigHandler#update(): Refresh config.");
+        AfkPlus.debugLog("AfkConfigHandler#update(): Refresh config.");
 
         // Refresh
-        CONFIG.comment = "AFK Plus config " + AfkPlusReference.MC_VERSION + "-" + AfkPlusReference.AFK_VERSION;
+        CONFIG.comment = AfkPlusInit.getInstance().getModVersionString() + " Config";
         CONFIG.config_date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT).format(ZonedDateTime.now());
-        AfkPlusMod.debugLog("AfkConfigHandler#update(): save_date: {} --> {}", newConf.config_date, CONFIG.config_date);
+        AfkPlus.debugLog("AfkConfigHandler#update(): save_date: {} --> {}", newConf.config_date, CONFIG.config_date);
 
         // Copy Incoming Config
         CONFIG.AFK_PLUS.copy(newConf.AFK_PLUS);
@@ -164,11 +247,11 @@ public class AfkConfigHandler implements IConfigDispatch
     }
 
     @Override
-    public void execute()
+    public void execute(boolean fromInit)
     {
-        AfkPlusMod.debugLog("AfkConfigHandler#execute(): Execute config.");
+        AfkPlus.debugLog("AfkConfigHandler#execute(): Execute config.");
 
         // Do this when the Config gets finalized.
-        AfkPlusMod.debugLog("AfkConfigHandler#execute(): new config_date: {}", CONFIG.config_date);
+        AfkPlus.debugLog("AfkConfigHandler#execute(): new config_date: {}", CONFIG.config_date);
     }
 }

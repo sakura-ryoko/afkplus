@@ -27,14 +27,15 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.level.GameType;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.config.AfkConfigManager;
+import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.util.AfkPlusConflicts;
+import com.sakuraryoko.corelib.api.events.IServerEventsDispatch;
 
 @ApiStatus.Internal
-public class ServerEventsHandler
+public class ServerEventsHandler implements IServerEventsDispatch
 {
     private static final ServerEventsHandler INSTANCE = new ServerEventsHandler();
     public static ServerEventsHandler getInstance() { return INSTANCE; }
@@ -45,12 +46,14 @@ public class ServerEventsHandler
         this.dpCollection = new ArrayList<>();
     }
 
+    @Override
     @ApiStatus.Internal
     public void onStarting(MinecraftServer server)
     {
-        AfkPlusMod.debugLog("onStarting(): Server is starting, {}", server.getServerModName());
+        AfkPlus.debugLog("onStarting(): Server is starting, {}", server.getServerModName());
     }
 
+    @Override
     @ApiStatus.Internal
     public void onStarted(MinecraftServer server)
     {
@@ -58,12 +61,13 @@ public class ServerEventsHandler
 
         if (!AfkPlusConflicts.checkDatapacks(this.dpCollection))
         {
-            AfkPlusMod.LOGGER.warn("onStarted(): MOD Data Pack test has FAILED.");
+            AfkPlus.LOGGER.warn("onStarted(): MOD Data Pack test has FAILED.");
         }
 
-        AfkPlusMod.debugLog("onStarted(): Server has started, {}", server.getServerModName());
+        AfkPlus.debugLog("onStarted(): Server has started, {}", server.getServerModName());
     }
 
+    @Override
     @ApiStatus.Internal
     public void onReloadComplete(MinecraftServer server, Collection<String> resources)
     {
@@ -71,34 +75,51 @@ public class ServerEventsHandler
 
         if (!AfkPlusConflicts.checkDatapacks(this.dpCollection))
         {
-            AfkPlusMod.LOGGER.warn("onReloadComplete(): MOD Data Pack test has FAILED.");
+            AfkPlus.LOGGER.warn("onReloadComplete(): MOD Data Pack test has FAILED.");
         }
 
-        AfkPlusMod.debugLog("onReloadComplete(): Server has reloaded it's data packs, {}", server.getServerModName());
+        AfkPlus.debugLog("onReloadComplete(): Server has reloaded it's data packs, {}", server.getServerModName());
     }
 
+    @Override
+    @ApiStatus.Internal
+    public void onDedicatedStarted(DedicatedServer server)
+    {
+        AfkPlus.debugLog("onDedicatedStarted(): Dedicated Server is starting, {}", server.getServerModName());
+    }
+
+    @Override
     @ApiStatus.Internal
     public void onIntegratedStarted(IntegratedServer server)
     {
-        AfkPlusMod.debugLog("onIntegratedStarted(): Integrated Server is starting, {}", server.getServerModName());
+        AfkPlus.debugLog("onIntegratedStarted(): Integrated Server is starting, {}", server.getServerModName());
     }
 
+    @Override
     @ApiStatus.Internal
     public void onOpenToLan(IntegratedServer server, GameType mode)
     {
-        AfkPlusMod.debugLog("onOpenToLan(): Server is open for LAN, {} [Game Mode: {}]", server.getServerModName(), mode.getName());
+        AfkPlus.debugLog("onOpenToLan(): Server is open for LAN, {} [Game Mode: {}]", server.getServerModName(), mode.getName());
     }
 
+    @Override
+    @ApiStatus.Internal
+    public void onDedicatedStopping(DedicatedServer server)
+    {
+        AfkPlus.debugLog("onDedicatedStopping(): Server is stopping, {}", server.getServerModName());
+    }
+
+    @Override
     @ApiStatus.Internal
     public void onStopping(MinecraftServer server)
     {
-        AfkPlusMod.debugLog("onStopping(): Server is stopping, {}", server.getServerModName());
-        AfkConfigManager.getInstance().saveAllConfigs();
+        AfkPlus.debugLog("onStopping(): Server is stopping, {}", server.getServerModName());
     }
 
+    @Override
     @ApiStatus.Internal
     public void onStopped(MinecraftServer server)
     {
-        AfkPlusMod.debugLog("onStopped(): Server has stopped, {}", server.getServerModName());
+        AfkPlus.debugLog("onStopped(): Server has stopped, {}", server.getServerModName());
     }
 }

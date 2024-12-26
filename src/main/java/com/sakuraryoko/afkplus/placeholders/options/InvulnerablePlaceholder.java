@@ -18,7 +18,7 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.text.placeholders.options;
+package com.sakuraryoko.afkplus.placeholders.options;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
@@ -26,20 +26,20 @@ import eu.pb4.placeholders.api.Placeholders;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-import com.sakuraryoko.afkplus.text.TextUtils;
 
-public class ReasonPlaceholder
+public class InvulnerablePlaceholder
 {
     public static void register()
     {
         //#if MC >= 12101
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "reason"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "invulnerable"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "reason"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(Reference.MOD_ID, "invulnerable"), (ctx, arg) ->
         //#endif
         {
             if (!ctx.hasPlayer() || ctx.player() == null)
@@ -48,9 +48,9 @@ public class ReasonPlaceholder
             }
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
-            Component result = afkPlayer.isAfk()
-                               ? TextUtils.formatTextSafe(ConfigWrap.place().afkReasonPlaceholderFormatting + afkPlayer.getAfkReason() + "<r>")
-                               : Component.empty();
+            Component result = afkPlayer.isDamageEnabled()
+                               ? Component.empty()
+                               : Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkInvulnerablePlaceholder + "<r>"), ctx);
 
             return PlaceholderResult.value(result);
         });

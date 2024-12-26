@@ -30,7 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.fabricmc.loader.api.FabricLoader;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.AfkPlus;
 
 public class VanishAPICompat
 {
@@ -59,7 +59,7 @@ public class VanishAPICompat
         }
         catch (Throwable e)
         {
-            AfkPlusMod.LOGGER.error("VanishCompat#isVanishedEntity(): has thrown an error: [{}]", e.getMessage());
+            AfkPlus.LOGGER.error("VanishCompat#isVanishedEntity(): has thrown an error: [{}]", e.getMessage());
         }
 
         return false;
@@ -78,7 +78,7 @@ public class VanishAPICompat
         }
         catch (Throwable e)
         {
-            AfkPlusMod.LOGGER.error("VanishCompat#isVanishedUUID(): has thrown an error: [{}]", e.getMessage());
+            AfkPlus.LOGGER.error("VanishCompat#isVanishedUUID(): has thrown an error: [{}]", e.getMessage());
         }
 
         return false;
@@ -97,7 +97,7 @@ public class VanishAPICompat
         }
         catch (Throwable e)
         {
-            AfkPlusMod.LOGGER.error("VanishCompat#broadcastHiddenMessage(): has thrown an error: [{}]", e.getMessage());
+            AfkPlus.LOGGER.error("VanishCompat#broadcastHiddenMessage(): has thrown an error: [{}]", e.getMessage());
         }
     }
 
@@ -115,7 +115,7 @@ public class VanishAPICompat
         //$$ }
         //$$ catch (Throwable e)
         //$$ {
-            //$$ AfkPlusMod.LOGGER.error("VanishCompat#sendHiddenMessage(): has thrown an error: [{}]", e.getMessage());
+            //$$ AfkPlus.LOGGER.error("VanishCompat#sendHiddenMessage(): has thrown an error: [{}]", e.getMessage());
         //$$ }
     //$$ }
     //#else

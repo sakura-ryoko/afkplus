@@ -18,21 +18,32 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.config.interfaces;
+package com.sakuraryoko.afkplus.compat.morecolors;
 
-public interface IConfigDispatch
+import javax.annotation.Nonnull;
+
+import net.minecraft.network.chat.Component;
+
+import com.sakuraryoko.corelib.api.text.ITextHandler;
+import com.sakuraryoko.morecolors.api.MoreColorsAPI;
+
+public class TextHandler implements ITextHandler
 {
-    String getConfigRoot();
-    boolean useRootDir();
-    String getConfigName();
-    IConfigData newConfig();
-    IConfigData getConfig();
-    boolean isLoaded();
-    void onPreLoadConfig();
-    void onPostLoadConfig();
-    void onPreSaveConfig();
-    void onPostSaveConfig();
-    IConfigData defaults();
-    IConfigData update(IConfigData data);
-    void execute();
+    private static final TextHandler INSTANCE = new TextHandler();
+    public static TextHandler getInstance() { return INSTANCE; }
+
+    public Component formatTextSafe(@Nonnull String str)
+    {
+        return MoreColorsAPI.formatTextSafe(str);
+    }
+
+    public Component formatText(@Nonnull String str)
+    {
+        return MoreColorsAPI.formatText(str);
+    }
+
+    public Component of(@Nonnull String str)
+    {
+        return MoreColorsAPI.of(str);
+    }
 }

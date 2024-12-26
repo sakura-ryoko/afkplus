@@ -21,17 +21,18 @@
 package com.sakuraryoko.afkplus.config.data.options;
 
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigOption;
 
-public class AfkPlusOptions
+public class AfkPlusOptions implements IConfigOption
 {
     public boolean enableAfkCommand;
     public boolean enableNoAfkCommand;
     public boolean enableAfkInfoCommand;
-    public boolean enableAfkExCommand;
+    //public boolean enableAfkExCommand;
     public int afkCommandPermissions;
     public int noAfkCommandPermissions;
     public int afkInfoCommandPermissions;
-    public int afkExCommandPermissions;
+    //public int afkExCommandPermissions;
     public int afkPlusCommandPermissions;
     public String afkTimeoutString;
 
@@ -43,27 +44,30 @@ public class AfkPlusOptions
     public void defaults()
     {
         this.afkCommandPermissions = 0;
-        this.afkExCommandPermissions = 0;
+        //this.afkExCommandPermissions = 0;
         this.noAfkCommandPermissions = 0;
         this.afkInfoCommandPermissions = 2;
         this.afkPlusCommandPermissions = 3;
         this.enableAfkCommand = true;
-        this.enableAfkExCommand = true;
+        //this.enableAfkExCommand = true;
         this.enableNoAfkCommand = true;
         this.enableAfkInfoCommand = true;
         this.afkTimeoutString = "<i><gray>timeout<r>";
     }
 
-    public AfkPlusOptions copy(AfkPlusOptions opts)
+    @Override
+    public AfkPlusOptions copy(IConfigOption opt)
     {
+        AfkPlusOptions opts = (AfkPlusOptions) opt;
+
         this.enableAfkCommand = opts.enableAfkCommand;
         this.enableNoAfkCommand = opts.enableNoAfkCommand;
         this.enableAfkInfoCommand = opts.enableAfkInfoCommand;
-        this.enableAfkExCommand = opts.enableAfkExCommand;
+        //this.enableAfkExCommand = opts.enableAfkExCommand;
         this.afkCommandPermissions = opts.afkCommandPermissions;
         this.noAfkCommandPermissions = opts.noAfkCommandPermissions;
         this.afkInfoCommandPermissions = opts.afkInfoCommandPermissions;
-        this.afkExCommandPermissions = opts.afkExCommandPermissions;
+        //this.afkExCommandPermissions = opts.afkExCommandPermissions;
         this.afkPlusCommandPermissions = opts.afkPlusCommandPermissions;
         this.afkTimeoutString = opts.afkTimeoutString;
 
@@ -71,17 +75,19 @@ public class AfkPlusOptions
     }
 
     @SuppressWarnings("deprecation")
-    public void fromToml(TomlConfigData.AfkPlusOptions opts)
+    public AfkPlusOptions fromToml(TomlConfigData.AfkPlusOptions opts)
     {
         this.enableAfkCommand = opts.enableAfkCommand;
         this.enableNoAfkCommand = opts.enableNoAfkCommand;
         this.enableAfkInfoCommand = opts.enableAfkInfoCommand;
-        this.enableAfkExCommand = opts.enableAfkExCommand;
+        //this.enableAfkExCommand = opts.enableAfkExCommand;
         this.afkCommandPermissions = opts.afkCommandPermissions;
         this.noAfkCommandPermissions = opts.noAfkCommandPermissions;
         this.afkInfoCommandPermissions = opts.afkInfoCommandPermissions;
-        this.afkExCommandPermissions = opts.afkExCommandPermissions;
+        //this.afkExCommandPermissions = opts.afkExCommandPermissions;
         this.afkPlusCommandPermissions = opts.afkPlusCommandPermissions;
         this.afkTimeoutString = opts.afkTimeoutString;
+
+        return this;
     }
 }

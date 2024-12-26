@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
+import com.sakuraryoko.afkplus.AfkPlus;
 
 public class AfkPlayerList
 {
@@ -63,10 +63,30 @@ public class AfkPlayerList
         {
             afkPlayer = AfkPlayer.init(player);
             this.afkPlayers.add(afkPlayer);
-            AfkPlusMod.debugLog("AfkPlayerList(): addOrGetPlayer({}) --> ADD", afkPlayer.getName());
+            AfkPlus.debugLog("AfkPlayerList(): addOrGetPlayer({}) --> ADD", afkPlayer.getName());
         }
 
         return afkPlayer;
+    }
+
+    public List<ServerPlayer> listAllAfk()
+    {
+        List<ServerPlayer> list = new ArrayList<>();
+
+        for (AfkPlayer entry : this.afkPlayers)
+        {
+            if (entry.isAfk())
+            {
+                list.add(entry.getPlayer());
+            }
+        }
+
+        if (list.isEmpty())
+        {
+            list.add(this.afkPlayers.getFirst().getPlayer());
+        }
+
+        return list;
     }
 
     public void removePlayer(@Nonnull ServerPlayer player)
@@ -75,7 +95,7 @@ public class AfkPlayerList
         {
             if (entry.matches(player))
             {
-                AfkPlusMod.debugLog("AfkPlayerList(): removePlayer({}) --> REMOVE", entry.getName());
+                AfkPlus.debugLog("AfkPlayerList(): removePlayer({}) --> REMOVE", entry.getName());
                 entry.reset();
                 this.afkPlayers.remove(entry);
                 break;
@@ -85,7 +105,7 @@ public class AfkPlayerList
 
     public void removeAllPlayers()
     {
-        AfkPlusMod.debugLog("AfkPlayerList(): removeAllPlayers()");
+        AfkPlus.debugLog("AfkPlayerList(): removeAllPlayers()");
 
         for (AfkPlayer entry : this.afkPlayers)
         {

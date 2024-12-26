@@ -2,7 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
-apply plugin: 'me.fallenbreath.yamlang'
+//apply plugin: 'me.fallenbreath.yamlang'
 
 int mcVersion = project.mcVersion
 
@@ -38,7 +38,7 @@ dependencies {
 
 	// External Dependencies
 	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
-	implementation "com.google.code.gson:gson:${project.gson_version}"
+	//implementation "com.google.code.gson:gson:${project.gson_version}"
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 
 	// runtime mods
@@ -57,12 +57,14 @@ dependencies {
 
 	// AFKPlus Specific
 	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
+	modImplementation include("com.github.sakura-ryoko.corelib:corelib-mc${project.minecraft_version}:${project.corelib_version}")
+	modImplementation include("com.github.sakura-ryoko.more-color-api:more-color-api-mc${project.minecraft_version}:${project.more_color_api_version}")
 	modImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
 	modCompileOnly "maven.modrinth:vanish:${project.vanish_compat_version}"
 }
 
 String MIXIN_CONFIG_PATH = 'afkplus.mixins.json'
-String LANG_DIR = 'assets/akfplus/lang'
+//String LANG_DIR = 'assets/akfplus/lang'
 JavaVersion JAVA_COMPATIBILITY
 if (mcVersion >= 12005) {
 	JAVA_COMPATIBILITY = JavaVersion.VERSION_21
@@ -152,10 +154,10 @@ processResources {
 }
 
 // https://github.com/Fallen-Breath/yamlang
-yamlang {
-	targetSourceSets = [sourceSets.main]
-	inputDir = LANG_DIR
-}
+//yamlang {
+	//targetSourceSets = [sourceSets.main]
+	//inputDir = LANG_DIR
+//}
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly

@@ -36,17 +36,18 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.fabricmc.api.EnvType;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-import com.sakuraryoko.afkplus.text.TextUtils;
-import com.sakuraryoko.afkplus.util.AfkPlusInfo;
+import com.sakuraryoko.corelib.api.events.IPlayerEventsDispatch;
 
 @ApiStatus.Internal
-public class PlayerEventsHandler
+public class PlayerEventsHandler implements IPlayerEventsDispatch
 {
     private static final PlayerEventsHandler INSTANCE = new PlayerEventsHandler();
     public static PlayerEventsHandler getInstance() { return INSTANCE; }
@@ -58,23 +59,25 @@ public class PlayerEventsHandler
     }
     
     // Player List Events
+    @Override
     @ApiStatus.Internal
     public void onConnection(@Nonnull SocketAddress addr, @Nonnull GameProfile profile, @Nullable Component result)
     {
         if (result == null)
         {
-            AfkPlusMod.debugLog("onConnection(): Client connection from Profile [{}]", profile.getName());
+            AfkPlus.debugLog("onConnection(): Client connection from Profile [{}]", profile.getName());
         }
         else
         {
-            AfkPlusMod.debugLog("onConnection(): Client connection from Profile [{}] --> REFUSED [{}]", profile.getName(), result.getString());
+            AfkPlus.debugLog("onConnection(): Client connection from Profile [{}] --> REFUSED [{}]", profile.getName(), result.getString());
         }
     }
 
+    @Override
     @ApiStatus.Internal
     public void onCreatePlayer(@Nonnull ServerPlayer player, @Nonnull GameProfile profile)
     {
-        AfkPlusMod.debugLog("onCreatePlayer(): Player created [{}] // Profile [{}]", player.getName().getString(), profile.getName());
+        AfkPlus.debugLog("onCreatePlayer(): Player created [{}] // Profile [{}]", player.getName().getString(), profile.getName());
 
         // checkInvulnerable2
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
@@ -84,22 +87,24 @@ public class PlayerEventsHandler
             if (player.isInvulnerable())
             {
                 player.setInvulnerable(false);
-                AfkPlusMod.LOGGER.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
+                AfkPlus.LOGGER.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
             }
         }
         // checkInvulnerable2
     }
 
+    @Override
     @ApiStatus.Internal
-    public void onJoinPre(@Nonnull ServerPlayer player, @Nonnull Connection connection)
+    public void onPlayerJoinPre(ServerPlayer player, Connection connection)
     {
-        AfkPlusMod.debugLog("onJoinPre(): Player [{}] // Joining", player.getName().getString());
+        AfkPlus.debugLog("onJoinPre(): Player [{}] // Joining", player.getName().getString());
     }
 
+    @Override
     @ApiStatus.Internal
-    public void onJoinPost(@Nonnull ServerPlayer player, @Nonnull Connection connection)
+    public void onPlayerJoinPost(ServerPlayer player, Connection connection)
     {
-        AfkPlusMod.debugLog("onJoinPost(): Player [{}] // Joined", player.getName().getString());
+        AfkPlus.debugLog("onJoinPost(): Player [{}] // Joined", player.getName().getString());
 
         // checkInvulnerable1
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
@@ -109,7 +114,7 @@ public class PlayerEventsHandler
             if (player.isInvulnerable())
             {
                 player.setInvulnerable(false);
-                AfkPlusMod.LOGGER.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
+                AfkPlus.LOGGER.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
             }
         }
 
@@ -119,17 +124,18 @@ public class PlayerEventsHandler
         }
 
         // Fixes some quirky-ness of Styled Player List
-        if (AfkPlusInfo.isServer())
+        if (AfkPlusInit.getInstance().isServer())
         {
             afkPlayer.getHandler().updatePlayerList();
         }
         // checkInvulnerable1
     }
 
+    @Override
     @ApiStatus.Internal
-    public void onRespawn(@Nonnull ServerPlayer player)
+    public void onPlayerRespawn(ServerPlayer player)
     {
-        AfkPlusMod.debugLog("onRespawn(): Player [{}] // Respawned", player.getName().getString());
+        AfkPlus.debugLog("onRespawn(): Player [{}] // Respawned", player.getName().getString());
 
         // checkInvulnerable3
         if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL)
@@ -138,7 +144,7 @@ public class PlayerEventsHandler
             {
                 AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
-                AfkPlusMod.LOGGER.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
+                AfkPlus.LOGGER.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
                 player.setInvulnerable(false);
 
                 if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
@@ -147,7 +153,7 @@ public class PlayerEventsHandler
                 }
 
                 // Fixes some quirky-ness of Styled Player List
-                if (AfkPlusInfo.isServer())
+                if (AfkPlusInit.getInstance().isServer())
                 {
                     afkPlayer.getHandler().updatePlayerList();
                 }
@@ -156,18 +162,34 @@ public class PlayerEventsHandler
         // checkInvulnerable3
     }
 
+    @Override
     @ApiStatus.Internal
-    public void onLeave(@Nonnull ServerPlayer player)
+    public void onPlayerLeave(ServerPlayer player)
     {
-        AfkPlusMod.debugLog("onRespawn(): Player [{}] // Disconnected", player.getName().getString());
+        AfkPlus.debugLog("onRespawn(): Player [{}] // Disconnected", player.getName().getString());
         AfkPlayerList.getInstance().removePlayer(player);
     }
 
+    @Override
     @ApiStatus.Internal
     public void onDisconnectAll()
     {
-        AfkPlusMod.debugLog("onDisconnectAll()");
+        AfkPlus.debugLog("onDisconnectAll()");
         AfkPlayerList.getInstance().removeAllPlayers();
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void onSetViewDistance(int i)
+    {
+        // NO-OP
+    }
+
+    @Override
+    @ApiStatus.Internal
+    public void onSetSimulationDistance(int i)
+    {
+        // NO-OP
     }
 
     @ApiStatus.Internal
@@ -186,7 +208,7 @@ public class PlayerEventsHandler
         if (afkPlayer.isAfk() || timeoutSeconds <= 0)
         {
             if (ConfigWrap.pack().afkKickEnabled && ConfigWrap.pack().afkKickTimer > -1
-                && AfkPlusReference.MOD_ENV.equals(EnvType.SERVER))
+                && AfkPlusInit.getInstance().isServer())
             {
                 if ((afkPlayer.getPlayer().isCreative() || afkPlayer.getPlayer().isSpectator()) && !ConfigWrap.pack().afkKickNonSurvival)
                 {
@@ -197,7 +219,7 @@ public class PlayerEventsHandler
 
                 if (afkDuration > (kickTimeout * 1000L))
                 {
-                    AfkPlusMod.debugLog("onTickPacket(): Kicking player {} from AFK (timeout)", afkPlayer.getName());
+                    AfkPlus.debugLog("onTickPacket(): Kicking player {} from AFK (timeout)", afkPlayer.getName());
                     afkPlayer.getHandler().afkKick();
                     // They should get removed by the onRemove()
                 }
@@ -216,7 +238,7 @@ public class PlayerEventsHandler
                     afkPlayer.getHandler().registerAfk(ConfigWrap.afk().afkTimeoutString);
                 }
 
-                AfkPlusMod.debugLog("onTickPacket(): Setting player {} as AFK (timeout)", afkPlayer.getName());
+                AfkPlus.debugLog("onTickPacket(): Setting player {} as AFK (timeout)", afkPlayer.getName());
             }
         }
         // updateAfkStatus
@@ -271,7 +293,7 @@ public class PlayerEventsHandler
                 if (!afkPlayer.isDamageEnabled())
                 {
                     afkPlayer.getHandler().enableDamage();
-                    AfkPlusMod.debugLog("onTickPlayer() - Damage Enabled for player: {} because they are [LOCKED]. step 1.", afkPlayer.getName());
+                    AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} because they are [LOCKED]. step 1.", afkPlayer.getName());
                 }
             }
             else if (afkPlayer.isAfk() && ConfigWrap.pack().disableDamage)
@@ -288,7 +310,7 @@ public class PlayerEventsHandler
                         if (diff > cooldownSeconds * 1000L)
                         {
                             afkPlayer.getHandler().disableDamage();
-                            AfkPlusMod.debugLog("onTickPlayer() - Damage Disabled for player: {} step 2.", afkPlayer.getName());
+                            AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 2.", afkPlayer.getName());
                         }
                     }
                     else
@@ -296,7 +318,7 @@ public class PlayerEventsHandler
                         if (!(player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
                         {
                             afkPlayer.getHandler().disableDamage();
-                            AfkPlusMod.debugLog("onTickPlayer() - Damage Disabled for player: {} step 4.", afkPlayer.getName());
+                            AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 4.", afkPlayer.getName());
                         }
                     }
                 }
@@ -306,7 +328,7 @@ public class PlayerEventsHandler
                 if (!afkPlayer.isDamageEnabled())
                 {
                     afkPlayer.getHandler().enableDamage();
-                    AfkPlusMod.debugLog("onTickPlayer() - Damage Enabled for player: {} step 5.", afkPlayer.getName());
+                    AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} step 5.", afkPlayer.getName());
                 }
             }
 
@@ -315,7 +337,7 @@ public class PlayerEventsHandler
         catch (Exception e)
         {
             // Sometimes the values are null, so offer a catch
-            AfkPlusMod.LOGGER.info("Caught exception during onTickPlayer(). ({})", e.getMessage());
+            AfkPlus.LOGGER.info("Caught exception during onTickPlayer(). ({})", e.getMessage());
         }
         // checkAfk
     }
@@ -347,7 +369,7 @@ public class PlayerEventsHandler
     @ApiStatus.Internal
     public void onChangeGameMode(@Nonnull ServerPlayer player, GameType mode, boolean result)
     {
-        AfkPlusMod.debugLog("onChangeGameMode(): Player [{}] // newGameMode [{}]", player.getName().getString(), mode.getName());
+        AfkPlus.debugLog("onChangeGameMode(): Player [{}] // newGameMode [{}]", player.getName().getString(), mode.getName());
 
         // checkGameMode
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
@@ -359,7 +381,7 @@ public class PlayerEventsHandler
 
         if (result)
         {
-            AfkPlusMod.debugLog("onChangeGameMode() -- Invoked for player {} GameMode: {}", afkPlayer.getName(), mode.getName());
+            AfkPlus.debugLog("onChangeGameMode() -- Invoked for player {} GameMode: {}", afkPlayer.getName(), mode.getName());
 
             if (afkPlayer.isAfk())
             {
@@ -396,7 +418,7 @@ public class PlayerEventsHandler
 
         if (afkPlayer.isAfk())
         {
-            AfkPlusMod.debugLog("onResetLastAction(): Player [{}] // Reset Last Action (Remove AFK)", afkPlayer.getName());
+            AfkPlus.debugLog("onResetLastAction(): Player [{}] // Reset Last Action (Remove AFK)", afkPlayer.getName());
             afkPlayer.getHandler().unregisterAfk();
         }
         // onActionTimeUpdate
@@ -437,7 +459,7 @@ public class PlayerEventsHandler
     @ApiStatus.Internal
     public @Nullable Component onUpdateDisplayName(@Nonnull ServerPlayer player, @Nullable Component name)
     {
-        //AfkPlusMod.debugLog("onUpdateDisplayName(): Player [{}] // setName [{}]", player.getName().getString(), name != null ? name.getString() : "<empty>");
+        AfkPlus.debugLog("onUpdateDisplayName(): Player [{}] // setName [{}]", player.getName().getString(), name != null ? name.getString() : "<empty>");
 
         // replacePlayerListName
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
@@ -450,11 +472,11 @@ public class PlayerEventsHandler
         if (ConfigWrap.list().enableListDisplay && afkPlayer.isAfk())
         {
             Component listEntry = Placeholders.parseText(
-                    TextUtils.formatTextSafe(ConfigWrap.list().afkPlayerName),
+                    TextHandler.getInstance().formatTextSafe(ConfigWrap.list().afkPlayerName),
                     PlaceholderContext.of(player)
             );
 
-            //AfkPlusMod.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());
+            AfkPlus.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());
 
             return listEntry.copy();
         }
@@ -470,12 +492,12 @@ public class PlayerEventsHandler
         // Count AFK Players into the total, they can't be marked as Sleeping, so don't increment that value.
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
-        AfkPlusMod.debugLog("checkSleepCount(): Current: countActive {}, countSleeping {} // total {}, sleeping {}",
-                            countActive, countSleeping, totalActive, totalSleeping);
+        AfkPlus.debugLog("checkSleepCount(): Current: countActive {}, countSleeping {} // total {}, sleeping {}",
+                         countActive, countSleeping, totalActive, totalSleeping);
 
         if (afkPlayer.isAfk() && ConfigWrap.pack().bypassSleepCount)
         {
-            AfkPlusMod.LOGGER.info("AFK Player: {} is being excluded from the sleep requirements.", afkPlayer.getName());
+            AfkPlus.LOGGER.info("AFK Player: {} is being excluded from the sleep requirements.", afkPlayer.getName());
             return true;
         }
         // checkSleepCount
@@ -498,16 +520,16 @@ public class PlayerEventsHandler
         {
             if (currentValue > 72000)
             {
-                AfkPlusMod.LOGGER.info("Afk Player: {} was just spared from a phantom spawn chance.", afkPlayer.getName());
+                AfkPlus.LOGGER.info("Afk Player: {} was just spared from a phantom spawn chance.", afkPlayer.getName());
             }
 
-            AfkPlusMod.debugLog("checkPhantomSpawn(): [Player: {}] obtained TIME_SINCE_REST value of {} setting value to 1", afkPlayer.getName(), currentValue);
+            AfkPlus.debugLog("checkPhantomSpawn(): [Player: {}] obtained TIME_SINCE_REST value of {} setting value to 1", afkPlayer.getName(), currentValue);
 
             return 1;
         }
         else
         {
-            AfkPlusMod.debugLog("checkPhantomSpawn(): [Player: {}] TIME_SINCE_REST has a value of {} ", afkPlayer.getName(), currentValue);
+            AfkPlus.debugLog("checkPhantomSpawn(): [Player: {}] TIME_SINCE_REST has a value of {} ", afkPlayer.getName(), currentValue);
             return currentValue;
         }
         // checkForAfkPlayer
@@ -516,7 +538,7 @@ public class PlayerEventsHandler
     @ApiStatus.Internal
     public void onVanish(@Nonnull ServerPlayer player, boolean isVanished)
     {
-        AfkPlusMod.debugLog("onVanish(): Player [{}] / Vanish [{}]", player.getName().getString(), isVanished);
+        AfkPlus.debugLog("onVanish(): Player [{}] / Vanish [{}]", player.getName().getString(), isVanished);
 
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
@@ -526,6 +548,7 @@ public class PlayerEventsHandler
         }
     }
 
+    /*
     @ApiStatus.Internal
     public @Nullable Component getVanishMessage(@Nonnull ServerPlayer player)
     {
@@ -548,4 +571,5 @@ public class PlayerEventsHandler
         //AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
         return null;
     }
+     */
 }

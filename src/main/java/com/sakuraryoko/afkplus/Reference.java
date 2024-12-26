@@ -18,36 +18,15 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.events;
+package com.sakuraryoko.afkplus;
 
-import org.jetbrains.annotations.ApiStatus;
+import java.nio.file.Path;
 
-import com.sakuraryoko.afkplus.compat.vanish.VanishEventsCompat;
+import net.fabricmc.loader.api.FabricLoader;
 
-@ApiStatus.Internal
-public class HandlerRegistry
+public class Reference
 {
-    public static ServerEventsHandler SERVER_EVENTS;
-    public static PlayerEventsHandler PLAYER_EVENTS;
-    public static VanishEventsCompat VANISH_EVENTS;
-
-    @ApiStatus.Internal
-    public HandlerRegistry()
-    {
-        // NO-OP
-    }
-
-    @ApiStatus.Internal
-    public void init()
-    {
-        SERVER_EVENTS = new ServerEventsHandler();
-        PLAYER_EVENTS = new PlayerEventsHandler();
-        VANISH_EVENTS = new VanishEventsCompat();
-
-        // Vanish Compat
-        if (VANISH_EVENTS.hasVanish())
-        {
-            VANISH_EVENTS.registerEvents();
-        }
-    }
+    public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
+    public static final String MOD_ID = "afkplus";
+    public static final boolean DEBUG = true;
 }

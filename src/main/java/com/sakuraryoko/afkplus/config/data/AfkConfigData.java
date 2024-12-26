@@ -23,7 +23,7 @@ package com.sakuraryoko.afkplus.config.data;
 import com.google.gson.annotations.SerializedName;
 
 import com.sakuraryoko.afkplus.config.data.options.*;
-import com.sakuraryoko.afkplus.config.interfaces.IConfigData;
+import com.sakuraryoko.corelib.api.config.IConfigData;
 
 public class AfkConfigData implements IConfigData
 {

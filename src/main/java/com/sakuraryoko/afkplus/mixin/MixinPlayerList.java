@@ -21,10 +21,15 @@
 package com.sakuraryoko.afkplus.mixin;
 
 import java.net.SocketAddress;
+import java.util.EnumSet;
+import java.util.List;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.Util;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 //#if MC >= 12002
 //$$ import net.minecraft.server.level.ClientInformation;
@@ -38,98 +43,48 @@ import net.minecraft.server.players.PlayerList;
 //#else
 import net.minecraft.world.entity.player.ProfilePublicKey;
 //#endif
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
+import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
 @Mixin(PlayerList.class)
 public abstract class MixinPlayerList
 {
+    @Shadow public abstract void broadcastAll(Packet<?> packet);
+
     public MixinPlayerList()
     {
         super();
     }
 
-    // Player Events
-    // checkCanJoin
-    @Inject(method = "canPlayerLogin", at = @At("RETURN"))
-    private void afkplus$canPlayerLogin(SocketAddress socketAddress, GameProfile gameProfile, CallbackInfoReturnable<Component> cir)
+    @Inject(method = "tick",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"))
+    private void afkplus$onPlayerListTick(CallbackInfo ci)
     {
-        // This might get called twice
-        PlayerEventsHandler.getInstance().onConnection(socketAddress, gameProfile, cir.getReturnValue());
-    }
+        // todo - dial this in
+        /*
+        // This follows the Vanilla "ping" update packet
+        if (ConfigWrap.list().enableListDisplay)
+        {
+            AfkPlus.debugLog("MixinPlayerList(): TICK");
 
-    @Inject(method = "getPlayerForLogin", at = @At("RETURN"))
-    //#if MC >= 12002
-    //$$ private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, ClientInformation clientInformation, CallbackInfoReturnable<ServerPlayer> cir)
-    //#elseif MC >= 11903
-    //$$ private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, CallbackInfoReturnable<ServerPlayer> cir)
-    //#else
-    private void afkplus$onGetPlayerForLogin(GameProfile gameProfile, ProfilePublicKey profilePublicKey, CallbackInfoReturnable<ServerPlayer> cir)
-    //#endif
-    {
-        PlayerEventsHandler.getInstance().onCreatePlayer(cir.getReturnValue(), gameProfile);
-    }
-
-    // onPlayerConnect
-    //#if MC >= 12002
-    //$$ @Inject(method = "placeNewPlayer", at = @At("HEAD"))
-    //$$ private void afkplus$onPlaceNewPlayerPre(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci)
-    //$$ {
-        //$$ PlayerEventsHandler.getInstance().onJoinPre(serverPlayer, connection);
-    //$$ }
-
-    //$$ @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    //$$ private void afkplus$onPlaceNewPlayerPost(Connection connection, ServerPlayer serverPlayer, CommonListenerCookie commonListenerCookie, CallbackInfo ci)
-    //$$ {
-        //$$ PlayerEventsHandler.getInstance().onJoinPost(serverPlayer, connection);
-    //$$ }
-
-    //#else
-    @Inject(method = "placeNewPlayer", at = @At("HEAD"))
-    private void afkplus$onPlaceNewPlayerPre(Connection connection, ServerPlayer serverPlayer, CallbackInfo ci)
-    {
-        PlayerEventsHandler.getInstance().onJoinPre(serverPlayer, connection);
-    }
-
-    @Inject(method = "placeNewPlayer", at = @At("TAIL"))
-    private void afkplus$onPlaceNewPlayerPost(Connection connection, ServerPlayer serverPlayer, CallbackInfo ci)
-    {
-        PlayerEventsHandler.getInstance().onJoinPost(serverPlayer, connection);
-    }
-    //#endif
-
-    // respawnPlayer
-    //#if MC >= 12101
-    //$$ @Inject(method = "respawn", at = @At("RETURN"))
-    //$$ private void afkplus$onRespawn(ServerPlayer serverPlayer, boolean bl, Entity.RemovalReason removalReason, CallbackInfoReturnable<ServerPlayer> cir)
-    //$$ {
-    //$$ PlayerEventsHandler.getInstance().onRespawn(serverPlayer);
-    //$$ }
-    //#else
-    @Inject(method = "respawn", at = @At("RETURN"))
-    private void afkplus$onRespawn(ServerPlayer serverPlayer, boolean bl, CallbackInfoReturnable<ServerPlayer> cir)
-    {
-        // serverPlayer = oldObject
-        PlayerEventsHandler.getInstance().onRespawn(cir.getReturnValue());
-    }
-    //#endif
-
-    // remove
-    @Inject(method = "remove", at = @At("HEAD"))
-    private void afkplus$onRemove(ServerPlayer serverPlayer, CallbackInfo ci)
-    {
-        PlayerEventsHandler.getInstance().onLeave(serverPlayer);
-    }
-
-    // disconnectAllPlayers
-    @Inject(method = "removeAll", at = @At("HEAD"))
-    private void afkplus$onRemoveAll(CallbackInfo ci)
-    {
-        PlayerEventsHandler.getInstance().onDisconnectAll();
+            //#if MC >= 11903
+            //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), AfkPlayerList.getInstance().listAllAfk()));
+            //#else
+            this.broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, AfkPlayerList.getInstance().listAllAfk()));
+            //#endif
+        }
+         */
     }
 }

@@ -18,8 +18,32 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.config.interfaces;
+package com.sakuraryoko.afkplus;
 
-public interface IConfigData
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.api.ModInitializer;
+
+import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
+import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
+
+public class AfkPlus implements ModInitializer
 {
+    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    //public static boolean MOD_INIT = false;
+
+    public static void debugLog(String key, Object... args)
+    {
+        if (Reference.DEBUG)
+        {
+            LOGGER.info(String.format("[DEBUG] %s", key), args);
+        }
+    }
+
+    @Override
+    public void onInitialize()
+    {
+        ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
+    }
 }

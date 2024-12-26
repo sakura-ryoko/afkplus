@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
-import java.util.Objects;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -32,21 +31,20 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlusMod;
-import com.sakuraryoko.afkplus.commands.interfaces.IServerCommand;
+import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-import com.sakuraryoko.afkplus.text.TextUtils;
+import com.sakuraryoko.corelib.api.commands.IServerCommand;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class AfkInfoCommand implements IServerCommand
 {
-    public static final AfkInfoCommand INSTANCE = new AfkInfoCommand();
-    
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
@@ -65,23 +63,36 @@ public class AfkInfoCommand implements IServerCommand
         return "afkinfo";
     }
 
+    @Override
+    public String getModId()
+    {
+        return Reference.MOD_ID;
+    }
+
     private int infoAfkPlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
-        String user = src.getTextName();
+
+        if (src.getPlayer() == null || afkPlayer == null)
+        {
+            return 0;
+        }
 
         if (afkPlayer.isAfk())
         {
             String afkStatus = AfkPlayerInfo.getString(afkPlayer);
             Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
+            String user = src.getTextName();
+
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextUtils.formatTextSafe(afkStatus), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(afkStatus), false);
             //$$ context.getSource().sendSuccess(() -> afkReason, false);
             //#else
-            context.getSource().sendSuccess(TextUtils.formatTextSafe(afkStatus), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(afkStatus), false);
             context.getSource().sendSuccess(afkReason, false);
             //#endif
-            AfkPlusMod.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
+
+            AfkPlus.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
         }
         else
         {

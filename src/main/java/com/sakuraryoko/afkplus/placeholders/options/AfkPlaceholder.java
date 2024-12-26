@@ -18,30 +18,28 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.text.placeholders.options;
+package com.sakuraryoko.afkplus.placeholders.options;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import com.sakuraryoko.afkplus.AfkPlusReference;
+import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-import com.sakuraryoko.afkplus.text.TextUtils;
 
-public class DurationPlaceholder
+public class AfkPlaceholder
 {
     public static void register()
     {
         //#if MC >= 12101
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(AfkPlusReference.MOD_ID, "duration"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "afk"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(AfkPlusReference.MOD_ID, "duration"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(Reference.MOD_ID, "afk"), (ctx, arg) ->
         //#endif
         {
             if (!ctx.hasPlayer() || ctx.player() == null)
@@ -50,20 +48,9 @@ public class DurationPlaceholder
             }
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
-            Component result;
-
-            if (ConfigWrap.place().afkDurationPretty)
-            {
-                result = afkPlayer.isAfk()
-                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationWords(Util.getMillis() - afkPlayer.getAfkTimeMs(), true, true) + "<r>")
-                         : TextUtils.formatTextSafe("");
-            }
-            else
-            {
-                result = afkPlayer.isAfk()
-                         ? TextUtils.formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationHMS(Util.getMillis() - afkPlayer.getAfkTimeMs()) + "<r>")
-                         : Component.empty();
-            }
+            Component result = afkPlayer.isAfk()
+                               ? Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlaceholder), ctx)
+                               : Component.empty();
 
             return PlaceholderResult.value(result);
         });
