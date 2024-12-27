@@ -87,6 +87,12 @@ public abstract class MixinServerPlayer extends Entity implements IPlayerInvoker
         }
     }
 
+    @Inject(method = "attack", at = @At("HEAD"))
+    private void afkplus$onPlayerAttack(Entity entity, CallbackInfo ci)
+    {
+        PlayerEventsHandler.getInstance().onPlayerAttack(this.player, entity);
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     private void afkplus$onPlayerTick(CallbackInfo ci)
     {

@@ -28,14 +28,11 @@ public class PacketOptions implements IConfigOption
     public int timeoutSeconds;
     public boolean resetOnMovement;
     public boolean resetOnLook;
-    public boolean disableDamage;
-    public int disableDamageCooldown;
+    public boolean ignoreAttacks;
     public boolean bypassSleepCount;
     public boolean bypassInsomnia;
-    public boolean afkKickEnabled;
-    public boolean afkKickNonSurvival;
-    public int afkKickTimer;
-    public int afkKickSafePermissions;
+    public String afkTimeoutString;
+    public String afkTimeoutIgnoreAttack;
 
     public PacketOptions()
     {
@@ -44,17 +41,14 @@ public class PacketOptions implements IConfigOption
 
     public void defaults()
     {
-        this.resetOnLook = false;
-        this.resetOnMovement = false;
         this.timeoutSeconds = 240;
-        this.disableDamage = false;
-        this.disableDamageCooldown = 15;
+        this.resetOnMovement = false;
+        this.resetOnLook = false;
+        this.ignoreAttacks = false;
         this.bypassSleepCount = true;
         this.bypassInsomnia = true;
-        this.afkKickEnabled = false;
-        this.afkKickNonSurvival = false;
-        this.afkKickTimer = 3000;
-        this.afkKickSafePermissions = 3;
+        this.afkTimeoutString = "<i><gray>timeout<r>";
+        this.afkTimeoutIgnoreAttack = "<i><gray>only swinging their sword<r>";
     }
 
     @Override
@@ -62,35 +56,31 @@ public class PacketOptions implements IConfigOption
     {
         PacketOptions opts = (PacketOptions) opt;
 
-        this.resetOnLook = opts.resetOnLook;
-        this.resetOnMovement = opts.resetOnMovement;
         this.timeoutSeconds = opts.timeoutSeconds;
-        this.disableDamage = opts.disableDamage;
-        this.disableDamageCooldown = opts.disableDamageCooldown;
+        this.resetOnMovement = opts.resetOnMovement;
+        this.resetOnLook = opts.resetOnLook;
+        this.ignoreAttacks = opts.ignoreAttacks;
         this.bypassSleepCount = opts.bypassSleepCount;
         this.bypassInsomnia = opts.bypassInsomnia;
-        this.afkKickEnabled = opts.afkKickEnabled;
-        this.afkKickNonSurvival = opts.afkKickNonSurvival;
-        this.afkKickTimer = opts.afkKickTimer;
-        this.afkKickSafePermissions = opts.afkKickSafePermissions;
+        this.afkTimeoutString = opts.afkTimeoutString;
+        this.afkTimeoutIgnoreAttack = opts.afkTimeoutIgnoreAttack;
 
         return this;
     }
 
     @SuppressWarnings("deprecation")
-    public PacketOptions fromToml(TomlConfigData.PacketOptions opts)
+    public PacketOptions fromToml(TomlConfigData.PacketOptions opts, PacketOptions opt)
     {
+        this.copy(opt);
+
         this.resetOnLook = opts.resetOnLook;
         this.resetOnMovement = opts.resetOnMovement;
+        this.ignoreAttacks = false;
         this.timeoutSeconds = opts.timeoutSeconds;
-        this.disableDamage = opts.disableDamage;
-        this.disableDamageCooldown = opts.disableDamageCooldown;
         this.bypassSleepCount = opts.bypassSleepCount;
         this.bypassInsomnia = opts.bypassInsomnia;
-        this.afkKickEnabled = opts.afkKickEnabled;
-        this.afkKickNonSurvival = opts.afkKickNonSurvival;
-        this.afkKickTimer = opts.afkKickTimer;
-        this.afkKickSafePermissions = opts.afkKickSafePermissions;
+        this.afkTimeoutString = "<i><gray>timeout<r>";
+        this.afkTimeoutIgnoreAttack = "<i><gray>only swinging their sword<r>";
 
         return this;
     }

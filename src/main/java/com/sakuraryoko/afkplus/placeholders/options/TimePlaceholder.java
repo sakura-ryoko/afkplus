@@ -48,8 +48,10 @@ public class TimePlaceholder
             }
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
+
             Component result = afkPlayer.isAfk()
-                               ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkTimePlaceholderFormatting + afkPlayer.getAfkTimeString() + "<r>")
+                               ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkTimePlaceholderFormatting
+                                                                                  + afkPlayer.getAfkTimeStringForPlaceholder() + "<r>")
                                : TextHandler.getInstance().formatTextSafe("");
 
             return PlaceholderResult.value(result);

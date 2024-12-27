@@ -23,9 +23,7 @@ package com.sakuraryoko.afkplus.player;
 import javax.annotation.Nonnull;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
@@ -38,31 +36,25 @@ public class AfkPlayerInfo
     public static String getString(@Nonnull AfkPlayer afkPlayer)
     {
         String AfkStatus;
-        long duration;
 
         if (afkPlayer.isAfk())
         {
-            duration = Util.getMillis() - afkPlayer.getAfkTimeMs();
             AfkStatus = "<bold><magenta>AFK Information:"
                     + "<r>\nPlayer: " + afkPlayer.getName()
                     + "<r>\nAfk Since: " + ConfigWrap.place().afkTimePlaceholderFormatting
-                    + afkPlayer.getAfkTimeString() + "<r> (Format:yyyy-MM-dd_HH.mm.ss)";
+                    + afkPlayer.getAfkTimeString() + "<r> (Format: "+afkPlayer.getAfkTimeFormat()+")";
 
-            if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
+            if (ConfigWrap.mess().displayDuration)
             {
                 AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
-                AfkStatus = AfkStatus + DurationFormatUtils.formatDurationWords(duration, true, true);
-            }
-            else if (ConfigWrap.mess().displayDuration)
-            {
-                AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
-                AfkStatus = AfkStatus + DurationFormatUtils.formatDurationHMS(duration) + "<r>ms (Format:HH:mm:ss)";
+                AfkStatus = AfkStatus + afkPlayer.getAfkDurationString() + "<r> (Format: "+afkPlayer.getAfkDurationFormat()+")";
             }
             else
             {
                 AfkStatus = AfkStatus + "<r>\nDuration: <copper>DISABLED";
                 AfkStatus = AfkStatus + "<r>";
             }
+
             if (afkPlayer.getPlayer().isCreative())
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <light_blue>CREATIVE";
@@ -79,6 +71,7 @@ public class AfkPlayerInfo
             {
                 AfkStatus = AfkStatus + "<r>\nDamage Status: <red>Disabled";
             }
+
             if (afkPlayer.isLockDamageEnabled())
             {
                 AfkStatus = AfkStatus + " <red>[RESTRICTED]";
@@ -118,8 +111,8 @@ public class AfkPlayerInfo
             else
             {
                 afkReason = Placeholders.parseText(
-                        TextHandler.getInstance().formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
-                        PlaceholderContext.of(src));
+                            TextHandler.getInstance().formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
+                            PlaceholderContext.of(src));
             }
 
             AfkPlus.debugLog("AkfStatus.getReason(): {}", afkReason.toString());

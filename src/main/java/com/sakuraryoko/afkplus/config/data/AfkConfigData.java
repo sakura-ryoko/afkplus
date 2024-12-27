@@ -39,6 +39,12 @@ public class AfkConfigData implements IConfigData
     @SerializedName("packet")
     public PacketOptions PACKET = new PacketOptions();
 
+    @SerializedName("disable_damage")
+    public DisableDamageOptions DAMAGE = new DisableDamageOptions();
+
+    @SerializedName("afk_kick")
+    public KickOptions KICK = new KickOptions();
+
     @SerializedName("player_list")
     public PlayerListOptions PLAYER_LIST = new PlayerListOptions();
 

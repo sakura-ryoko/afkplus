@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,14 +34,17 @@ import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.api.AfkPlusEvents;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.interfaces.IPlayerInvoker;
+import com.sakuraryoko.corelib.api.log.AnsiLogger;
 
 @ApiStatus.Internal
 public class AfkHandler
 {
+    private static final AnsiLogger LOGGER = new AnsiLogger(AfkHandler.class, true);
     private AfkPlayer player;
 
     public AfkHandler(@Nonnull AfkPlayer afkPlayer)
@@ -58,8 +60,8 @@ public class AfkHandler
             return;
         }
 
+        // This is measuring time, not Epoch time in ms.
         this.player.setAfkTimeMs(Util.getMillis());
-        this.player.setAfkTimeString(Util.getFilenameFormattedDateTime());
 
         if (reason == null && ConfigWrap.mess().defaultReason == null)
         {
@@ -77,7 +79,8 @@ public class AfkHandler
         else
         {
             this.player.setAfkReason(reason);
-            String mess1 = ConfigWrap.mess().whenAfk + "<yellow>,<r> " + reason;
+            String mess1 = ConfigWrap.mess().whenAfk
+                         + ConfigWrap.mess().whenAfkPunctuation + reason;
             Component mess2 = Placeholders.parseText(TextHandler.getInstance().formatTextSafe(mess1), PlaceholderContext.of(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
@@ -85,7 +88,7 @@ public class AfkHandler
         AfkPlusEvents.AFK_EVENT.invoker().onAfk(this.invoker().afkplus$player(),
                                                 Placeholders.parseText(TextHandler.getInstance().formatTextSafe(this.player.getAfkReason()), PlaceholderContext.of(this.player.getPlayer())));
 
-        if (ConfigWrap.pack().disableDamage && ConfigWrap.pack().disableDamageCooldown < 1)
+        if (ConfigWrap.dmg().disableDamage && ConfigWrap.dmg().disableDamageCooldown < 1)
         {
             this.disableDamage();
         }
@@ -100,7 +103,6 @@ public class AfkHandler
         AfkPlusEvents.AFK_RETURN_EVENT.invoker().onReturn(this.invoker().afkplus$player(), Util.getMillis() - this.player.getAfkTimeMs());
         this.player.setAfk(false);
         this.player.setAfkTimeMs(0L);
-        this.player.setAfkTimeString("");
         this.player.setAfkReason("");
     }
 
@@ -112,7 +114,6 @@ public class AfkHandler
             // Maybe it was called by PlayerManagerMixin?
             this.player.setAfk(false);
             this.player.setAfkTimeMs(0L);
-            this.player.setAfkTimeString("");
             this.player.setAfkReason("");
 
             return;
@@ -120,19 +121,12 @@ public class AfkHandler
 
         long duration = Util.getMillis() - (this.player.getAfkTimeMs());
 
-        if (ConfigWrap.mess().prettyDuration && ConfigWrap.mess().displayDuration)
+        if (ConfigWrap.mess().displayDuration)
         {
-            String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
-                    + DurationFormatUtils.formatDurationWords(duration, true, true) + "<gray>)<r>";
-
-            Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
-            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
-            this.sendAfkMessage(mess2);
-        }
-        else if (ConfigWrap.mess().displayDuration)
-        {
-            String ret = ConfigWrap.mess().whenReturn + " <gray>(Gone for: <green>"
-                    + DurationFormatUtils.formatDurationHMS(duration) + "<gray>)<r>";
+            String ret = ConfigWrap.mess().whenReturn
+                    + ConfigWrap.mess().whenReturnDurationPrefix
+                    + this.player.getAfkDurationString()
+                    + ConfigWrap.mess().whenReturnDurationSuffix+"<r>";
 
             Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
             Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
@@ -149,7 +143,6 @@ public class AfkHandler
         AfkPlusEvents.AFK_RETURN_EVENT.invoker().onReturn(this.invoker().afkplus$player(), duration);
         this.player.setAfk(false);
         this.player.setAfkTimeMs(0L);
-        this.player.setAfkTimeString("");
         this.player.setAfkReason("");
 
         if (!this.player.isDamageEnabled())
@@ -183,9 +176,9 @@ public class AfkHandler
             }
 
             // Send announcement
-            if (!ConfigWrap.mess().whenDamageEnabled.isEmpty())
+            if (!ConfigWrap.dmg().whenDamageEnabled.isEmpty())
             {
-                Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenDamageEnabled);
+                Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.dmg().whenDamageEnabled);
                 Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                 this.sendAfkMessage(mess2);
             }
@@ -201,7 +194,7 @@ public class AfkHandler
     {
         AfkPlus.debugLog("disableDamage() has been invoked for: {}", this.player.getName());
 
-        if (this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator() || !ConfigWrap.pack().disableDamage)
+        if (this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator() || !ConfigWrap.dmg().disableDamage)
         {
             return;
         }
@@ -225,9 +218,9 @@ public class AfkHandler
                 }
 
                 // Send announcement
-                if (!ConfigWrap.mess().whenDamageDisabled.isEmpty())
+                if (!ConfigWrap.dmg().whenDamageDisabled.isEmpty())
                 {
-                    Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenDamageDisabled);
+                    Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.dmg().whenDamageDisabled);
                     Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
                     this.sendAfkMessage(mess2);
                 }
@@ -260,121 +253,102 @@ public class AfkHandler
     @ApiStatus.Internal
     public void afkKick()
     {
-        if (this.player.isAfk() && ConfigWrap.pack().afkKickEnabled)
+        if (this.player.isAfk() && ConfigWrap.kick().afkKickEnabled)
         {
-            if ((this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator()) && !ConfigWrap.pack().afkKickNonSurvival)
+            if (((this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator()) && !ConfigWrap.kick().afkKickNonSurvival) ||
+               (Permissions.check(this.player.getPlayer(), Reference.MOD_ID + ".kick.safe", ConfigWrap.kick().afkKickSafePermissions)) ||
+               (Permissions.check(this.player.getPlayer(), Reference.MOD_ID + ".afkplus", ConfigWrap.afk().afkPlusCommandPermissions)))
             {
                 return;
             }
-            else if (Permissions.check(this.player.getPlayer(), "afkplus.kick.safe", ConfigWrap.pack().afkKickSafePermissions))
+
+            String kickReasonString;
+            String kickMessageString;
+            Component kickReason;
+            Component kickMessage;
+
+            if (ConfigWrap.kick().whenKicked.isEmpty())
             {
-                return;
-            }
-            else if (Permissions.check(this.player.getPlayer(), "afkplus.afkplus", ConfigWrap.afk().afkPlusCommandPermissions))
-            {
-                return;
+                kickMessageString = "";
             }
             else
             {
-                String kickReasonString;
-                String kickMessageString;
-                Component kickReason;
-                Component kickMessage;
+                kickMessageString = ConfigWrap.kick().whenKicked;
+            }
 
-                if (ConfigWrap.mess().whenKicked.isEmpty())
+            AfkPlus.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getAfkTimeString());
+
+            if (!ConfigWrap.kick().afkKickMessage.isEmpty())
+            {
+                if (ConfigWrap.mess().displayDuration)
                 {
-                    kickMessageString = "";
-                }
-                else
-                {
-                    kickMessageString = ConfigWrap.mess().whenKicked;
-                }
+                    long afkDuration = Util.getMillis() - (this.player.getPlayer().getLastActionTime());
+                    String durationString = this.player.getDurationType().getFormat(afkDuration, ConfigWrap.mess().duration.customFormat);
 
-                AfkPlus.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getAfkTimeString());
-
-                if (!ConfigWrap.mess().afkKickMessage.isEmpty())
-                {
-                    if (ConfigWrap.mess().displayDuration)
-                    {
-                        long afkDuration = Util.getMillis() - (this.player.getPlayer().getLastActionTime());
-
-                        if (ConfigWrap.mess().prettyDuration)
-                        {
-                            kickReasonString = ConfigWrap.mess().afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
-                                    + DurationFormatUtils.formatDurationWords(afkDuration, true, true) + "<gray>)<r>";
-
-                            if (!kickMessageString.isEmpty())
-                            {
-                                kickMessageString = kickMessageString + " <gray>(Gone for: <green>"
-                                        + DurationFormatUtils.formatDurationWords(afkDuration, true, true) + "<gray>)<r>";
-                            }
-                        }
-                        else
-                        {
-                            kickReasonString = ConfigWrap.mess().afkKickMessage + "\n <gray>(%player:displayname% was gone for: <green>"
-                                    + DurationFormatUtils.formatDurationHMS(afkDuration) + "<gray>)<r>";
-
-                            if (!kickMessageString.isEmpty())
-                            {
-                                kickMessageString = kickMessageString + " <gray>(Gone for: <green>"
-                                        + DurationFormatUtils.formatDurationHMS(afkDuration) + "<gray>)<r>";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        kickReasonString = ConfigWrap.mess().afkKickMessage;
-                    }
-
-                    kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
-
-                    this.player.setAfk(false);
-                    this.player.setAfkTimeMs(0L);
-                    this.player.setAfkTimeString("");
-                    this.player.setAfkReason("");
-
-                    if (!this.player.isDamageEnabled())
-                    {
-                        this.enableDamage();
-                    }
-
-                    this.invoker().afkplus$connection().disconnect(kickReason);
+                    kickReasonString = ConfigWrap.kick().afkKickMessage
+                            + "\n" + ConfigWrap.kick().whenKickedDurationNamedPrefix
+                            + durationString
+                            + ConfigWrap.kick().whenKickedDurationSuffix +"<r>";
 
                     if (!kickMessageString.isEmpty())
                     {
-                        kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
-                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
-
-                        this.sendAfkMessage(kickMessage);
+                        kickMessageString = kickMessageString
+                                + ConfigWrap.kick().whenKickedDurationDefaultPrefix
+                                + durationString
+                                + ConfigWrap.kick().whenKickedDurationSuffix +"<r>";
                     }
                 }
                 else
                 {
-                    kickReasonString = "<copper>AFK timeout<r>";
+                    kickReasonString = ConfigWrap.kick().afkKickMessage;
+                }
 
-                    kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
-                    kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
+                kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
+                kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
 
-                    this.player.setAfk(false);
-                    this.player.setAfkTimeMs(0L);
-                    this.player.setAfkTimeString("");
-                    this.player.setAfkReason("");
+                this.player.setAfk(false);
+                this.player.setAfkTimeMs(0L);
+                this.player.setAfkReason("");
 
-                    if (!this.player.isDamageEnabled())
-                    {
-                        this.enableDamage();
-                    }
+                if (!this.player.isDamageEnabled())
+                {
+                    this.enableDamage();
+                }
 
-                    this.invoker().afkplus$connection().disconnect(kickReason);
+                this.invoker().afkplus$connection().disconnect(kickReason);
 
-                    if (!kickMessageString.isEmpty())
-                    {
-                        kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
-                        kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
+                if (!kickMessageString.isEmpty())
+                {
+                    kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
+                    kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
 
-                        this.sendAfkMessage(kickMessage);
-                    }
+                    this.sendAfkMessage(kickMessage);
+                }
+            }
+            else
+            {
+                kickReasonString = ConfigWrap.kick().whenKickedDefaultReason+"<r>";
+
+                kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
+                kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
+
+                this.player.setAfk(false);
+                this.player.setAfkTimeMs(0L);
+                this.player.setAfkReason("");
+
+                if (!this.player.isDamageEnabled())
+                {
+                    this.enableDamage();
+                }
+
+                this.invoker().afkplus$connection().disconnect(kickReason);
+
+                if (!kickMessageString.isEmpty())
+                {
+                    kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
+                    kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
+
+                    this.sendAfkMessage(kickMessage);
                 }
             }
         }

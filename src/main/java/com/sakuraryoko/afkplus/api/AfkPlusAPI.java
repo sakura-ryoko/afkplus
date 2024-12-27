@@ -60,6 +60,12 @@ public interface AfkPlusAPI
         return afkplayer != null ? afkplayer.getAfkTimeMs() : 0L;
     }
 
+    static String getAfkDurationString(@Nonnull ServerPlayer player)
+    {
+        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkplayer != null ? afkplayer.getAfkDurationString() : "";
+    }
+
     static String getAfkTimeString(@Nonnull ServerPlayer player)
     {
         AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);

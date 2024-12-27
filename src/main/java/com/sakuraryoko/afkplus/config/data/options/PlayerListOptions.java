@@ -54,8 +54,10 @@ public class PlayerListOptions implements IConfigOption
     }
 
     @SuppressWarnings("deprecation")
-    public PlayerListOptions fromToml(TomlConfigData.PlayerListOptions opts)
+    public PlayerListOptions fromToml(TomlConfigData.PlayerListOptions opts, PlayerListOptions opt)
     {
+        this.copy(opt);
+
         this.afkPlayerName = opts.afkPlayerName;
         this.enableListDisplay = opts.enableListDisplay;
         this.updateInterval = opts.updateInterval;

@@ -43,11 +43,9 @@ import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerInfo;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
-//import com.sakuraryoko.afkplus.text.FormattingExample;
 import com.sakuraryoko.corelib.api.commands.IServerCommand;
 import com.sakuraryoko.corelib.api.modinit.ModInitData;
 import com.sakuraryoko.corelib.impl.config.ConfigManager;
-import com.sakuraryoko.morecolors.impl.modinit.MoreColorInit;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -61,6 +59,12 @@ public class AfkPlusCommand implements IServerCommand
                 literal(this.getName())
                         .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkPlusCommandPermissions))
                         .executes(ctx -> this.about(ctx.getSource(), ctx))
+                        /*
+                        .then(literal("test")
+                                      .requires(Permissions.require(this.getNode()+".test", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .executes(ctx -> this.test(ctx.getSource(), ctx))
+                        )
+                         */
                         .then(literal("reload")
                                       .requires(Permissions.require(this.getNode()+".reload", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .executes(ctx -> this.reload(ctx.getSource(), ctx))
@@ -71,7 +75,7 @@ public class AfkPlusCommand implements IServerCommand
                         )
                         .then(literal("defaults")
                                       .requires(Permissions.require(this.getNode()+".defaults", 4))
-                                      .executes(ctx -> this.reload(ctx.getSource(), ctx))
+                                      .executes(ctx -> this.defaults(ctx.getSource(), ctx))
                         )
                         .then(literal("set")
                                       .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
@@ -151,6 +155,24 @@ public class AfkPlusCommand implements IServerCommand
         AfkPlus.debugLog("{} has executed /afkplus .", user);
         return 1;
     }
+
+    /*
+    private int test(CommandSourceStack src, CommandContext<CommandSourceStack> context)
+    {
+        String user = src.getTextName();
+
+        //#if MC >= 12001
+        //$$ context.getSource().sendSuccess(() -> CoreLibAPI.getTimeDurationTest(true), false);
+        //$$ context.getSource().sendSuccess(() -> CoreLibAPI.getTimeDateTest(true), false);
+        //#else
+        context.getSource().sendSuccess(CoreLibAPI.getTimeDurationTest(true), false);
+        context.getSource().sendSuccess(CoreLibAPI.getTimeDateTest(true), false);
+        //#endif
+
+        AfkPlus.debugLog("{} has executed /afkplus test .", user);
+        return 1;
+    }
+     */
 
     private int reload(CommandSourceStack src, CommandContext<CommandSourceStack> context)
     {

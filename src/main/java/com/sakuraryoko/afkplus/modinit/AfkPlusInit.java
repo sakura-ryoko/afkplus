@@ -26,6 +26,7 @@ import com.sakuraryoko.afkplus.commands.CommandRegister;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishEventsCompat;
 import com.sakuraryoko.afkplus.config.AfkConfigHandler;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 import com.sakuraryoko.afkplus.events.ServerEventsHandler;
 import com.sakuraryoko.afkplus.placeholders.PlaceholderManager;
@@ -71,7 +72,7 @@ public class AfkPlusInit implements IModInitDispatcher
     @Override
     public boolean isDebug()
     {
-        return Reference.DEBUG;
+        return Reference.DEBUG || ConfigWrap.afk().debugMode;
     }
 
     @Override

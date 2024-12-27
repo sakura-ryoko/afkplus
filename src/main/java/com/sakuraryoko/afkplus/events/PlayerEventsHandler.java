@@ -33,11 +33,10 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.GameType;
-import net.fabricmc.api.EnvType;
 
 import com.sakuraryoko.afkplus.AfkPlus;
-import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
@@ -45,18 +44,17 @@ import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.corelib.api.events.IPlayerEventsDispatch;
+import com.sakuraryoko.corelib.api.log.AnsiLogger;
 
 @ApiStatus.Internal
 public class PlayerEventsHandler implements IPlayerEventsDispatch
 {
+    private static final AnsiLogger LOGGER = new AnsiLogger(PlayerEventsHandler.class, true);
     private static final PlayerEventsHandler INSTANCE = new PlayerEventsHandler();
     public static PlayerEventsHandler getInstance() { return INSTANCE; }
 
     @ApiStatus.Internal
-    public PlayerEventsHandler()
-    {
-        // NO-OP
-    }
+    public PlayerEventsHandler() { }
     
     // Player List Events
     @Override
@@ -207,15 +205,15 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
         if (afkPlayer.isAfk() || timeoutSeconds <= 0)
         {
-            if (ConfigWrap.pack().afkKickEnabled && ConfigWrap.pack().afkKickTimer > -1
+            if (ConfigWrap.kick().afkKickEnabled && ConfigWrap.kick().afkKickTimer > -1
                 && AfkPlusInit.getInstance().isServer())
             {
-                if ((afkPlayer.getPlayer().isCreative() || afkPlayer.getPlayer().isSpectator()) && !ConfigWrap.pack().afkKickNonSurvival)
+                if ((afkPlayer.getPlayer().isCreative() || afkPlayer.getPlayer().isSpectator()) && !ConfigWrap.kick().afkKickNonSurvival)
                 {
                     return;
                 }
 
-                int kickTimeout = ConfigWrap.pack().afkKickTimer + ConfigWrap.pack().timeoutSeconds;
+                int kickTimeout = ConfigWrap.kick().afkKickTimer + ConfigWrap.pack().timeoutSeconds;
 
                 if (afkDuration > (kickTimeout * 1000L))
                 {
@@ -229,18 +227,33 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         {
             if (afkDuration > (timeoutSeconds * 1000L))
             {
-                if (ConfigWrap.afk().afkTimeoutString.isEmpty())
+                if (ConfigWrap.pack().afkTimeoutString.isEmpty())
                 {
                     afkPlayer.getHandler().registerAfk("");
                 }
                 else
                 {
-                    afkPlayer.getHandler().registerAfk(ConfigWrap.afk().afkTimeoutString);
+                    afkPlayer.getHandler().registerAfk(ConfigWrap.pack().afkTimeoutString);
                 }
 
                 AfkPlus.debugLog("onTickPacket(): Setting player {} as AFK (timeout)", afkPlayer.getName());
             }
+            else if (afkPlayer.shouldIgnoreAttacks())
+            {
+                if (ConfigWrap.pack().afkTimeoutString.isEmpty())
+                {
+                    afkPlayer.getHandler().registerAfk("");
+                }
+                else
+                {
+                    afkPlayer.getHandler().registerAfk(ConfigWrap.pack().afkTimeoutIgnoreAttack);
+                }
+
+                AfkPlus.debugLog("onTickPacket(): Setting player {} as AFK (movement/looking timeout; but they are still attacking)", afkPlayer.getName());
+            }
         }
+
+        afkPlayer.getHandler().tickPlayer(player);
         // updateAfkStatus
     }
 
@@ -265,7 +278,10 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             }
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+            //afkPlayer.getHandler().tickPlayer(player);
 
+            // todo check if required
+            /*
             if (afkPlayer.isAfk() && ConfigWrap.list().updateInterval > 0)
             {
                 if (afkPlayer.getLastPlayerTick() <= 0)
@@ -282,6 +298,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
                     }
                 }
             }
+             */
 
             if (player.isCreative() || player.isSpectator())
             {
@@ -296,12 +313,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
                     AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} because they are [LOCKED]. step 1.", afkPlayer.getName());
                 }
             }
-            else if (afkPlayer.isAfk() && ConfigWrap.pack().disableDamage)
+            else if (afkPlayer.isAfk() && ConfigWrap.dmg().disableDamage)
             {
                 if (afkPlayer.isDamageEnabled())
                 {
                     // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
-                    int cooldownSeconds = ConfigWrap.pack().disableDamageCooldown;
+                    int cooldownSeconds = ConfigWrap.dmg().disableDamageCooldown;
 
                     if (cooldownSeconds > 0)
                     {
@@ -331,8 +348,6 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
                     AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} step 5.", afkPlayer.getName());
                 }
             }
-
-            afkPlayer.getHandler().tickPlayer(player);
         }
         catch (Exception e)
         {
@@ -353,14 +368,21 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return;
         }
 
-        if (ConfigWrap.pack().resetOnLook && packet.hasRotation())
+        if (packet.hasRotation())
         {
             player.getEyeY();
             float yaw = player.getYRot();
             float pitch = player.getXRot();
+
             if (pitch != packet.getXRot(pitch) || yaw != packet.getYRot(yaw))
             {
-                player.resetLastActionTime();
+                AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+                afkPlayer.setLastLookTime(Util.getMillis());
+
+                if (ConfigWrap.pack().resetOnLook)
+                {
+                    player.resetLastActionTime();
+                }
             }
         }
         // checkPlayerLook
@@ -390,7 +412,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
                 if (mode == GameType.SURVIVAL)
                 {
-                    if (ConfigWrap.pack().disableDamage)
+                    if (ConfigWrap.dmg().disableDamage)
                     {
                         if (player.isInvulnerable())
                         {
@@ -406,6 +428,20 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     }
 
     @ApiStatus.Internal
+    public void onPlayerAttack(@Nonnull ServerPlayer player, Entity entity)
+    {
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            return;
+        }
+
+        LOGGER.debug("onPlayerAttack(): player [{}/{}] --> Entity [{}]", player.getId(), player.getName().getString(), entity.getId());
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        afkPlayer.setLastAttackTime(Util.getMillis());
+    }
+
+    @ApiStatus.Internal
     public void onResetLastAction(@Nonnull ServerPlayer player)
     {
         // onActionTimeUpdate
@@ -414,9 +450,11 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return;
         }
 
+        //LOGGER.debug("onResetLastAction(): player [{}/{}]", player.getId(), player.getName().getString());
+
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
-        if (afkPlayer.isAfk())
+        if (afkPlayer.isAfk() && !afkPlayer.shouldIgnoreAttacks())
         {
             AfkPlus.debugLog("onResetLastAction(): Player [{}] // Reset Last Action (Remove AFK)", afkPlayer.getName());
             afkPlayer.getHandler().unregisterAfk();
@@ -436,9 +474,15 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
             //AfkPlusMod.debugLog("onSetPos(): Player [{}] // setPos[{}]", player.getName().getString(), new Vector3d(x, y, z));
 
-            if (ConfigWrap.pack().resetOnMovement && (player.getX() != x || player.getY() != y || player.getZ() != z))
+            if ((player.getX() != x || player.getY() != y || player.getZ() != z))
             {
-                player.resetLastActionTime();
+                AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+                afkPlayer.setLastMovementTime(Util.getMillis());
+
+                if (ConfigWrap.pack().resetOnMovement)
+                {
+                    player.resetLastActionTime();
+                }
             }
         }
     }

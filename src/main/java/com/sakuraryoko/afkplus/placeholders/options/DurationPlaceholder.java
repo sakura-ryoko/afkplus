@@ -22,9 +22,7 @@ package com.sakuraryoko.afkplus.placeholders.options;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import org.apache.commons.lang3.time.DurationFormatUtils;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -50,20 +48,11 @@ public class DurationPlaceholder
             }
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
-            Component result;
 
-            if (ConfigWrap.place().afkDurationPretty)
-            {
-                result = afkPlayer.isAfk()
-                         ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationWords(Util.getMillis() - afkPlayer.getAfkTimeMs(), true, true) + "<r>")
-                         : TextHandler.getInstance().formatTextSafe("");
-            }
-            else
-            {
-                result = afkPlayer.isAfk()
-                         ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting + DurationFormatUtils.formatDurationHMS(Util.getMillis() - afkPlayer.getAfkTimeMs()) + "<r>")
-                         : Component.empty();
-            }
+            Component result = afkPlayer.isAfk()
+                               ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkDurationPlaceholderFormatting
+                                                                                  + afkPlayer.getAfkDurationStringForPlaceholder() + "<r>")
+                               : TextHandler.getInstance().formatTextSafe("");
 
             return PlaceholderResult.value(result);
         });

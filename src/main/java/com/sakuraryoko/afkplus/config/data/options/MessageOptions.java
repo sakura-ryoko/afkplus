@@ -22,19 +22,22 @@ package com.sakuraryoko.afkplus.config.data.options;
 
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
+import com.sakuraryoko.corelib.api.time.DurationFormat;
+import com.sakuraryoko.corelib.api.time.DurationOption;
+import com.sakuraryoko.corelib.api.time.TimeDateOption;
 
 public class MessageOptions implements IConfigOption
 {
     public boolean enableMessages;
     public String whenAfk;
+    public String whenAfkPunctuation;
     public String whenReturn;
-    public boolean prettyDuration;
+    public String whenReturnDurationPrefix;
+    public String whenReturnDurationSuffix;
     public String defaultReason;
-    public String whenDamageDisabled;
-    public String whenDamageEnabled;
     public boolean displayDuration;
-    public String afkKickMessage;
-    public String whenKicked;
+    public DurationOption duration;
+    public TimeDateOption timeDate;
 
     public MessageOptions()
     {
@@ -45,14 +48,15 @@ public class MessageOptions implements IConfigOption
     {
         this.enableMessages = true;
         this.whenAfk = "%player:displayname% <yellow>is now AFK<r>";
+        this.whenAfkPunctuation = "<yellow>,<r> ";
         this.whenReturn = "%player:displayname% <yellow>is no longer AFK<r>";
-        this.prettyDuration = true;
+        this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
+        this.whenReturnDurationSuffix = "<gray>)";
         this.defaultReason = "<gray>poof!<r>";
-        this.whenDamageDisabled = "%player:displayname% <yellow>is marked as <red>Invulnerable.<r>";
-        this.whenDamageEnabled = "%player:displayname% <yellow>is no longer <red>Invulnerable.<r>";
         this.displayDuration = true;
-        this.afkKickMessage = "<copper>AFK beyond the allowed time limit set by your Administrator.<r>";
-        this.whenKicked = "%player:displayname% <copper>was kicked for being AFK.<r>";
+        this.duration = new DurationOption();
+        this.duration.option = DurationFormat.PRETTY;
+        this.timeDate = new TimeDateOption();
     }
 
     @Override
@@ -62,31 +66,38 @@ public class MessageOptions implements IConfigOption
 
         this.enableMessages = opts.enableMessages;
         this.whenAfk = opts.whenAfk;
+        this.whenAfkPunctuation = !opts.whenAfkPunctuation.isEmpty() ? opts.whenAfkPunctuation : "<yellow>,<r> ";
         this.whenReturn = opts.whenReturn;
-        this.prettyDuration = opts.prettyDuration;
+        this.whenReturnDurationPrefix = !opts.whenReturnDurationPrefix.isEmpty() ? opts.whenReturnDurationPrefix : " <gray>(Gone for: <green>";
+        this.whenReturnDurationSuffix = !opts.whenReturnDurationSuffix.isEmpty() ? opts.whenReturnDurationSuffix : "<gray>)";
         this.defaultReason = opts.defaultReason;
-        this.whenDamageDisabled = opts.whenDamageDisabled;
-        this.whenDamageEnabled = opts.whenDamageEnabled;
         this.displayDuration = opts.displayDuration;
-        this.afkKickMessage = opts.afkKickMessage;
-        this.whenKicked = opts.whenKicked;
+        this.duration.copy(opts.duration);
+        this.timeDate.copy(opts.timeDate);
 
         return this;
     }
 
     @SuppressWarnings("deprecation")
-    public MessageOptions fromToml(TomlConfigData.MessageOptions opts)
+    public MessageOptions fromToml(TomlConfigData.MessageOptions opts, MessageOptions opt)
     {
+        this.copy(opt);
+
         this.enableMessages = opts.enableMessages;
         this.whenAfk = opts.whenAfk;
+        this.whenAfkPunctuation = "<yellow>,<r> ";
         this.whenReturn = opts.whenReturn;
-        this.prettyDuration = opts.prettyDuration;
+        this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
+        this.whenReturnDurationSuffix = "<gray>)";
         this.defaultReason = opts.defaultReason;
-        this.whenDamageDisabled = opts.whenDamageDisabled;
-        this.whenDamageEnabled = opts.whenDamageEnabled;
         this.displayDuration = opts.displayDuration;
-        this.afkKickMessage = opts.afkKickMessage;
-        this.whenKicked = opts.whenKicked;
+        this.duration = new DurationOption();
+        this.timeDate = new TimeDateOption();
+
+        if (opts.prettyDuration)
+        {
+            this.duration.option = DurationFormat.PRETTY;
+        }
 
         return this;
     }

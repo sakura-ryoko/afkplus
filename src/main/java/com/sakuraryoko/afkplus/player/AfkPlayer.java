@@ -20,12 +20,20 @@
 
 package com.sakuraryoko.afkplus.player;
 
+import java.time.ZonedDateTime;
 import javax.annotation.Nonnull;
 
+import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
+
+import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.corelib.api.log.AnsiLogger;
+import com.sakuraryoko.corelib.api.time.DurationFormat;
+import com.sakuraryoko.corelib.api.time.TimeFormat;
 
 public class AfkPlayer
 {
+    private static final AnsiLogger LOGGER = new AnsiLogger(AfkPlayer.class, true);
     private ServerPlayer player;
     private AfkHandler handler;
     private int entityId;
@@ -35,7 +43,10 @@ public class AfkPlayer
     private boolean noAfkEnabled;
     private long lastPlayerTick;
     private long afkTimeMs;
-    private String afkTimeString;
+    private long afkTimeEpoch;
+    private long lastMovementTime;
+    private long lastLookTime;
+    private long lastAttackTime;
     private String afkReason;
 
     private AfkPlayer(@Nonnull ServerPlayer player)
@@ -47,8 +58,11 @@ public class AfkPlayer
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;
         this.afkTimeMs = 0;
-        this.lastPlayerTick = 0;
-        this.afkTimeString = "";
+        this.afkTimeEpoch = 0;
+        this.lastPlayerTick = Util.getMillis();
+        this.lastMovementTime = Util.getMillis();
+        this.lastLookTime = Util.getMillis();
+        this.lastAttackTime = Util.getMillis();
         this.afkReason = "";
         this.handler = new AfkHandler(this);
     }
@@ -113,9 +127,131 @@ public class AfkPlayer
         return this.afkTimeMs;
     }
 
+    public long getAfkTimeEpoch()
+    {
+        return this.afkTimeEpoch;
+    }
+
+    public long getLastMovementTime()
+    {
+        return lastMovementTime;
+    }
+
+    public void setLastMovementTime(long lastMovementTime)
+    {
+        this.lastMovementTime = lastMovementTime;
+    }
+
+    public long getLastLookTime()
+    {
+        return lastLookTime;
+    }
+
+    public void setLastLookTime(long lastLookTime)
+    {
+        this.lastLookTime = lastLookTime;
+    }
+
+    public long getLastAttackTime()
+    {
+        return lastAttackTime;
+    }
+
+    public void setLastAttackTime(long lastAttackTime)
+    {
+        this.lastAttackTime = lastAttackTime;
+    }
+
+    public DurationFormat getDurationType()
+    {
+        DurationFormat format = DurationFormat.fromName(ConfigWrap.mess().duration.option.getName());
+
+        if (format != null)
+        {
+            return format;
+        }
+
+        ConfigWrap.mess().duration.option = DurationFormat.PRETTY;
+        return DurationFormat.REGULAR;
+    }
+
+    public TimeFormat getTimeDateType()
+    {
+        TimeFormat format = TimeFormat.fromName(ConfigWrap.mess().timeDate.option.getName());
+
+        if (format != null)
+        {
+            return format;
+        }
+
+        ConfigWrap.mess().timeDate.option = TimeFormat.REGULAR;
+        return TimeFormat.REGULAR;
+    }
+
+    public DurationFormat getDurationTypeForPlaceholder()
+    {
+        DurationFormat format = DurationFormat.fromName(ConfigWrap.place().duration.option.getName());
+
+        if (format != null)
+        {
+            return format;
+        }
+
+        ConfigWrap.place().duration.option = DurationFormat.REGULAR;
+        return DurationFormat.REGULAR;
+    }
+
+    public TimeFormat getTimeDateTypeForPlaceholder()
+    {
+        TimeFormat format = TimeFormat.fromName(ConfigWrap.place().timeDate.option.getName());
+
+        if (format != null)
+        {
+            return format;
+        }
+
+        ConfigWrap.place().timeDate.option = TimeFormat.REGULAR;
+        return TimeFormat.REGULAR;
+    }
+
+    public String getAfkDurationString()
+    {
+        return this.getDurationType().getFormat((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.mess().duration.customFormat);
+    }
+
     public String getAfkTimeString()
     {
-        return this.afkTimeString;
+        return this.getTimeDateType().formatTo(this.getAfkTimeEpoch(), ConfigWrap.mess().timeDate.customFormat);
+    }
+
+    public String getAfkDurationStringForPlaceholder()
+    {
+        return this.getDurationTypeForPlaceholder().getFormat((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.place().duration.customFormat);
+    }
+
+    public String getAfkTimeStringForPlaceholder()
+    {
+        return this.getTimeDateTypeForPlaceholder().formatTo(this.getAfkTimeEpoch(), ConfigWrap.place().timeDate.customFormat);
+    }
+
+    public String getAfkDurationFormat()
+    {
+        return this.getDurationType().getFormatString();
+    }
+
+    public String getAfkTimeFormat()
+    {
+        return this.getTimeDateType().getFormatString();
+    }
+
+    public String getAfkDurationFormatForPlaceholder()
+    {
+        return this.getDurationTypeForPlaceholder().getFormatString();
+    }
+
+    public String getAfkTimeFormatForPlaceholder()
+    {
+        return this.getTimeDateTypeForPlaceholder().getFormatString();
     }
 
     public String getAfkReason()
@@ -143,11 +279,6 @@ public class AfkPlayer
         this.noAfkEnabled = toggle;
     }
 
-    public void setAfkTimeString(String timeString)
-    {
-        this.afkTimeString = timeString;
-    }
-
     public void setAfkReason(String reason)
     {
         this.afkReason = reason;
@@ -156,10 +287,85 @@ public class AfkPlayer
     public void setAfkTimeMs(long time)
     {
         this.afkTimeMs = time;
+        this.afkTimeEpoch = time > 0L ? ZonedDateTime.now().toInstant().toEpochMilli() : 0L;
+    }
+
+    // todo perhaps move things here in the future?
+    public boolean shouldBeAfk()
+    {
+        long now = Util.getMillis();
+        long lastMovement = now - this.getLastMovementTime();
+        long lastLook = now - this.getLastLookTime();
+        long lastAttack = now - this.getLastAttackTime();
+        long lastTick = now - this.lastPlayerTick;
+        long lastAction = now - this.player.getLastActionTime();
+        long limit = ConfigWrap.pack().timeoutSeconds * 1000L;
+        int weight = 0;
+
+        if (lastMovement > limit)
+        {
+            ++weight;
+        }
+        if (lastLook > limit)
+        {
+            ++weight;
+        }
+        if (lastAttack > limit)
+        {
+            ++weight;
+        }
+        if (lastAction > limit)
+        {
+            ++weight;
+        }
+        /*
+        if (lastTick > limit)
+        {
+            ++weight;
+        }
+         */
+
+        if (weight > 1)
+        {
+            LOGGER.debug("shouldBeAfk(): m: {}, l: {}, A: {}, lA: {}, T: {} [timeout: {} (s) // weight {}]",
+                         lastMovement, lastLook, lastAttack, lastAction, lastTick, ConfigWrap.pack().timeoutSeconds, weight);
+        }
+
+        return weight > 2;
+    }
+
+    public boolean shouldIgnoreAttacks()
+    {
+        long now = Util.getMillis();
+        long lastMovement = now - this.getLastMovementTime();
+        long lastLook = now - this.getLastLookTime();
+        long lastAttack = now - this.getLastAttackTime();
+        //long lastTick = now - this.lastPlayerTick;
+        //long lastAction = now - this.player.getLastActionTime();
+        long limit = ConfigWrap.pack().timeoutSeconds * 1000L;
+
+        /*
+        LOGGER.debug("shouldIgnoreAttacks(): m: {}, l: {}, A: {}, lA: {}, T: {} [timeout: {} (s)]",
+                     lastMovement, lastLook, lastAttack, lastAction, lastTick, ConfigWrap.pack().timeoutSeconds);
+         */
+
+        if (ConfigWrap.pack().ignoreAttacks)
+        {
+            return lastMovement > limit && lastLook > limit && lastAttack < limit;
+        }
+
+        return false;
     }
 
     public void tickPlayer(long time)
     {
+        /*
+        if (this.shouldBeAfk())
+        {
+            LOGGER.info("tickPlayer(): should be AFK [TRUE]");
+        }
+         */
+
         this.lastPlayerTick = time;
     }
 
@@ -178,7 +384,6 @@ public class AfkPlayer
     public void clearAfkValues()
     {
         this.afkTimeMs = 0;
-        this.afkTimeString = "";
         this.afkReason = "";
     }
 
@@ -190,6 +395,9 @@ public class AfkPlayer
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;
         this.lastPlayerTick = 0;
+        this.lastMovementTime = 0;
+        this.lastLookTime = 0;
+        this.lastAttackTime = 0;
         this.clearAfkValues();
     }
 }

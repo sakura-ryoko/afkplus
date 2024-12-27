@@ -39,6 +39,16 @@ public class ConfigWrap
         return AfkConfigHandler.getInstance().getPacketOptions();
     }
 
+    public static DisableDamageOptions dmg()
+    {
+        return AfkConfigHandler.getInstance().getDisableDamageOptions();
+    }
+
+    public static KickOptions kick()
+    {
+        return AfkConfigHandler.getInstance().getKickOptions();
+    }
+
     public static PlaceholderOptions place()
     {
         return AfkConfigHandler.getInstance().getPlaceholderOptions();

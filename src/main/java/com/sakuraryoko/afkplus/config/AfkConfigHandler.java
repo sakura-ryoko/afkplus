@@ -22,9 +22,6 @@ package com.sakuraryoko.afkplus.config;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.Reference;
@@ -33,13 +30,14 @@ import com.sakuraryoko.afkplus.config.data.options.*;
 import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.corelib.api.config.IConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigDispatch;
+import com.sakuraryoko.corelib.api.time.TimeFormat;
 import com.sakuraryoko.corelib.impl.config.ConfigManager;
 
 public class AfkConfigHandler implements IConfigDispatch
 {
     private static final AfkConfigHandler INSTANCE = new AfkConfigHandler();
     public static AfkConfigHandler getInstance() { return INSTANCE; }
-    private final AfkConfigData CONFIG = newConfig();
+    private AfkConfigData CONFIG = newConfig();
     private final String CONFIG_ROOT = ".";
     private final String CONFIG_NAME = Reference.MOD_ID;
     private boolean loaded = false;
@@ -89,6 +87,16 @@ public class AfkConfigHandler implements IConfigDispatch
         return CONFIG.PACKET;
     }
 
+    public DisableDamageOptions getDisableDamageOptions()
+    {
+        return CONFIG.DAMAGE;
+    }
+
+    public KickOptions getKickOptions()
+    {
+        return CONFIG.KICK;
+    }
+
     public PlaceholderOptions getPlaceholderOptions()
     {
         return CONFIG.PLACEHOLDER;
@@ -124,18 +132,22 @@ public class AfkConfigHandler implements IConfigDispatch
             if (Files.exists(tomlFile))
             {
                 AfkPlus.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", tomlFile.getFileName().toString());
-                this.defaults();
+                CONFIG = this.defaults();
 
                 // Load TOML Config (Without saving it)
                 TomlConfigManager.initConfig();
                 TomlConfigManager.loadConfig();
 
                 // Copy
-                ConfigWrap.afk().fromToml(TomlConfigManager.CONFIG.afkPlusOptions);
-                ConfigWrap.mess().fromToml(TomlConfigManager.CONFIG.messageOptions);
-                ConfigWrap.pack().fromToml(TomlConfigManager.CONFIG.packetOptions);
-                ConfigWrap.place().fromToml(TomlConfigManager.CONFIG.PlaceholderOptions);
-                ConfigWrap.list().fromToml(TomlConfigManager.CONFIG.playerListOptions);
+                CONFIG.AFK_PLUS.fromToml(TomlConfigManager.CONFIG.afkPlusOptions, CONFIG.AFK_PLUS);
+                CONFIG.MESSAGE.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.MESSAGE);
+                CONFIG.PACKET.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.PACKET);
+                CONFIG.DAMAGE.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.DAMAGE);
+                CONFIG.DAMAGE.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.DAMAGE);
+                CONFIG.KICK.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.KICK);
+                CONFIG.KICK.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.KICK);
+                CONFIG.PLACEHOLDER.fromToml(TomlConfigManager.CONFIG.PlaceholderOptions, CONFIG.PLACEHOLDER);
+                CONFIG.PLAYER_LIST.fromToml(TomlConfigManager.CONFIG.playerListOptions,CONFIG.PLAYER_LIST);
 
                 // Save As Json
                 this.onPreSaveConfig();
@@ -215,10 +227,12 @@ public class AfkConfigHandler implements IConfigDispatch
         AfkPlus.debugLog("AfkConfigHandler#defaults(): Setting default config.");
 
         // Set default values
-        config.config_date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT).format(ZonedDateTime.now());
+        config.config_date = TimeFormat.RFC1123.formatNow(null);
         config.AFK_PLUS.defaults();
         config.MESSAGE.defaults();
         config.PACKET.defaults();
+        config.DAMAGE.defaults();
+        config.KICK.defaults();
         config.PLACEHOLDER.defaults();
         config.PLAYER_LIST.defaults();
 
@@ -233,13 +247,15 @@ public class AfkConfigHandler implements IConfigDispatch
 
         // Refresh
         CONFIG.comment = AfkPlusInit.getInstance().getModVersionString() + " Config";
-        CONFIG.config_date = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH.mm.ss", Locale.ROOT).format(ZonedDateTime.now());
+        CONFIG.config_date = TimeFormat.RFC1123.formatNow(null);
         AfkPlus.debugLog("AfkConfigHandler#update(): save_date: {} --> {}", newConf.config_date, CONFIG.config_date);
 
         // Copy Incoming Config
         CONFIG.AFK_PLUS.copy(newConf.AFK_PLUS);
         CONFIG.MESSAGE.copy(newConf.MESSAGE);
         CONFIG.PACKET.copy(newConf.PACKET);
+        CONFIG.DAMAGE.copy(newConf.DAMAGE);
+        CONFIG.KICK.copy(newConf.KICK);
         CONFIG.PLACEHOLDER.copy(newConf.PLACEHOLDER);
         CONFIG.PLAYER_LIST.copy(newConf.PLAYER_LIST);
 

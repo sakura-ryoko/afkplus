@@ -28,5 +28,5 @@ public class Reference
 {
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
     public static final String MOD_ID = "afkplus";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 }
