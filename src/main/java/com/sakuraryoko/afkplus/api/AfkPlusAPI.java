@@ -23,74 +23,154 @@ package com.sakuraryoko.afkplus.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
+import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
+import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
+/**
+ * AfkPlus API
+ */
 public interface AfkPlusAPI
 {
+    /**
+     * Returns if a player is marked as AFK
+     * @param player ()
+     * @return (True|False)
+     */
     static boolean isPlayerAfk(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null && afkplayer.isAfk();
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null && afkPlayer.isAfk();
     }
 
+    /**
+     * Returns if a player has their 'NoAFK' mode enabled via manually using the `/noafk` command
+     * @param player ()
+     * @return (True|False)
+     */
     static boolean isPlayerNoAfk(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null && afkplayer.isNoAfkEnabled();
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null && afkPlayer.isNoAfkEnabled();
     }
 
+    /**
+     * Returns if an AFK player can be damaged (Damage Enabled)
+     * @param player ()
+     * @return (True|False)
+     */
     static boolean isDamageEnabled(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null && afkplayer.isDamageEnabled();
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null && afkPlayer.isDamageEnabled();
     }
 
+    /**
+     * Return if an AFK player has been locked from using Disable Damage
+     * @param player ()
+     * @return (True|False)
+     */
     static boolean isDamageLocked(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null && afkplayer.isLockDamageEnabled();
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null && afkPlayer.isLockDamageEnabled();
     }
 
+    /**
+     * Return the time duration in ms since the player went AFK
+     * @param player ()
+     * @return (ms or 0L)
+     */
     static long getAfkTimeMs(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null ? afkplayer.getAfkTimeMs() : 0L;
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null ? afkPlayer.getAfkTimeMs() : 0L;
     }
 
+    /**
+     * Return an AFK players' unformatted duration since they went AFK
+     * @param player ()
+     * @return (The Duration or "")
+     */
     static String getAfkDurationString(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null ? afkplayer.getAfkDurationString() : "";
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null ? afkPlayer.getAfkDurationString() : "";
     }
 
+    /**
+     * Return an AFK players' unformatted time when they went AFK
+     * @param player ()
+     * @return (The Date/Time or "")
+     */
     static String getAfkTimeString(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null ? afkplayer.getAfkTimeString() : "";
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null ? afkPlayer.getAfkTimeString() : "";
     }
 
+    /**
+     * Return an AFK players' Reason for being AFK.
+     * @param player ()
+     * @return (The Reason or "")
+     */
     static String getAfkReason(@Nonnull ServerPlayer player)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().getPlayer(player);
-        return afkplayer != null ? afkplayer.getAfkReason() : "";
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+        return afkPlayer != null ? afkPlayer.getAfkReason() : "";
     }
 
+    /**
+     * Toggle a Player's AFK status, with an optional Reason
+     * @param player ()
+     * @param reason (Reason for AFK)
+     * @return (if AFK)
+     */
     static boolean toggleAfkStatus(@Nonnull ServerPlayer player, @Nullable String reason)
     {
-        AfkPlayer afkplayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
-        if (afkplayer.isAfk())
+        if (afkPlayer.isAfk())
         {
-            afkplayer.getHandler().unregisterAfk();
+            afkPlayer.getHandler().unregisterAfk();
             return false;
         }
         else
         {
-            afkplayer.getHandler().registerAfk(reason);
+            afkPlayer.getHandler().registerAfk(reason);
             return true;
+        }
+    }
+
+    /**
+     * Returns the formatted %afkplus:display_name% value
+     * @param player ()
+     * @return (DisplayName)
+     */
+    static Component getAfkDisplayName(@Nonnull ServerPlayer player)
+    {
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+
+        if (afkPlayer.isAfk())
+        {
+            return Placeholders.parseText(
+                    TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholderAfk),
+                    PlaceholderContext.of(player)
+            );
+        }
+        else
+        {
+            return Placeholders.parseText(
+                    TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholder),
+                    PlaceholderContext.of(player)
+            );
         }
     }
 }

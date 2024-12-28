@@ -44,12 +44,11 @@ import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.corelib.api.events.IPlayerEventsDispatch;
-import com.sakuraryoko.corelib.api.log.AnsiLogger;
 
 @ApiStatus.Internal
 public class PlayerEventsHandler implements IPlayerEventsDispatch
 {
-    private static final AnsiLogger LOGGER = new AnsiLogger(PlayerEventsHandler.class, true);
+    //private static final AnsiLogger LOGGER = new AnsiLogger(PlayerEventsHandler.class, true);
     private static final PlayerEventsHandler INSTANCE = new PlayerEventsHandler();
     public static PlayerEventsHandler getInstance() { return INSTANCE; }
 
@@ -84,8 +83,8 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         {
             if (player.isInvulnerable())
             {
+                AfkPlus.LOGGER.warn("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
                 player.setInvulnerable(false);
-                AfkPlus.LOGGER.info("PlayerManager().createPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
             }
         }
         // checkInvulnerable2
@@ -111,8 +110,8 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         {
             if (player.isInvulnerable())
             {
+                AfkPlus.LOGGER.warn("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
                 player.setInvulnerable(false);
-                AfkPlus.LOGGER.info("PlayerManager().onPlayerConnect() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
             }
         }
 
@@ -142,7 +141,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             {
                 AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
 
-                AfkPlus.LOGGER.info("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
+                AfkPlus.LOGGER.warn("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
                 player.setInvulnerable(false);
 
                 if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
@@ -261,98 +260,86 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     public void onTickPlayer(@Nonnull ServerPlayer player)
     {
         // checkAfk
-        try
+        //#if MC >= 11904
+        //$$ if (!player.connection.isAcceptingMessages())
+        //#else
+        if (!player.connection.getConnection().isConnected())
+        //#endif
         {
-            //#if MC >= 11904
-            //$$ if (!player.connection.isAcceptingMessages())
-            //#else
-            if (!player.connection.getConnection().isConnected())
-            //#endif
+            return;
+        }
+
+        if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
+        {
+            return;
+        }
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+
+        if (afkPlayer.isAfk() && ConfigWrap.list().updateInterval > 0)
+        {
+            if (afkPlayer.getLastPlayerListUpdate() <= 0)
             {
-                return;
-            }
-
-            if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
-            {
-                return;
-            }
-
-            AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
-            //afkPlayer.getHandler().tickPlayer(player);
-
-            // todo check if required
-            /*
-            if (afkPlayer.isAfk() && ConfigWrap.list().updateInterval > 0)
-            {
-                if (afkPlayer.getLastPlayerTick() <= 0)
-                {
-                    afkPlayer.getHandler().updatePlayerList();
-                }
-                else
-                {
-                    long diff = Util.getMillis() - afkPlayer.getLastPlayerTick();
-
-                    if (diff > ConfigWrap.list().updateInterval * 1000L)
-                    {
-                        afkPlayer.getHandler().updatePlayerList();
-                    }
-                }
-            }
-             */
-
-            if (player.isCreative() || player.isSpectator())
-            {
-                return;
-            }
-
-            if (afkPlayer.isLockDamageEnabled())
-            {
-                if (!afkPlayer.isDamageEnabled())
-                {
-                    afkPlayer.getHandler().enableDamage();
-                    AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} because they are [LOCKED]. step 1.", afkPlayer.getName());
-                }
-            }
-            else if (afkPlayer.isAfk() && ConfigWrap.dmg().disableDamage)
-            {
-                if (afkPlayer.isDamageEnabled())
-                {
-                    // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
-                    int cooldownSeconds = ConfigWrap.dmg().disableDamageCooldown;
-
-                    if (cooldownSeconds > 0)
-                    {
-                        long diff = Util.getMillis() - afkPlayer.getAfkTimeMs();
-
-                        if (diff > cooldownSeconds * 1000L)
-                        {
-                            afkPlayer.getHandler().disableDamage();
-                            AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 2.", afkPlayer.getName());
-                        }
-                    }
-                    else
-                    {
-                        if (!(player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
-                        {
-                            afkPlayer.getHandler().disableDamage();
-                            AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 4.", afkPlayer.getName());
-                        }
-                    }
-                }
+                afkPlayer.getHandler().updatePlayerList();
             }
             else
             {
-                if (!afkPlayer.isDamageEnabled())
+                long diff = Util.getMillis() - afkPlayer.getLastPlayerListUpdate();
+
+                if (diff > ConfigWrap.list().updateInterval * 1000L)
                 {
-                    afkPlayer.getHandler().enableDamage();
-                    AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} step 5.", afkPlayer.getName());
+                    afkPlayer.getHandler().updatePlayerList();
                 }
             }
         }
-        catch (Exception e)
+
+        if (player.isCreative() || player.isSpectator())
         {
-            // Sometimes the values are null, so offer a catch
-            AfkPlus.LOGGER.info("Caught exception during onTickPlayer(). ({})", e.getMessage());
+            return;
+        }
+
+        if (afkPlayer.isLockDamageEnabled())
+        {
+            if (!afkPlayer.isDamageEnabled())
+            {
+                afkPlayer.getHandler().enableDamage();
+                AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} because they are [LOCKED]. step 1.", afkPlayer.getName());
+            }
+        }
+        else if (afkPlayer.isAfk() && ConfigWrap.dmg().disableDamage)
+        {
+            if (afkPlayer.isDamageEnabled())
+            {
+                // Stop people from abusing the /afk command for 20 seconds to get out of a "sticky situation"
+                int cooldownSeconds = ConfigWrap.dmg().disableDamageCooldown;
+
+                if (cooldownSeconds > 0)
+                {
+                    long diff = Util.getMillis() - afkPlayer.getAfkTimeMs();
+
+                    if (diff > cooldownSeconds * 1000L)
+                    {
+                        afkPlayer.getHandler().disableDamage();
+                        AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 2.", afkPlayer.getName());
+                    }
+                }
+                else
+                {
+                    if (!(player.gameMode.getPreviousGameModeForPlayer() == GameType.CREATIVE))
+                    {
+                        afkPlayer.getHandler().disableDamage();
+                        AfkPlus.debugLog("onTickPlayer() - Damage Disabled for player: {} step 4.", afkPlayer.getName());
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (!afkPlayer.isDamageEnabled())
+            {
+                afkPlayer.getHandler().enableDamage();
+                AfkPlus.debugLog("onTickPlayer() - Damage Enabled for player: {} step 5.", afkPlayer.getName());
+            }
         }
         // checkAfk
     }
@@ -435,7 +422,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return;
         }
 
-        LOGGER.debug("onPlayerAttack(): player [{}/{}] --> Entity [{}]", player.getId(), player.getName().getString(), entity.getId());
+        //LOGGER.debug("onPlayerAttack(): player [{}/{}] --> Entity [{}]", player.getId(), player.getName().getString(), entity.getId());
 
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
         afkPlayer.setLastAttackTime(Util.getMillis());
@@ -501,9 +488,9 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     }
 
     @ApiStatus.Internal
-    public @Nullable Component onUpdateDisplayName(@Nonnull ServerPlayer player, @Nullable Component name)
+    public @Nullable Component onUpdateDisplayName(@Nonnull ServerPlayer player, @Nullable Component oldName)
     {
-        AfkPlus.debugLog("onUpdateDisplayName(): Player [{}] // setName [{}]", player.getName().getString(), name != null ? name.getString() : "<empty>");
+        AfkPlus.debugLog("onUpdateDisplayName(): Player [{}] // oldName [{}]", player.getName().getString(), oldName != null ? oldName.getString() : "<empty>");
 
         // replacePlayerListName
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
@@ -521,6 +508,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             );
 
             AfkPlus.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());
+            afkPlayer.setLastPlayerListUpdate(Util.getMillis());
 
             return listEntry.copy();
         }
@@ -541,7 +529,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
         if (afkPlayer.isAfk() && ConfigWrap.pack().bypassSleepCount)
         {
-            AfkPlus.LOGGER.info("AFK Player: {} is being excluded from the sleep requirements.", afkPlayer.getName());
+            AfkPlus.debugLog("AFK Player: {} is being excluded from the sleep requirements.", afkPlayer.getName());
             return true;
         }
         // checkSleepCount
@@ -564,7 +552,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         {
             if (currentValue > 72000)
             {
-                AfkPlus.LOGGER.info("Afk Player: {} was just spared from a phantom spawn chance.", afkPlayer.getName());
+                AfkPlus.debugLog("Afk Player: {} was just spared from a phantom spawn chance.", afkPlayer.getName());
             }
 
             AfkPlus.debugLog("checkPhantomSpawn(): [Player: {}] obtained TIME_SINCE_REST value of {} setting value to 1", afkPlayer.getName(), currentValue);

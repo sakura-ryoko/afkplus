@@ -20,47 +20,29 @@
 
 package com.sakuraryoko.afkplus.mixin;
 
-import java.net.SocketAddress;
-import java.util.EnumSet;
-import java.util.List;
-
-import com.mojang.authlib.GameProfile;
+//#if MC >= 11903
+//$$ import java.util.EnumSet;
+//#endif
 import net.minecraft.Util;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
-import net.minecraft.server.level.ServerPlayer;
-//#if MC >= 12002
-//$$ import net.minecraft.server.level.ClientInformation;
-//$$ import net.minecraft.server.network.CommonListenerCookie;
-//#endif
-//#if MC >= 12101
-//$$ import net.minecraft.world.entity.Entity;
-//#endif
 import net.minecraft.server.players.PlayerList;
-//#if MC >= 11903
-//#else
-import net.minecraft.world.entity.player.ProfilePublicKey;
-//#endif
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.api.AfkPlusEvents;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
 @Mixin(PlayerList.class)
 public abstract class MixinPlayerList
 {
     @Shadow public abstract void broadcastAll(Packet<?> packet);
+    @Unique private long lastTick;
 
     public MixinPlayerList()
     {
@@ -72,19 +54,20 @@ public abstract class MixinPlayerList
                      target = "Lnet/minecraft/server/players/PlayerList;broadcastAll(Lnet/minecraft/network/protocol/Packet;)V"))
     private void afkplus$onPlayerListTick(CallbackInfo ci)
     {
-        // todo - dial this in
-        /*
         // This follows the Vanilla "ping" update packet
-        if (ConfigWrap.list().enableListDisplay)
+        if (ConfigWrap.list().enableListDisplay && ConfigWrap.list().updateInterval > 0)
         {
-            AfkPlus.debugLog("MixinPlayerList(): TICK");
+            if ((Util.getMillis() - this.lastTick) > (ConfigWrap.list().updateInterval * 1000L))
+            {
+                //#if MC >= 11903
+                //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), AfkPlayerList.getInstance().listAllAfk()));
+                //#else
+                this.broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, AfkPlayerList.getInstance().listAllAfk()));
+                //#endif
+                AfkPlusEvents.UPDATE_PLAYER_LIST.invoker().onPlayerListUpdate(null);
+            }
 
-            //#if MC >= 11903
-            //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), AfkPlayerList.getInstance().listAllAfk()));
-            //#else
-            this.broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, AfkPlayerList.getInstance().listAllAfk()));
-            //#endif
+            this.lastTick = Util.getMillis();
         }
-         */
     }
 }

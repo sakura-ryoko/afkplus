@@ -23,7 +23,9 @@ package com.sakuraryoko.afkplus.modinit;
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.commands.CommandRegister;
+import com.sakuraryoko.afkplus.compat.carpet.CarpetCompat;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
+import com.sakuraryoko.afkplus.compat.styledplayerlist.StyledPlayerListCompat;
 import com.sakuraryoko.afkplus.compat.vanish.VanishEventsCompat;
 import com.sakuraryoko.afkplus.config.AfkConfigHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
@@ -110,6 +112,14 @@ public class AfkPlusInit implements IModInitDispatcher
         if (VanishEventsCompat.getInstance().hasVanish())
         {
             VanishEventsCompat.getInstance().registerEvents();
+        }
+        if (CarpetCompat.getInstance().hasCarpet())
+        {
+            CarpetCompat.getInstance().handleCarpet();
+        }
+        if (StyledPlayerListCompat.getInstance().hasStyledPlayerList())
+        {
+            StyledPlayerListCompat.getInstance().handleStyledPlayerList();
         }
 
         AfkPlus.debugLog("All Tasks Done.");

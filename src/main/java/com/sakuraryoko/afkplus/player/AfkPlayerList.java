@@ -29,6 +29,8 @@ import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.compat.styledplayerlist.StyledPlayerListCompat;
+import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 
 public class AfkPlayerList
 {
@@ -75,7 +77,14 @@ public class AfkPlayerList
 
         for (AfkPlayer entry : this.afkPlayers)
         {
-            if (entry.isAfk())
+            // Don't update vanished players
+            if (VanishAPICompat.isVanishedByEntity(entry.getPlayer()))
+            {
+                continue;
+            }
+
+            // This helps fix Styled Player List update problems.  Your welcome Pat.
+            if (entry.isAfk() || StyledPlayerListCompat.getInstance().hasStyledPlayerList())
             {
                 list.add(entry.getPlayer());
             }

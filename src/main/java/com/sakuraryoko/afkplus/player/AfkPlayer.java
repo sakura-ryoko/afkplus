@@ -47,6 +47,7 @@ public class AfkPlayer
     private long lastMovementTime;
     private long lastLookTime;
     private long lastAttackTime;
+    private long lastPlayerListUpdate;
     private String afkReason;
 
     private AfkPlayer(@Nonnull ServerPlayer player)
@@ -63,6 +64,7 @@ public class AfkPlayer
         this.lastMovementTime = Util.getMillis();
         this.lastLookTime = Util.getMillis();
         this.lastAttackTime = Util.getMillis();
+        this.lastPlayerListUpdate = -1;     // cause an immediate update upon creation
         this.afkReason = "";
         this.handler = new AfkHandler(this);
     }
@@ -160,6 +162,16 @@ public class AfkPlayer
     public void setLastAttackTime(long lastAttackTime)
     {
         this.lastAttackTime = lastAttackTime;
+    }
+
+    public long getLastPlayerListUpdate()
+    {
+        return this.lastPlayerListUpdate;
+    }
+
+    public void setLastPlayerListUpdate(long lastPlayerListUpdate)
+    {
+        this.lastPlayerListUpdate = lastPlayerListUpdate;
     }
 
     public DurationFormat getDurationType()
@@ -261,6 +273,7 @@ public class AfkPlayer
 
     public void setAfk(boolean toggle)
     {
+        this.setLastPlayerListUpdate(-1);       // reset for the next AFK
         this.afkEnabled = toggle;
     }
 
@@ -384,6 +397,7 @@ public class AfkPlayer
     public void clearAfkValues()
     {
         this.afkTimeMs = 0;
+        this.lastPlayerListUpdate = -1;
         this.afkReason = "";
     }
 

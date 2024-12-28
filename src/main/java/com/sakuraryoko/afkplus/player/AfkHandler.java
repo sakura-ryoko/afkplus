@@ -183,7 +183,7 @@ public class AfkHandler
                 this.sendAfkMessage(mess2);
             }
 
-            AfkPlusEvents.AFK_ENABLE_DAMAGE.invoker().onDamageEnabled(this.invoker().afkplus$player());
+            AfkPlusEvents.AFK_ENABLE_DAMAGE_EVENT.invoker().onDamageEnabled(this.invoker().afkplus$player());
         }
 
         this.updatePlayerList();
@@ -225,7 +225,7 @@ public class AfkHandler
                     this.sendAfkMessage(mess2);
                 }
 
-                AfkPlusEvents.AFK_DISABLE_DAMAGE.invoker().onDamageDisabled(this.invoker().afkplus$player());
+                AfkPlusEvents.AFK_DISABLE_DAMAGE_EVENT.invoker().onDamageDisabled(this.invoker().afkplus$player());
             }
 
             this.updatePlayerList();
@@ -316,6 +316,7 @@ public class AfkHandler
                 }
 
                 this.invoker().afkplus$connection().disconnect(kickReason);
+                AfkPlusEvents.AFK_REMOVAL_KICK_EVENT.invoker().onPlayerKick(this.player.getPlayer(), kickReason);
 
                 if (!kickMessageString.isEmpty())
                 {
@@ -362,7 +363,8 @@ public class AfkHandler
         //#else
         this.invoker().afkplus$server().getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, this.player.getPlayer()));
         //#endif
-        AfkPlus.debugLog("sending player list update for {}", this.player.getName());
+        AfkPlusEvents.UPDATE_PLAYER_LIST.invoker().onPlayerListUpdate(this.player.getPlayer());
+        AfkPlus.debugLog("updatePlayerList(): Sending player list update for {}", this.player.getName());
     }
 
     private void sendAfkMessage(Component message)
