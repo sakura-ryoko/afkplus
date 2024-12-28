@@ -35,6 +35,9 @@ public class MessageOptions implements IConfigOption
     public String whenReturnDurationPrefix;
     public String whenReturnDurationSuffix;
     public String defaultReason;
+    public String afkCooldownGreeting;
+    public String whileYourVanished;
+    public String whileVanished;
     public boolean displayDuration;
     public DurationOption duration;
     public TimeDateOption timeDate;
@@ -53,6 +56,9 @@ public class MessageOptions implements IConfigOption
         this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
         this.whenReturnDurationSuffix = "<gray>)";
         this.defaultReason = "<gray>poof!<r>";
+        this.afkCooldownGreeting = "<yellow>Welcome back, <r>%player:display_name%<r>, <yellow>did you miss anything fun?";
+        this.whileYourVanished = "<red>You are vanished, and probably shouldn't be doing that.<r>";
+        this.whileVanished = "<red> is vanished, and probably shouldn't be doing that.<r>";
         this.displayDuration = true;
         this.duration = new DurationOption();
         this.duration.option = DurationFormat.PRETTY;
@@ -71,6 +77,9 @@ public class MessageOptions implements IConfigOption
         this.whenReturnDurationPrefix = !opts.whenReturnDurationPrefix.isEmpty() ? opts.whenReturnDurationPrefix : " <gray>(Gone for: <green>";
         this.whenReturnDurationSuffix = !opts.whenReturnDurationSuffix.isEmpty() ? opts.whenReturnDurationSuffix : "<gray>)";
         this.defaultReason = opts.defaultReason;
+        this.afkCooldownGreeting = opts.afkCooldownGreeting;
+        this.whileYourVanished = opts.whileYourVanished;
+        this.whileVanished = opts.whileVanished;
         this.displayDuration = opts.displayDuration;
         this.duration.copy(opts.duration);
         this.timeDate.copy(opts.timeDate);
@@ -90,7 +99,10 @@ public class MessageOptions implements IConfigOption
         this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
         this.whenReturnDurationSuffix = "<gray>)";
         this.defaultReason = opts.defaultReason;
+        this.afkCooldownGreeting = "<yellow>Welcome back, <r>%player:display_name%<r>, <yellow>did you miss anything fun?";
         this.displayDuration = opts.displayDuration;
+        this.whileYourVanished = "<red>You are vanished, and probably shouldn't be doing that.<r>";
+        this.whileVanished = "<red> is vanished, and probably shouldn't be doing that.<r>";
         this.duration = new DurationOption();
         this.timeDate = new TimeDateOption();
 

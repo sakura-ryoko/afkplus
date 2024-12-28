@@ -41,8 +41,6 @@ import static net.minecraft.commands.Commands.literal;
 
 public class NoAfkCommand implements IServerCommand
 {
-    public static final NoAfkCommand INSTANCE = new NoAfkCommand();
-    
     @Override
     public void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment)
     {
@@ -75,11 +73,10 @@ public class NoAfkCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(src.getPlayer()))
         {
-            String response = "<red>You are vanished, and shouldn't be using the /noafk command ...<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whileYourVanished), false);
             //#else
-            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whileYourVanished), false);
             //#endif
             return 1;
         }

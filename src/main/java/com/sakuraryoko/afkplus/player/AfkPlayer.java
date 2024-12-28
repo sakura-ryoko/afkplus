@@ -43,6 +43,7 @@ public class AfkPlayer
     private boolean noAfkEnabled;
     private long lastPlayerTick;
     private long afkTimeMs;
+    private long lastAfkTimeMs;
     private long afkTimeEpoch;
     private long lastMovementTime;
     private long lastLookTime;
@@ -59,6 +60,7 @@ public class AfkPlayer
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;
         this.afkTimeMs = 0;
+        this.lastAfkTimeMs = 0;
         this.afkTimeEpoch = 0;
         this.lastPlayerTick = Util.getMillis();
         this.lastMovementTime = Util.getMillis();
@@ -134,9 +136,14 @@ public class AfkPlayer
         return this.afkTimeEpoch;
     }
 
+    public long getLastAfkTimeMs()
+    {
+        return this.lastAfkTimeMs;
+    }
+
     public long getLastMovementTime()
     {
-        return lastMovementTime;
+        return this.lastMovementTime;
     }
 
     public void setLastMovementTime(long lastMovementTime)
@@ -146,7 +153,7 @@ public class AfkPlayer
 
     public long getLastLookTime()
     {
-        return lastLookTime;
+        return this.lastLookTime;
     }
 
     public void setLastLookTime(long lastLookTime)
@@ -156,7 +163,7 @@ public class AfkPlayer
 
     public long getLastAttackTime()
     {
-        return lastAttackTime;
+        return this.lastAttackTime;
     }
 
     public void setLastAttackTime(long lastAttackTime)
@@ -273,6 +280,11 @@ public class AfkPlayer
 
     public void setAfk(boolean toggle)
     {
+        if (this.afkEnabled && !toggle)
+        {
+            this.lastAfkTimeMs = Util.getMillis();
+        }
+
         this.setLastPlayerListUpdate(-1);       // reset for the next AFK
         this.afkEnabled = toggle;
     }
@@ -397,6 +409,7 @@ public class AfkPlayer
     public void clearAfkValues()
     {
         this.afkTimeMs = 0;
+        this.lastAfkTimeMs = 0;
         this.lastPlayerListUpdate = -1;
         this.afkReason = "";
     }

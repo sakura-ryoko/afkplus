@@ -80,16 +80,14 @@ public class AfkInfoCommand implements IServerCommand
 
         if (afkPlayer.isAfk())
         {
-            String afkStatus = AfkPlayerInfo.getString(afkPlayer);
-            Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             String user = src.getTextName();
 
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(afkStatus), false);
-            //$$ context.getSource().sendSuccess(() -> afkReason, false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(AfkPlayerInfo.getString(afkPlayer)), false);
+            //$$ context.getSource().sendSuccess(() -> AfkPlayerInfo.getReason(afkPlayer, src), false);
             //#else
-            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(afkStatus), false);
-            context.getSource().sendSuccess(afkReason, false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(AfkPlayerInfo.getString(afkPlayer)), false);
+            context.getSource().sendSuccess(AfkPlayerInfo.getReason(afkPlayer, src), false);
             //#endif
 
             AfkPlus.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());

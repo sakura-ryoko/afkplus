@@ -20,14 +20,18 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
+import eu.pb4.placeholders.api.PlaceholderContext;
+import eu.pb4.placeholders.api.Placeholders;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
@@ -77,11 +81,10 @@ public class AfkCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(src.getPlayer()))
         {
-            String response = "<red>You are vanished, and shouldn't be using the /afk command ...<r>";
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whileYourVanished), false);
             //#else
-            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(response), false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whileYourVanished), false);
             //#endif
             return 1;
         }
@@ -91,6 +94,19 @@ public class AfkCommand implements IServerCommand
         if (afkPlayer.isAfk())
         {
             afkPlayer.getHandler().unregisterAfk();
+        }
+        else if ((Util.getMillis() - afkPlayer.getLastAfkTimeMs()) < (ConfigWrap.afk().afkCommandCooldown * 1000L))
+        {
+            Component result = Placeholders.parseText(
+                    TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().afkCooldownGreeting),
+                    PlaceholderContext.of(src));
+
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> result, false);
+            //#else
+            context.getSource().sendSuccess(result, false);
+            //#endif
+            return 1;
         }
         else
         {

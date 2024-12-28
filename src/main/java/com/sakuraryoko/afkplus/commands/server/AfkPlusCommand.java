@@ -26,6 +26,7 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -220,7 +221,7 @@ public class AfkPlusCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
-            String response = afkPlayer.getName() + " <red>is vanished, and shouldn't be going afk ...<r>";
+            String response = afkPlayer.getName() + ConfigWrap.mess().whileVanished;
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
@@ -236,6 +237,16 @@ public class AfkPlusCommand implements IServerCommand
             //#else
             context.getSource().sendSuccess(Component.literal(afkPlayer.getName() + " is already marked as AFK."), false);
             //#endif
+            return 1;
+        }
+        else if ((Util.getMillis() - afkPlayer.getLastAfkTimeMs()) > (ConfigWrap.afk().afkCommandCooldown * 1000L))
+        {
+            //#if MC >= 12001
+            //$$ context.getSource().sendSuccess(() -> Component.literal(afkPlayer.getName() + " was AFK too recently.  Give them a second to catch up."), false);
+            //#else
+            context.getSource().sendSuccess(Component.literal(afkPlayer.getName() + " was AFK too recently.  Give them a second to catch up."), false);
+            //#endif
+            return 1;
         }
         else
         {
@@ -266,6 +277,7 @@ public class AfkPlusCommand implements IServerCommand
                 AfkPlus.LOGGER.info("{} set player {} as AFK for reason: {}", user, afkPlayer.getName(), reason);
             }
         }
+
         return 1;
     }
 
@@ -276,7 +288,7 @@ public class AfkPlusCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
-            String response = afkPlayer.getName() + " <red>is vanished, and shouldn't be afk ...<r>";
+            String response = afkPlayer.getName() + ConfigWrap.mess().whileVanished;
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
@@ -308,14 +320,12 @@ public class AfkPlusCommand implements IServerCommand
 
         if (afkPlayer.isAfk())
         {
-            String afkStatus = AfkPlayerInfo.getString(afkPlayer);
-            Component afkReason = AfkPlayerInfo.getReason(afkPlayer, src);
             //#if MC >= 12001
-            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(afkStatus), false);
-            //$$ context.getSource().sendSuccess(() -> afkReason, false);
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(AfkPlayerInfo.getString(afkPlayer)), false);
+            //$$ context.getSource().sendSuccess(() -> AfkPlayerInfo.getReason(afkPlayer, src), false);
             //#else
-            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(afkStatus), false);
-            context.getSource().sendSuccess(afkReason, false);
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(AfkPlayerInfo.getString(afkPlayer)), false);
+            context.getSource().sendSuccess(AfkPlayerInfo.getReason(afkPlayer, src), false);
             //#endif
             AfkPlus.LOGGER.info("{} displayed {}'s AFK info.", user, afkPlayer.getName());
         }
@@ -337,7 +347,7 @@ public class AfkPlusCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
-            String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
+            String response = afkPlayer.getName() + ConfigWrap.mess().whileVanished;
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
@@ -373,7 +383,7 @@ public class AfkPlusCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
-            String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be changing their disable Damage status.<r>";
+            String response = afkPlayer.getName() + ConfigWrap.mess().whileVanished;
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
@@ -409,7 +419,7 @@ public class AfkPlusCommand implements IServerCommand
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
-            String response = afkPlayer.getName() + "<red>is vanished, and shouldn't be updating their player list status.<r>";
+            String response = afkPlayer.getName() + ConfigWrap.mess().whileVanished;
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(response), false);
             //#else
