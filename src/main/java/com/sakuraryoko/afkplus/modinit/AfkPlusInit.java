@@ -113,10 +113,12 @@ public class AfkPlusInit implements IModInitDispatcher
         {
             VanishEventsCompat.getInstance().registerEvents();
         }
+
         if (CarpetCompat.getInstance().hasCarpet())
         {
             CarpetCompat.getInstance().handleCarpet();
         }
+
         if (StyledPlayerListCompat.getInstance().hasStyledPlayerList())
         {
             StyledPlayerListCompat.getInstance().handleStyledPlayerList();

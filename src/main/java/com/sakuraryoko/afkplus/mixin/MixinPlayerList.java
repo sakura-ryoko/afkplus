@@ -23,9 +23,12 @@ package com.sakuraryoko.afkplus.mixin;
 //#if MC >= 11903
 //$$ import java.util.EnumSet;
 //#endif
+import java.util.List;
+
 import net.minecraft.Util;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,12 +62,17 @@ public abstract class MixinPlayerList
         {
             if ((Util.getMillis() - this.lastTick) > (ConfigWrap.list().updateInterval * 1000L))
             {
-                //#if MC >= 11903
-                //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), AfkPlayerList.getInstance().listAllAfk()));
-                //#else
-                this.broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, AfkPlayerList.getInstance().listAllAfk()));
-                //#endif
-                AfkPlusEvents.UPDATE_PLAYER_LIST.invoker().onPlayerListUpdate(null);
+                List<ServerPlayer> list =AfkPlayerList.getInstance().listAllAfk();
+
+                if (!list.isEmpty())
+                {
+                    //#if MC >= 11903
+                    //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), list));
+                    //#else
+                    this.broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_DISPLAY_NAME, list));
+                    //#endif
+                    AfkPlusEvents.UPDATE_PLAYER_LIST.invoker().onPlayerListUpdate(null);
+                }
             }
 
             this.lastTick = Util.getMillis();

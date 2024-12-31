@@ -90,11 +90,6 @@ public class AfkPlayerList
             }
         }
 
-        if (list.isEmpty())
-        {
-            list.add(this.afkPlayers.getFirst().getPlayer());
-        }
-
         return list;
     }
 
