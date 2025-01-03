@@ -67,7 +67,7 @@ public class CarpetCompat
 
             if (ConfigWrap.list().updateInterval < 1 || ConfigWrap.list().updateInterval > 10)
             {
-                ConfigWrap.pack().timeoutSeconds = 10;
+                ConfigWrap.list().updateInterval = 10;
             }
         }
     }

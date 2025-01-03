@@ -26,8 +26,11 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public interface IPlayerInvoker
 {
-    ServerPlayer afkplus$player();
-    MinecraftServer afkplus$server();
-    ServerGamePacketListenerImpl afkplus$connection();
-    void afkplus$setInvulnerable(boolean toggle);
+	ServerPlayer afkplus$player();
+
+	MinecraftServer afkplus$server();
+
+	ServerGamePacketListenerImpl afkplus$connection();
+
+	void afkplus$setInvulnerable(boolean toggle);
 }

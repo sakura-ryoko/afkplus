@@ -62,7 +62,7 @@ public abstract class MixinPlayerList
         {
             if ((Util.getMillis() - this.lastTick) > (ConfigWrap.list().updateInterval * 1000L))
             {
-                List<ServerPlayer> list =AfkPlayerList.getInstance().listAllAfk();
+                List<ServerPlayer> list = AfkPlayerList.getInstance().listAllAfk();
 
                 if (!list.isEmpty())
                 {

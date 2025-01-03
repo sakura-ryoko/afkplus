@@ -133,16 +133,20 @@ version = fullProjectVersion
 // See https://youtrack.jetbrains.com/issue/IDEA-296490
 // if IDEA complains about "Cannot resolve resource filtering of MatchingCopyAction" and you want to know why
 processResources {
-	inputs.property "id", project.mod_id
-	inputs.property "name", project.mod_name
-	inputs.property "version", fullModVersion
+	inputs.property "mod_id", project.mod_id
+	inputs.property "mod_name", project.mod_name
+	inputs.property "mod_version", project.mod_version
+	inputs.property "mod_author", project.mod_author
+	inputs.property "maven_group", project.maven_group
 	inputs.property "minecraft_dependency", project.minecraft_dependency
 
 	filesMatching("fabric.mod.json") {
 		def valueMap = [
-				"id": project.mod_id,
-				"name": project.mod_name,
-				"version": fullModVersion,
+				"mod_id": project.mod_id,
+				"mod_name": project.mod_name,
+				"mod_author": project.mod_author,
+				"maven_group": project.maven_group,
+				"mod_version": fullModVersion,
 				"minecraft_dependency": project.minecraft_dependency,
 		]
 		expand valueMap

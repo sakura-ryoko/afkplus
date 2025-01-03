@@ -138,6 +138,11 @@ public class AfkPlayer
 
     public long getLastAfkTimeMs()
     {
+        if (this.lastAfkTimeMs <= 0)
+        {
+            this.lastAfkTimeMs = Util.getMillis();
+        }
+
         return this.lastAfkTimeMs;
     }
 

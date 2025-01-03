@@ -378,7 +378,7 @@ public class AfkHandler
 
         for (ServerPlayer player : this.invoker().afkplus$server().getPlayerList().getPlayers())
         {
-            player.sendSystemMessage(message);
+            player.sendSystemMessage(message);                          // Broadcast
         }
     }
 

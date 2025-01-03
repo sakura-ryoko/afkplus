@@ -35,78 +35,73 @@ public class AfkPlayerInfo
 {
     public static String getString(@Nonnull AfkPlayer afkPlayer)
     {
-        String AfkStatus;
+        StringBuilder afkStatus = new StringBuilder();
 
         if (afkPlayer.isAfk())
         {
-            AfkStatus = "<bold><magenta>AFK Information:"
-                    + "<r>\nPlayer: " + afkPlayer.getName()
-                    + "<r>\nAfk Since: " + ConfigWrap.place().afkTimePlaceholderFormatting
-                    + afkPlayer.getAfkTimeString() + "<r> (Format: "+afkPlayer.getAfkTimeFormat()+")";
+            afkStatus.append("<bold><magenta>AFK Information:");
+            afkStatus.append("<r>\nPlayer: ").append(afkPlayer.getName());
+            afkStatus.append("<r>\nAfk Since: ").append(ConfigWrap.place().afkTimePlaceholderFormatting);
+            afkStatus.append(afkPlayer.getAfkTimeString()).append("<r> (Format: ").append(afkPlayer.getAfkTimeFormat()).append(")");
 
             if (ConfigWrap.mess().displayDuration)
             {
-                AfkStatus = AfkStatus + "<r>\nDuration: " + ConfigWrap.place().afkDurationPlaceholderFormatting;
-                AfkStatus = AfkStatus + afkPlayer.getAfkDurationString() + "<r> (Format: "+afkPlayer.getAfkDurationFormat()+")";
+                afkStatus.append("<r>\nDuration: ").append(ConfigWrap.place().afkDurationPlaceholderFormatting);
+                afkStatus.append(afkPlayer.getAfkDurationString()).append("<r> (Format: ").append(afkPlayer.getAfkDurationFormat()).append(")");
             }
             else
             {
-                AfkStatus = AfkStatus + "<r>\nDuration: <copper>DISABLED";
-                AfkStatus = AfkStatus + "<r>";
+                afkStatus.append("<r>\nDuration: <copper>DISABLED").append("<r>");
             }
 
             if (afkPlayer.getPlayer().isCreative())
             {
-                AfkStatus = AfkStatus + "<r>\nDamage Status: <light_blue>CREATIVE";
+                afkStatus.append("<r>\nDamage Status: <light_blue>CREATIVE");
             }
             else if (afkPlayer.getPlayer().isSpectator())
             {
-                AfkStatus = AfkStatus + "<r>\nDamage Status: <gray>SPECTATOR";
+                afkStatus.append("<r>\nDamage Status: <gray>SPECTATOR");
             }
             else if (afkPlayer.isDamageEnabled())
             {
-                AfkStatus = AfkStatus + "<r>\nDamage Status: <green>Enabled";
+                afkStatus.append("<r>\nDamage Status: <green>Enabled");
             }
             else
             {
-                AfkStatus = AfkStatus + "<r>\nDamage Status: <red>Disabled";
+                afkStatus.append("<r>\nDamage Status: <red>Disabled");
             }
 
             if (afkPlayer.isLockDamageEnabled())
             {
-                AfkStatus = AfkStatus + " <red>[RESTRICTED]";
+                afkStatus.append(" <red>[RESTRICTED]");
             }
             else
             {
-                AfkStatus = AfkStatus + " <green>[ALLOWED]";
+                afkStatus.append(" <green>[ALLOWED]");
             }
 
-            AfkPlus.debugLog("AkfStatus.getString(): {}", AfkStatus);
+            AfkPlus.debugLog("AkfStatus.getString(): {}", afkStatus.toString());
         }
         else if (afkPlayer.isNoAfkEnabled())
         {
-            AfkStatus = "Player: " + afkPlayer.getName() + "<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)";
-        }
-        else
-        {
-            AfkStatus = "";
+            afkStatus.append("Player: ").append(afkPlayer.getName()).append("<r>\n<burnt_orange>Has toggled No Afk Mode. (No timeouts)");
         }
 
-        return AfkStatus;
+        return afkStatus.toString();
     }
 
     public static Component getReason(@Nonnull AfkPlayer afkPlayer, CommandSourceStack src)
     {
-        String reasonFormat;
-        Component afkReason;
+        StringBuilder reasonFormat = new StringBuilder();
+        Component afkReason = Component.empty();
 
         if (afkPlayer.isAfk())
         {
-            reasonFormat = "<r>Reason: " + ConfigWrap.place().afkReasonPlaceholderFormatting;
+            reasonFormat.append("<r>Reason: ").append(ConfigWrap.place().afkReasonPlaceholderFormatting);
 
             if (afkPlayer.getAfkReason().isEmpty())
             {
-                afkReason = TextHandler.getInstance().formatTextSafe(reasonFormat + "none");
+                reasonFormat.append(TextHandler.getInstance().formatTextSafe(reasonFormat + "none"));
             }
             else
             {

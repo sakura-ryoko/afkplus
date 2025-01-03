@@ -235,7 +235,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
                     afkPlayer.getHandler().registerAfk(ConfigWrap.pack().afkTimeoutString);
                 }
 
-                AfkPlus.debugLog("onTickPacket(): Setting player {} as AFK (timeout)", afkPlayer.getName());
+                AfkPlus.debugLog("onTickPacket(): Setting player {} as AFK (timeout) [Duration {}, timeoutSeconds {}]", afkPlayer.getName(), afkDuration, timeoutSeconds);
             }
             else if (afkPlayer.shouldIgnoreAttacks())
             {

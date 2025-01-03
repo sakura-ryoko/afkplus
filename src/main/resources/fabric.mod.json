@@ -1,29 +1,29 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
-  "version": "${version}",
-  "name": "${name}",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
   "description": "Show which players are afk in the player list",
   "authors": [
-    "sakura-ryoko"
+    "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/afkplus",
-    "sources": "https://github.com/sakura-ryoko/afkplus",
-    "issues": "https://github.com/sakura-ryoko/afkplus/issues"
+    "homepage": "https://modrinth.com/mod/${mod_id}",
+    "sources": "https://github.com/${mod_author}/${mod_id}",
+    "issues": "https://github.com/${mod_author}/${mod_id}/issues"
   },
   "license": "MIT",
-  "icon": "assets/afkplus/icon.png",
+  "icon": "assets/${mod_id}/icon.png",
   "environment": "*",
   "entrypoints": {
     "server": [],
     "client": [],
     "main": [
-      "com.sakuraryoko.afkplus.AfkPlus"
+      "${maven_group}.${mod_id}.AfkPlus"
     ]
   },
   "mixins": [
-    "afkplus.mixins.json"
+    "${mod_id}.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.11.4",

@@ -31,7 +31,6 @@ import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
 public class AfkPlus implements ModInitializer
 {
     public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    //public static boolean MOD_INIT = false;
 
     public static void debugLog(String key, Object... args)
     {
