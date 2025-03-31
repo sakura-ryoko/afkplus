@@ -2,7 +2,7 @@
  * This file is part of the AfkPlus project, licensed under the
  * GNU Lesser General Public License v3.0
  *
- * Copyright (C) 2024  Sakura Ryoko and contributors
+ * Copyright (C) 2025  Sakura Ryoko and contributors
  *
  * AfkPlus is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+//#if MC >= 12105
+//$$ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+//#else
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+//#endif
 
 import com.sakuraryoko.afkplus.events.PlayerEventsHandler;
 
@@ -44,7 +48,11 @@ public class MixinPhantomSpawner
 {
     @Unique private ServerPlayer afkPlayer;
 
+    //#if MC >= 12105
+    //$$ @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)V",
+    //#else
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
+    //#endif
             at = @At(value = "INVOKE",
                      //#if MC >= 12001
                      //$$ target = "Lnet/minecraft/server/level/ServerPlayer;blockPosition()Lnet/minecraft/core/BlockPos;")
@@ -52,7 +60,11 @@ public class MixinPhantomSpawner
                      target = "Lnet/minecraft/world/entity/player/Player;blockPosition()Lnet/minecraft/core/BlockPos;")
                      //#endif
     )
+    //#if MC >= 12105
+    //$$ private void capturePlayerForMath(ServerLevel serverLevel, boolean bl, boolean bl2, CallbackInfo ci,
+    //#else
     private void capturePlayerForMath(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
+    //#endif
                                       //#if MC >= 12001
                                       //$$ @Local ServerPlayer serverPlayer)
                                       //#else
@@ -66,7 +78,11 @@ public class MixinPhantomSpawner
         //#endif
     }
 
+    //#if MC >= 12105
+    //$$ @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)V",
+    //#else
     @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
+    //#endif
                at = @At(value = "INVOKE",
                         target = "Lnet/minecraft/util/Mth;clamp(III)I"),
                index = 0)

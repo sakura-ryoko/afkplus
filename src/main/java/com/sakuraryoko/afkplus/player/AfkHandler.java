@@ -283,7 +283,7 @@ public class AfkHandler
                 if (ConfigWrap.mess().displayDuration)
                 {
                     long afkDuration = Util.getMillis() - (this.player.getPlayer().getLastActionTime());
-                    String durationString = this.player.getDurationType().getFormat(afkDuration, ConfigWrap.mess().duration.customFormat);
+                    String durationString = this.player.getDurationType().format(afkDuration, ConfigWrap.mess().duration.customFormat);
 
                     kickReasonString = ConfigWrap.kick().afkKickMessage
                             + "\n" + ConfigWrap.kick().whenKickedDurationNamedPrefix

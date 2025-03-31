@@ -188,7 +188,7 @@ public class AfkPlayer
 
     public DurationFormat getDurationType()
     {
-        DurationFormat format = DurationFormat.fromName(ConfigWrap.mess().duration.option.getName());
+        DurationFormat format = DurationFormat.fromStringStatic(ConfigWrap.mess().duration.option.getName());
 
         if (format != null)
         {
@@ -201,7 +201,7 @@ public class AfkPlayer
 
     public TimeFormat getTimeDateType()
     {
-        TimeFormat format = TimeFormat.fromName(ConfigWrap.mess().timeDate.option.getName());
+        TimeFormat format = TimeFormat.fromStringStatic(ConfigWrap.mess().timeDate.option.getName());
 
         if (format != null)
         {
@@ -214,7 +214,7 @@ public class AfkPlayer
 
     public DurationFormat getDurationTypeForPlaceholder()
     {
-        DurationFormat format = DurationFormat.fromName(ConfigWrap.place().duration.option.getName());
+        DurationFormat format = DurationFormat.fromStringStatic(ConfigWrap.place().duration.option.getName());
 
         if (format != null)
         {
@@ -227,7 +227,7 @@ public class AfkPlayer
 
     public TimeFormat getTimeDateTypeForPlaceholder()
     {
-        TimeFormat format = TimeFormat.fromName(ConfigWrap.place().timeDate.option.getName());
+        TimeFormat format = TimeFormat.fromStringStatic(ConfigWrap.place().timeDate.option.getName());
 
         if (format != null)
         {
@@ -240,7 +240,7 @@ public class AfkPlayer
 
     public String getAfkDurationString()
     {
-        return this.getDurationType().getFormat((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.mess().duration.customFormat);
+        return this.getDurationType().format((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.mess().duration.customFormat);
     }
 
     public String getAfkTimeString()
@@ -250,7 +250,7 @@ public class AfkPlayer
 
     public String getAfkDurationStringForPlaceholder()
     {
-        return this.getDurationTypeForPlaceholder().getFormat((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.place().duration.customFormat);
+        return this.getDurationTypeForPlaceholder().format((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.place().duration.customFormat);
     }
 
     public String getAfkTimeStringForPlaceholder()
