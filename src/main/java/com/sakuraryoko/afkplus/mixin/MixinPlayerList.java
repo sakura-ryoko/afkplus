@@ -23,13 +23,17 @@ package com.sakuraryoko.afkplus.mixin;
 //#if MC >= 11903
 //$$ import java.util.EnumSet;
 //#endif
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.minecraft.Util;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -45,6 +49,8 @@ import com.sakuraryoko.afkplus.player.AfkPlayerList;
 public abstract class MixinPlayerList
 {
     @Shadow public abstract void broadcastAll(Packet<?> packet);
+
+    @Shadow @Final private List<ServerPlayer> players;
     @Unique private long lastTick;
 
     public MixinPlayerList()
@@ -66,6 +72,9 @@ public abstract class MixinPlayerList
 
                 if (!list.isEmpty())
                 {
+                    // Try to prevent a de-synced list.
+                    list = this.afkplus$verifyPlayerList(list);
+
                     //#if MC >= 11903
                     //$$ this.broadcastAll(new ClientboundPlayerInfoUpdatePacket(EnumSet.of(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME), list));
                     //#else
@@ -77,5 +86,52 @@ public abstract class MixinPlayerList
 
             this.lastTick = Util.getMillis();
         }
+    }
+
+    @Unique
+    private List<ServerPlayer> afkplus$verifyPlayerList(List<ServerPlayer> test)
+    {
+        if (this.players.size() == test.size())
+        {
+            return test;
+        }
+
+        // Something is different.  Fix it.
+        List<ServerPlayer> list = new ArrayList<>();
+        List<ServerPlayer> remove = new ArrayList<>();
+
+        for (ServerPlayer player : test)
+        {
+            UUID id = player.getUUID();
+            AtomicBoolean bool = new AtomicBoolean();
+
+            this.players.forEach(
+                    p ->
+                    {
+                        if (p.getUUID().equals(id))
+                        {
+                            bool.set(true);
+                        }
+                    });
+
+            if (bool.get())
+            {
+                list.add(player);
+            }
+            else
+            {
+                remove.add(player);
+            }
+        }
+
+        // Remove stale players
+        if (!remove.isEmpty())
+        {
+            remove.forEach(
+                    p -> AfkPlayerList.getInstance().removePlayer(p)
+            );
+        }
+
+        return list;
     }
 }
