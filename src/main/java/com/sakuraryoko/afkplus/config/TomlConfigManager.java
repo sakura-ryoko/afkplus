@@ -22,15 +22,13 @@ package com.sakuraryoko.afkplus.config;
 
 import java.io.File;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import com.moandjiezana.toml.Toml;
 
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 
-@Deprecated
+@Deprecated(forRemoval = true)
 public class TomlConfigManager
 {
     public static TomlConfigData CONFIG = new TomlConfigData();

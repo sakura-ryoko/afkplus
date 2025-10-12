@@ -22,10 +22,14 @@ package com.sakuraryoko.afkplus;
 
 import java.nio.file.Path;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.loader.api.FabricLoader;
 
+@ApiStatus.Internal
 public class Reference
 {
+	public static final Path GAME_DIR = FabricLoader.getInstance().getGameDir();
     public static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir();
     public static final String MOD_ID = "afkplus";
     public static final boolean DEBUG = false;

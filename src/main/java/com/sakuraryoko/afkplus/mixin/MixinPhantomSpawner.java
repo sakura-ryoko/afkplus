@@ -48,7 +48,9 @@ public class MixinPhantomSpawner
 {
     @Unique private ServerPlayer afkPlayer;
 
-    //#if MC >= 12105
+	//#if MC >= 12110
+	//$$ @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;Z)V",
+    //#elseif MC >= 12105
     //$$ @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)V",
     //#else
     @Inject(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",
@@ -60,7 +62,9 @@ public class MixinPhantomSpawner
                      target = "Lnet/minecraft/world/entity/player/Player;blockPosition()Lnet/minecraft/core/BlockPos;")
                      //#endif
     )
-    //#if MC >= 12105
+    //#if MC >= 12110
+    //$$ private void capturePlayerForMath(ServerLevel serverLevel, boolean bl, CallbackInfo ci,
+    //#elseif MC >= 12105
     //$$ private void capturePlayerForMath(ServerLevel serverLevel, boolean bl, boolean bl2, CallbackInfo ci,
     //#else
     private void capturePlayerForMath(ServerLevel world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir,
@@ -78,7 +82,9 @@ public class MixinPhantomSpawner
         //#endif
     }
 
-    //#if MC >= 12105
+	//#if MC >= 12110
+	//$$ @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;Z)V",
+	//#elseif MC >= 12105
     //$$ @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)V",
     //#else
     @ModifyArg(method = "tick(Lnet/minecraft/server/level/ServerLevel;ZZ)I",

@@ -49,7 +49,6 @@ import com.sakuraryoko.afkplus.player.AfkPlayerList;
 public abstract class MixinPlayerList
 {
     @Shadow public abstract void broadcastAll(Packet<?> packet);
-
     @Shadow @Final private List<ServerPlayer> players;
     @Unique private long lastTick;
 

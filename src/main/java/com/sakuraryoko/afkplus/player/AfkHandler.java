@@ -276,7 +276,7 @@ public class AfkHandler
                 kickMessageString = ConfigWrap.kick().whenKicked;
             }
 
-            AfkPlus.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getAfkTimeString());
+            AfkPlus.LOGGER.warn("Configured timeout has been reached for player {} --> removing from server.", this.player.getName());
 
             if (!ConfigWrap.kick().afkKickMessage.isEmpty())
             {

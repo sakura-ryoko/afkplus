@@ -122,7 +122,7 @@ public class AfkConfigHandler implements IConfigDispatch
         this.checkForRootConfig();
     }
 
-    @SuppressWarnings("deprecation")
+	@Deprecated(forRemoval = true)
     private void checkForTomlFile()
     {
         try

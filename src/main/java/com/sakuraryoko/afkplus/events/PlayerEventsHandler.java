@@ -62,19 +62,36 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     {
         if (result == null)
         {
+	//#if MC >= 12110
+	        //$$ AfkPlus.debugLog("onConnection(): Client connection from Profile [{}]", profile.name());
+        //$$ }
+        //$$ else
+        //$$ {
+	        //$$ AfkPlus.debugLog("onConnection(): Client connection from Profile [{}] --> REFUSED [{}]", profile.name(), result.getString());
+    //#else
             AfkPlus.debugLog("onConnection(): Client connection from Profile [{}]", profile.getName());
         }
         else
         {
             AfkPlus.debugLog("onConnection(): Client connection from Profile [{}] --> REFUSED [{}]", profile.getName(), result.getString());
+    //#endif
         }
     }
 
     @Override
     @ApiStatus.Internal
-    public void onCreatePlayer(@Nonnull ServerPlayer player, @Nonnull GameProfile profile)
+    public void onCreatePlayer(@Nonnull ServerPlayer player, @Nullable GameProfile profile)
     {
+		if (profile == null)
+		{
+			profile = player.getGameProfile();
+		}
+
+	    //#if MC >= 12110
+	    //$$ AfkPlus.debugLog("onCreatePlayer(): Player created [{}] // Profile [{}]", player.getName().getString(), profile.name());
+	    //#else
         AfkPlus.debugLog("onCreatePlayer(): Player created [{}] // Profile [{}]", player.getName().getString(), profile.getName());
+	    //#endif
 
         // checkInvulnerable2
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);

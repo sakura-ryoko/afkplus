@@ -49,11 +49,19 @@ dependencies {
 //	modRuntimeOnly 'me.fallenbreath:mixin-auditor:0.1.0'
 
 	// dependencies
-	include(modApi(fabricApi.module("fabric-resource-loader-v0", project.fabric_api_version)))
-	include(modApi(fabricApi.module("fabric-api-base", project.fabric_api_version)))
-	//modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    def fabricApiModules = ["fabric-resource-loader-v0"]
+//	if (mcVersion >= 12105) {  // "fabric-resource-loader-v0" dependency since fabric api 0.127.0
+        fabricApiModules.add("fabric-api-base")
+//	}
+    fabricApiModules.forEach {
+        include(modImplementation(fabricApi.module(it, project.fabric_api_version)))
+    }
+
+ 	//modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	//include(modImplementation("me.fallenbreath:conditional-mixin-fabric:${project.conditionalmixin_version}"))
-	include(annotationProcessor(implementation("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")))
+    if (mcVersion < 12005) {
+        include("io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}")
+    }
 
 	// AFKPlus Specific
 	modImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
@@ -86,6 +94,14 @@ loom {
 		vmArgs commonVmArgs
 	}
 	// [FEATURE] MIXIN_AUDITOR
+//    runs {
+//        def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
+//        clientMixinAudit {
+//            client()
+//            vmArgs auditVmArgs
+//            ideConfigGenerated false
+//        }
+//    }
 //	runs {
 //		def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
 //		serverMixinAudit {
