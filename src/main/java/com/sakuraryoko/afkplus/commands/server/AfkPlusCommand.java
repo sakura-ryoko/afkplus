@@ -21,7 +21,6 @@
 package com.sakuraryoko.afkplus.commands.server;
 
 import java.util.List;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -36,6 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.AfkConfigHandler;
@@ -58,66 +58,66 @@ public class AfkPlusCommand implements IServerCommand
     {
         dispatcher.register(
                 literal(this.getName())
-                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkPlusCommandPermissions))
+                        .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkPlusCommandPermissions))
                         .executes(ctx -> this.about(ctx.getSource(), ctx))
                         /*
                         .then(literal("test")
-                                      .requires(Permissions.require(this.getNode()+".test", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".test", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .executes(ctx -> this.test(ctx.getSource(), ctx))
                         )
                          */
                         .then(literal("reload")
-                                      .requires(Permissions.require(this.getNode()+".reload", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".reload", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .executes(ctx -> this.reload(ctx.getSource(), ctx))
                         )
                         .then(literal("save")
-                                      .requires(Permissions.require(this.getNode()+".save", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".save", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .executes(ctx -> this.save(ctx.getSource(), ctx))
                         )
                         .then(literal("defaults")
-                                      .requires(Permissions.require(this.getNode()+".defaults", 4))
+                                      .requires(PermsWrap.check(this.getNode()+".defaults", 4))
                                       .executes(ctx -> this.defaults(ctx.getSource(), ctx))
                         )
                         .then(literal("set")
-                                      .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player",
                                                      EntityArgument.player())
                                                     .executes((ctx) -> this.setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), "", ctx))
                                                     .then(argument("reason", StringArgumentType.greedyString())
-                                                                  .requires(Permissions.require(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                                  .requires(PermsWrap.check(this.getNode()+".set", ConfigWrap.afk().afkPlusCommandPermissions))
                                                                   .executes((ctx) -> this.setAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), StringArgumentType.getString(ctx, "reason"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("clear")
-                                      .requires(Permissions.require(this.getNode()+".clear", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".clear", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> this.clearAfk(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("info")
-                                      .requires(Permissions.require(this.getNode()+".info", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".info", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> this.infoAfkPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                       )
                         )
                         .then(literal("damage")
-                                      .requires(Permissions.require(this.getNode()+".damage", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".damage", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(literal("disable")
-                                                    .requires(Permissions.require(this.getNode()+".damage.disable", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                    .requires(PermsWrap.check(this.getNode()+".damage.disable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
                                                                   .executes(ctx -> this.disableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                                       .then(literal("enable")
-                                                    .requires(Permissions.require(this.getNode()+".damage.enable", ConfigWrap.afk().afkPlusCommandPermissions))
+                                                    .requires(PermsWrap.check(this.getNode()+".damage.enable", ConfigWrap.afk().afkPlusCommandPermissions))
                                                     .then(argument("player", EntityArgument.player())
                                                                   .executes(ctx -> this.enableDamagePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx))
                                                     )
                                       )
                         )
                         .then(literal("update")
-                                      .requires(Permissions.require(this.getNode()+".update", ConfigWrap.afk().afkPlusCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode()+".update", ConfigWrap.afk().afkPlusCommandPermissions))
                                       .then(argument("player", EntityArgument.player())
                                                     .executes(ctx -> this.updatePlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player"), ctx)
                                                     )

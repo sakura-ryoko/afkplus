@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 public class DisableDamageOptions implements IConfigOption
@@ -51,28 +50,6 @@ public class DisableDamageOptions implements IConfigOption
 
         this.disableDamage = opts.disableDamage;
         this.disableDamageCooldown = opts.disableDamageCooldown;
-        this.whenDamageDisabled = opts.whenDamageDisabled;
-        this.whenDamageEnabled = opts.whenDamageEnabled;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public DisableDamageOptions fromToml(TomlConfigData.PacketOptions opts, DisableDamageOptions opt)
-    {
-        this.copy(opt);
-
-        this.disableDamage = opts.disableDamage;
-        this.disableDamageCooldown = opts.disableDamageCooldown;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public DisableDamageOptions fromToml(TomlConfigData.MessageOptions opts, DisableDamageOptions opt)
-    {
-        this.copy(opt);
-
         this.whenDamageDisabled = opts.whenDamageDisabled;
         this.whenDamageEnabled = opts.whenDamageEnabled;
 

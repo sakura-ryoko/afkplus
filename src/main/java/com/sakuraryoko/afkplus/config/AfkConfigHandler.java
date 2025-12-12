@@ -31,7 +31,6 @@ import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
 import com.sakuraryoko.corelib.api.config.IConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigDispatch;
 import com.sakuraryoko.corelib.api.time.TimeFormat;
-import com.sakuraryoko.corelib.impl.config.ConfigManager;
 
 public class AfkConfigHandler implements IConfigDispatch
 {
@@ -116,54 +115,8 @@ public class AfkConfigHandler implements IConfigDispatch
     @Override
     public void initConfig()
     {
-        // Check for "configs/afkplus.toml"
-        this.checkForTomlFile();
         // Check for "configs/afkplus.json" -> Move to "configs/afkplus/afkplus.json"
         this.checkForRootConfig();
-    }
-
-	@Deprecated(forRemoval = true)
-    private void checkForTomlFile()
-    {
-        try
-        {
-            Path tomlFile = Reference.CONFIG_DIR.resolve(Reference.MOD_ID +".toml");
-
-            if (Files.exists(tomlFile))
-            {
-                AfkPlus.LOGGER.warn("checkForTomlFile(): Found legacy TOML file [{}]; importing ...", tomlFile.getFileName().toString());
-                CONFIG = this.defaults();
-
-                // Load TOML Config (Without saving it)
-                TomlConfigManager.initConfig();
-                TomlConfigManager.loadConfig();
-
-                // Copy
-                CONFIG.AFK_PLUS.fromToml(TomlConfigManager.CONFIG.afkPlusOptions, CONFIG.AFK_PLUS);
-                CONFIG.MESSAGE.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.MESSAGE);
-                CONFIG.PACKET.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.PACKET);
-                CONFIG.DAMAGE.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.DAMAGE);
-                CONFIG.DAMAGE.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.DAMAGE);
-                CONFIG.KICK.fromToml(TomlConfigManager.CONFIG.packetOptions, CONFIG.KICK);
-                CONFIG.KICK.fromToml(TomlConfigManager.CONFIG.messageOptions, CONFIG.KICK);
-                CONFIG.PLACEHOLDER.fromToml(TomlConfigManager.CONFIG.PlaceholderOptions, CONFIG.PLACEHOLDER);
-                CONFIG.PLAYER_LIST.fromToml(TomlConfigManager.CONFIG.playerListOptions,CONFIG.PLAYER_LIST);
-
-                // Save As Json
-                this.onPreSaveConfig();
-                ConfigManager.getInstance().saveEach(this);
-                this.execute(true);
-                this.onPostSaveConfig();
-
-                // Delete it, never to be seen again :)
-                AfkPlus.LOGGER.info("checkForTomlFile(): Deleting legacy TOML file [{}]", tomlFile.getFileName().toString());
-                Files.delete(tomlFile);
-            }
-        }
-        catch (Exception err)
-        {
-            AfkPlus.LOGGER.error("checkForTomlFile(): Error converting legacy TOML file // {}", err.getMessage());
-        }
     }
 
     private void checkForRootConfig()

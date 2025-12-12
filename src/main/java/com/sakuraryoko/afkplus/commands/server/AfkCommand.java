@@ -22,7 +22,6 @@ package com.sakuraryoko.afkplus.commands.server;
 
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -34,6 +33,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
@@ -51,10 +51,10 @@ public class AfkCommand implements IServerCommand
     {
         dispatcher.register(
                 literal(this.getName())
-                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
+                        .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
                         .executes(ctx -> this.setAfk(ctx.getSource(), "", ctx))
                         .then(argument("reason", StringArgumentType.greedyString())
-                                      .requires(Permissions.require(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
+                                      .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkCommandPermissions))
                                       .executes(ctx -> this.setAfk(ctx.getSource(), StringArgumentType.getString(ctx, "reason"), ctx))
                         )
         );

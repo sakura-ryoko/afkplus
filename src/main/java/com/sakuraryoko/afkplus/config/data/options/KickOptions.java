@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 public class KickOptions implements IConfigOption
@@ -71,34 +70,6 @@ public class KickOptions implements IConfigOption
         this.whenKickedDurationDefaultPrefix = !opts.whenKickedDurationDefaultPrefix.isEmpty() ? opts.whenKickedDurationDefaultPrefix : " <gray>(Gone for: <green>";
         this.whenKickedDurationNamedPrefix = !opts.whenKickedDurationNamedPrefix.isEmpty() ? opts.whenKickedDurationNamedPrefix : " <gray>(%player:displayname% was gone for: <green>";
         this.whenKickedDurationSuffix = !opts.whenKickedDurationSuffix.isEmpty() ? opts.whenKickedDurationSuffix : "<gray>)";
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public KickOptions fromToml(TomlConfigData.PacketOptions opts, KickOptions opt)
-    {
-        this.copy(opt);
-
-        this.afkKickEnabled = opts.afkKickEnabled;
-        this.afkKickNonSurvival = opts.afkKickNonSurvival;
-        this.afkKickTimer = opts.afkKickTimer;
-        this.afkKickSafePermissions = opts.afkKickSafePermissions;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public KickOptions fromToml(TomlConfigData.MessageOptions opts, KickOptions opt)
-    {
-        this.copy(opt);
-
-        this.afkKickMessage = opts.afkKickMessage;
-        this.whenKicked = opts.whenKicked;
-        this.whenKickedDefaultReason = "<copper>AFK timeout";
-        this.whenKickedDurationDefaultPrefix = " <gray>(Gone for: <green>";
-        this.whenKickedDurationNamedPrefix = " <gray>(%player:displayname% was gone for: <green>";
-        this.whenKickedDurationSuffix = "<gray>)";
 
         return this;
     }

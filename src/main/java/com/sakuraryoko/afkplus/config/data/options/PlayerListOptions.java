@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 public class PlayerListOptions implements IConfigOption
@@ -45,18 +44,6 @@ public class PlayerListOptions implements IConfigOption
     public PlayerListOptions copy(IConfigOption opt)
     {
         PlayerListOptions opts = (PlayerListOptions) opt;
-
-        this.afkPlayerName = opts.afkPlayerName;
-        this.enableListDisplay = opts.enableListDisplay;
-        this.updateInterval = opts.updateInterval;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public PlayerListOptions fromToml(TomlConfigData.PlayerListOptions opts, PlayerListOptions opt)
-    {
-        this.copy(opt);
 
         this.afkPlayerName = opts.afkPlayerName;
         this.enableListDisplay = opts.enableListDisplay;

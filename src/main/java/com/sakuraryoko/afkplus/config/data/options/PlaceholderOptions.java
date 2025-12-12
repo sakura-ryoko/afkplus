@@ -20,9 +20,7 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
-import com.sakuraryoko.corelib.api.time.DurationFormat;
 import com.sakuraryoko.corelib.api.time.DurationOption;
 import com.sakuraryoko.corelib.api.time.TimeDateOption;
 
@@ -70,29 +68,6 @@ public class PlaceholderOptions implements IConfigOption
         this.afkInvulnerablePlaceholder = opts.afkInvulnerablePlaceholder;
         this.duration.copy(opts.duration);
         this.timeDate.copy(opts.timeDate);
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public PlaceholderOptions fromToml(TomlConfigData.PlaceholderOptions opts, PlaceholderOptions opt)
-    {
-        this.copy(opt);
-
-        this.afkPlaceholder = opts.afkPlaceholder;
-        this.afkPlusNamePlaceholder = opts.afkPlusNamePlaceholder;
-        this.afkPlusNamePlaceholderAfk = opts.afkPlusNamePlaceholderAfk;
-        this.afkDurationPlaceholderFormatting = opts.afkDurationPlaceholderFormatting;
-        this.afkTimePlaceholderFormatting = opts.afkTimePlaceholderFormatting;
-        this.afkReasonPlaceholderFormatting = opts.afkReasonPlaceholderFormatting;
-        this.afkInvulnerablePlaceholder = opts.afkInvulnerablePlaceholder;
-        this.duration = new DurationOption();
-        this.timeDate = new TimeDateOption();
-
-        if (opts.afkDurationPretty)
-        {
-            this.duration.option = DurationFormat.PRETTY;
-        }
 
         return this;
     }

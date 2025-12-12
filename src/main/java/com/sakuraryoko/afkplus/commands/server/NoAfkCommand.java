@@ -20,8 +20,6 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
-import me.lucko.fabric.api.permissions.v0.Permissions;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandBuildContext;
@@ -30,6 +28,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
@@ -46,7 +45,7 @@ public class NoAfkCommand implements IServerCommand
     {
         dispatcher.register(
                 literal(this.getName())
-                        .requires(Permissions.require(this.getNode(), ConfigWrap.afk().noAfkCommandPermissions))
+                        .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().noAfkCommandPermissions))
                         .executes(ctx -> this.setNoAfk(ctx.getSource(), ctx))
         );
     }

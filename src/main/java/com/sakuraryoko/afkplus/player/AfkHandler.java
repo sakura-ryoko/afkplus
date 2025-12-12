@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.api.AfkPlusEvents;
+import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.player.interfaces.IPlayerInvoker;
@@ -70,8 +70,22 @@ public class AfkHandler
         else if (reason == null || reason.isEmpty())
         {
             this.player.setAfkReason("<red>none");
-            Component mess = Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenAfk),
-                                                    PlaceholderContext.of(this.player.getPlayer()));
+//            TextNode whenAfk = TextNode.of(ConfigWrap.mess().whenAfk);
+//            Component mess;
+//
+//            if (ConfigWrap.mess().parsePlaceholdersFirst)
+//            {
+//                mess = Placeholders.parseText(whenAfk,PlaceholderContext.of(this.player.getPlayer()));
+//                mess = TextParser.
+//            }
+//            else
+//            {
+//
+//            }
+
+            Component mess = Placeholders.parseText(
+                    TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenAfk),
+                    PlaceholderContext.of(this.player.getPlayer()));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             this.sendAfkMessage(mess);
@@ -256,8 +270,8 @@ public class AfkHandler
         if (this.player.isAfk() && ConfigWrap.kick().afkKickEnabled)
         {
             if (((this.player.getPlayer().isCreative() || this.player.getPlayer().isSpectator()) && !ConfigWrap.kick().afkKickNonSurvival) ||
-               (Permissions.check(this.player.getPlayer(), Reference.MOD_ID + ".kick.safe", ConfigWrap.kick().afkKickSafePermissions)) ||
-               (Permissions.check(this.player.getPlayer(), Reference.MOD_ID + ".afkplus", ConfigWrap.afk().afkPlusCommandPermissions)))
+               (PermsWrap.check(this.player.getPlayer(), Reference.MOD_ID + ".kick.safe", ConfigWrap.kick().afkKickSafePermissions)) ||
+               (PermsWrap.check(this.player.getPlayer(), Reference.MOD_ID + ".afkplus", ConfigWrap.afk().afkPlusCommandPermissions)))
             {
                 return;
             }

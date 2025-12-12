@@ -11,6 +11,9 @@ repositories {
 		url = 'https://jitpack.io'
 	}
 	maven {
+		url = 'https://maven.parchmentmc.org'
+	}
+	maven {
 		url = 'https://maven.fallenbreath.me/releases'
 	}
 	maven {
@@ -32,12 +35,16 @@ configurations {
 dependencies {
 	// loom
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	mappings loom.officialMojangMappings()
+	mappings loom.layered() {
+		officialMojangMappings()
+		if (project.parchment_version.size() > 0) {
+			parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
+		}
+	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// External Dependencies
-	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
+//	implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
 	//implementation "com.google.code.gson:gson:${project.gson_version}"
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 

@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 public class PacketOptions implements IConfigOption
@@ -64,23 +63,6 @@ public class PacketOptions implements IConfigOption
         this.bypassInsomnia = opts.bypassInsomnia;
         this.afkTimeoutString = opts.afkTimeoutString;
         this.afkTimeoutIgnoreAttack = opts.afkTimeoutIgnoreAttack;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public PacketOptions fromToml(TomlConfigData.PacketOptions opts, PacketOptions opt)
-    {
-        this.copy(opt);
-
-        this.resetOnLook = opts.resetOnLook;
-        this.resetOnMovement = opts.resetOnMovement;
-        this.ignoreAttacks = false;
-        this.timeoutSeconds = opts.timeoutSeconds;
-        this.bypassSleepCount = opts.bypassSleepCount;
-        this.bypassInsomnia = opts.bypassInsomnia;
-        this.afkTimeoutString = "<i><gray>timeout<r>";
-        this.afkTimeoutIgnoreAttack = "<i><gray>only swinging their sword<r>";
 
         return this;
     }

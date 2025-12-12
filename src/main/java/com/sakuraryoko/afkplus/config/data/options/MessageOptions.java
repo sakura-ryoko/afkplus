@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 import com.sakuraryoko.corelib.api.time.DurationFormat;
 import com.sakuraryoko.corelib.api.time.DurationOption;
@@ -39,6 +38,7 @@ public class MessageOptions implements IConfigOption
     public String whileYourVanished;
     public String whileVanished;
     public boolean displayDuration;
+//    public boolean parsePlaceholdersFirst;
     public DurationOption duration;
     public TimeDateOption timeDate;
 
@@ -50,9 +50,9 @@ public class MessageOptions implements IConfigOption
     public void defaults()
     {
         this.enableMessages = true;
-        this.whenAfk = "%player:displayname% <yellow>is now AFK<r>";
+        this.whenAfk = "<r>%player:displayname%<r> <yellow>is now AFK<r>";
         this.whenAfkPunctuation = "<yellow>,<r> ";
-        this.whenReturn = "%player:displayname% <yellow>is no longer AFK<r>";
+        this.whenReturn = "<r>%player:displayname%<r> <yellow>is no longer AFK<r>";
         this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
         this.whenReturnDurationSuffix = "<gray>)";
         this.defaultReason = "<gray>poof!<r>";
@@ -60,6 +60,7 @@ public class MessageOptions implements IConfigOption
         this.whileYourVanished = "<red>You are vanished, and probably shouldn't be doing that.<r>";
         this.whileVanished = "<red> is vanished, and probably shouldn't be doing that.<r>";
         this.displayDuration = true;
+//        this.parsePlaceholdersFirst = false;
         this.duration = new DurationOption();
         this.duration.option = DurationFormat.PRETTY;
         this.timeDate = new TimeDateOption();
@@ -81,35 +82,9 @@ public class MessageOptions implements IConfigOption
         this.whileYourVanished = opts.whileYourVanished;
         this.whileVanished = opts.whileVanished;
         this.displayDuration = opts.displayDuration;
+//        this.parsePlaceholdersFirst = opts.parsePlaceholdersFirst;
         this.duration.copy(opts.duration);
         this.timeDate.copy(opts.timeDate);
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public MessageOptions fromToml(TomlConfigData.MessageOptions opts, MessageOptions opt)
-    {
-        this.copy(opt);
-
-        this.enableMessages = opts.enableMessages;
-        this.whenAfk = opts.whenAfk;
-        this.whenAfkPunctuation = "<yellow>,<r> ";
-        this.whenReturn = opts.whenReturn;
-        this.whenReturnDurationPrefix = " <gray>(Gone for: <green>";
-        this.whenReturnDurationSuffix = "<gray>)";
-        this.defaultReason = opts.defaultReason;
-        this.afkCooldownGreeting = "<yellow>Welcome back, <r>%player:display_name%<r>, <yellow>did you miss anything fun?";
-        this.displayDuration = opts.displayDuration;
-        this.whileYourVanished = "<red>You are vanished, and probably shouldn't be doing that.<r>";
-        this.whileVanished = "<red> is vanished, and probably shouldn't be doing that.<r>";
-        this.duration = new DurationOption();
-        this.timeDate = new TimeDateOption();
-
-        if (opts.prettyDuration)
-        {
-            this.duration.option = DurationFormat.PRETTY;
-        }
 
         return this;
     }

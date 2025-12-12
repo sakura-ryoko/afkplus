@@ -20,7 +20,6 @@
 
 package com.sakuraryoko.afkplus.config.data.options;
 
-import com.sakuraryoko.afkplus.config.data.TomlConfigData;
 import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 public class AfkPlusOptions implements IConfigOption
@@ -67,24 +66,6 @@ public class AfkPlusOptions implements IConfigOption
         this.afkPlusCommandPermissions = opts.afkPlusCommandPermissions;
         this.afkCommandCooldown = opts.afkCommandCooldown;
         this.debugMode = opts.debugMode;
-
-        return this;
-    }
-
-    @SuppressWarnings("deprecation")
-    public AfkPlusOptions fromToml(TomlConfigData.AfkPlusOptions opts, AfkPlusOptions opt)
-    {
-        this.copy(opt);
-
-        this.enableAfkCommand = opts.enableAfkCommand;
-        this.enableNoAfkCommand = opts.enableNoAfkCommand;
-        this.enableAfkInfoCommand = opts.enableAfkInfoCommand;
-        this.afkCommandPermissions = opts.afkCommandPermissions;
-        this.noAfkCommandPermissions = opts.noAfkCommandPermissions;
-        this.afkInfoCommandPermissions = opts.afkInfoCommandPermissions;
-        this.afkPlusCommandPermissions = opts.afkPlusCommandPermissions;
-        this.afkCommandCooldown = 5;
-        this.debugMode = false;
 
         return this;
     }
