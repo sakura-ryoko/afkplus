@@ -4,6 +4,8 @@
 
 ![Example](https://sakuraryoko.com/files/1260026/afkplus.jpg)
 
+[![Join Sakura's RyokoCraft Discord](https://sakuraryoko.com/files/1398873/discord-300px.png)](https://discord.gg/CUPAjkXw)
+
 ## Basic Description:
 - A forked project based upon AfkDisplay by beabfc.  He has given me his blessing with proceeding to create this mod, look under my Archived Issues pane.
 - Show which players are AFK in the player list, see the Reasons, Durations, and Times.
