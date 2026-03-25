@@ -22,8 +22,6 @@ package com.sakuraryoko.afkplus.player;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +36,7 @@ import com.sakuraryoko.afkplus.api.AfkPlusEvents;
 import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.interfaces.IPlayerInvoker;
 import com.sakuraryoko.corelib.api.log.AnsiLogger;
 
@@ -75,7 +74,7 @@ public class AfkHandler
 //
 //            if (ConfigWrap.mess().parsePlaceholdersFirst)
 //            {
-//                mess = Placeholders.parseText(whenAfk,PlaceholderContext.of(this.player.getPlayer()));
+//                mess = PlaceholderUtils.parseText(whenAfk,PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 //                mess = TextParser.
 //            }
 //            else
@@ -83,9 +82,9 @@ public class AfkHandler
 //
 //            }
 
-            Component mess = Placeholders.parseText(
+            Component mess = PlaceholderUtils.parseText(
                     TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().whenAfk),
-                    PlaceholderContext.of(this.player.getPlayer()));
+                    PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 
             //AfkPlusLogger.debug("registerafk-mess().toString(): " + mess.toString());
             this.sendAfkMessage(mess);
@@ -95,12 +94,12 @@ public class AfkHandler
             this.player.setAfkReason(reason);
             String mess1 = ConfigWrap.mess().whenAfk
                          + ConfigWrap.mess().whenAfkPunctuation + reason;
-            Component mess2 = Placeholders.parseText(TextHandler.getInstance().formatTextSafe(mess1), PlaceholderContext.of(this.player.getPlayer()));
+            Component mess2 = PlaceholderUtils.parseText(TextHandler.getInstance().formatTextSafe(mess1), PlaceholderUtils.ofPlayer(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
 
         AfkPlusEvents.AFK_EVENT.invoker().onAfk(this.invoker().afkplus$player(),
-                                                Placeholders.parseText(TextHandler.getInstance().formatTextSafe(this.player.getAfkReason()), PlaceholderContext.of(this.player.getPlayer())));
+                                                PlaceholderUtils.parseText(TextHandler.getInstance().formatTextSafe(this.player.getAfkReason()), PlaceholderUtils.ofPlayer(this.player.getPlayer())));
 
         if (ConfigWrap.dmg().disableDamage && ConfigWrap.dmg().disableDamageCooldown < 1)
         {
@@ -143,14 +142,14 @@ public class AfkHandler
                     + ConfigWrap.mess().whenReturnDurationSuffix+"<r>";
 
             Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
-            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
+            Component mess2 = PlaceholderUtils.parseText(mess1, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
         else
         {
             String ret = ConfigWrap.mess().whenReturn + "<r>";
             Component mess1 = TextHandler.getInstance().formatTextSafe(ret);
-            Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
+            Component mess2 = PlaceholderUtils.parseText(mess1, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
             this.sendAfkMessage(mess2);
         }
 
@@ -193,7 +192,7 @@ public class AfkHandler
             if (!ConfigWrap.dmg().whenDamageEnabled.isEmpty())
             {
                 Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.dmg().whenDamageEnabled);
-                Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
+                Component mess2 = PlaceholderUtils.parseText(mess1, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
                 this.sendAfkMessage(mess2);
             }
 
@@ -235,7 +234,7 @@ public class AfkHandler
                 if (!ConfigWrap.dmg().whenDamageDisabled.isEmpty())
                 {
                     Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.dmg().whenDamageDisabled);
-                    Component mess2 = Placeholders.parseText(mess1, PlaceholderContext.of(this.player.getPlayer()));
+                    Component mess2 = PlaceholderUtils.parseText(mess1, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
                     this.sendAfkMessage(mess2);
                 }
 
@@ -318,7 +317,7 @@ public class AfkHandler
                 }
 
                 kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
-                kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
+                kickReason = PlaceholderUtils.parseText(kickReason, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 
                 this.player.setAfk(false);
                 this.player.setAfkTimeMs(0L);
@@ -335,7 +334,7 @@ public class AfkHandler
                 if (!kickMessageString.isEmpty())
                 {
                     kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
-                    kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
+                    kickMessage = PlaceholderUtils.parseText(kickMessage, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 
                     this.sendAfkMessage(kickMessage);
                 }
@@ -345,7 +344,7 @@ public class AfkHandler
                 kickReasonString = ConfigWrap.kick().whenKickedDefaultReason+"<r>";
 
                 kickReason = TextHandler.getInstance().formatTextSafe(kickReasonString);
-                kickReason = Placeholders.parseText(kickReason, PlaceholderContext.of(this.player.getPlayer()));
+                kickReason = PlaceholderUtils.parseText(kickReason, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 
                 this.player.setAfk(false);
                 this.player.setAfkTimeMs(0L);
@@ -361,7 +360,7 @@ public class AfkHandler
                 if (!kickMessageString.isEmpty())
                 {
                     kickMessage = TextHandler.getInstance().formatTextSafe(kickMessageString);
-                    kickMessage = Placeholders.parseText(kickMessage, PlaceholderContext.of(this.player.getPlayer()));
+                    kickMessage = PlaceholderUtils.parseText(kickMessage, PlaceholderUtils.ofPlayer(this.player.getPlayer()));
 
                     this.sendAfkMessage(kickMessage);
                 }

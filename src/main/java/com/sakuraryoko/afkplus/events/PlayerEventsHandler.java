@@ -23,8 +23,6 @@ package com.sakuraryoko.afkplus.events;
 import java.net.SocketAddress;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
 import org.jetbrains.annotations.ApiStatus;
 
 import com.mojang.authlib.GameProfile;
@@ -41,6 +39,7 @@ import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
 import com.sakuraryoko.afkplus.modinit.AfkPlusInit;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.corelib.api.events.IPlayerEventsDispatch;
@@ -519,9 +518,9 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
         if (ConfigWrap.list().enableListDisplay && afkPlayer.isAfk())
         {
-            Component listEntry = Placeholders.parseText(
+            Component listEntry = PlaceholderUtils.parseText(
                     TextHandler.getInstance().formatTextSafe(ConfigWrap.list().afkPlayerName),
-                    PlaceholderContext.of(player)
+                    PlaceholderUtils.ofPlayer(player)
             );
 
             AfkPlus.debugLog("replacePlayerListName-listEntry().toString(): {}", listEntry.getString());

@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
@@ -50,7 +51,7 @@ public class InvulnerablePlaceholder
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
             Component result = afkPlayer.isDamageEnabled()
                                ? Component.empty()
-                               : Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkInvulnerablePlaceholder + "<r>"), ctx);
+                               : PlaceholderUtils.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkInvulnerablePlaceholder + "<r>"), ctx);
 
             return PlaceholderResult.value(result);
         });

@@ -23,14 +23,12 @@ package com.sakuraryoko.afkplus.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
@@ -160,16 +158,16 @@ public interface AfkPlusAPI
 
         if (afkPlayer.isAfk())
         {
-            return Placeholders.parseText(
+            return PlaceholderUtils.parseText(
                     TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholderAfk),
-                    PlaceholderContext.of(player)
+                    PlaceholderUtils.ofPlayer(player)
             );
         }
         else
         {
-            return Placeholders.parseText(
+            return PlaceholderUtils.parseText(
                     TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlusNamePlaceholder),
-                    PlaceholderContext.of(player)
+                    PlaceholderUtils.ofPlayer(player)
             );
         }
     }

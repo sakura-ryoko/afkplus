@@ -21,8 +21,6 @@
 package com.sakuraryoko.afkplus.player;
 
 import javax.annotation.Nonnull;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -30,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import com.sakuraryoko.afkplus.AfkPlus;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 
 public class AfkPlayerInfo
 {
@@ -105,9 +104,9 @@ public class AfkPlayerInfo
             }
             else
             {
-                afkReason = Placeholders.parseText(
+                afkReason = PlaceholderUtils.parseText(
                             TextHandler.getInstance().formatTextSafe(reasonFormat + afkPlayer.getAfkReason()),
-                            PlaceholderContext.of(src));
+                            PlaceholderUtils.ofCmdSrc(src));
             }
 
             AfkPlus.debugLog("AkfStatus.getReason(): {}", afkReason.toString());

@@ -20,9 +20,6 @@
 
 package com.sakuraryoko.afkplus.commands.server;
 
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -37,6 +34,7 @@ import com.sakuraryoko.afkplus.commands.PermsWrap;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 import com.sakuraryoko.corelib.api.commands.IServerCommand;
@@ -97,9 +95,9 @@ public class AfkCommand implements IServerCommand
         }
         else if ((Util.getMillis() - afkPlayer.getLastAfkTimeMs()) < (ConfigWrap.afk().afkCommandCooldown * 1000L))
         {
-            Component result = Placeholders.parseText(
+            Component result = PlaceholderUtils.parseText(
                     TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().afkCooldownGreeting),
-                    PlaceholderContext.of(src));
+                    PlaceholderUtils.ofCmdSrc(src));
 
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> result, false);

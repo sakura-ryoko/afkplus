@@ -29,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import com.sakuraryoko.afkplus.Reference;
 import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.config.ConfigWrap;
+import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.player.AfkPlayer;
 import com.sakuraryoko.afkplus.player.AfkPlayerList;
 
@@ -49,7 +50,7 @@ public class AfkPlaceholder
 
             AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
             Component result = afkPlayer.isAfk()
-                               ? Placeholders.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlaceholder), ctx)
+                               ? PlaceholderUtils.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkPlaceholder), ctx)
                                : Component.empty();
 
             return PlaceholderResult.value(result);
