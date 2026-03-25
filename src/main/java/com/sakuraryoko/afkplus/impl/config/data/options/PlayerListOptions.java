@@ -18,33 +18,40 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.impl.config.data.options;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.api.ModInitializer;
-
-import com.sakuraryoko.afkplus.impl.modinit.AfkPlusInit;
-import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
+import com.sakuraryoko.corelib.api.config.IConfigOption;
 
 @ApiStatus.Internal
-public class AfkPlus implements ModInitializer
+public class PlayerListOptions implements IConfigOption
 {
-    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    public boolean enableListDisplay;
+    public String afkPlayerName;
+    public int updateInterval;
 
-    public static void debugLog(String key, Object... args)
+    public PlayerListOptions()
     {
-        if (Reference.DEBUG)
-        {
-            LOGGER.info(String.format("[DEBUG] %s", key), args);
-        }
+        this.defaults();
+    }
+
+    public void defaults()
+    {
+        this.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>";
+        this.enableListDisplay = true;
+        this.updateInterval = 15;
     }
 
     @Override
-    public void onInitialize()
+    public PlayerListOptions copy(IConfigOption opt)
     {
-        ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
+        PlayerListOptions opts = (PlayerListOptions) opt;
+
+        this.afkPlayerName = opts.afkPlayerName;
+        this.enableListDisplay = opts.enableListDisplay;
+        this.updateInterval = opts.updateInterval;
+
+        return this;
     }
 }

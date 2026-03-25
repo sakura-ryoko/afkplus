@@ -19,7 +19,7 @@
     "server": [],
     "client": [],
     "main": [
-      "${maven_group}.${mod_id}.AfkPlus"
+      "${maven_group}.${mod_id}.impl.AfkPlus"
     ]
   },
   "mixins": [

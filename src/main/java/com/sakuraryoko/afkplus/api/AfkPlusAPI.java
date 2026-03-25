@@ -26,11 +26,11 @@ import javax.annotation.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.compat.morecolors.TextHandler;
-import com.sakuraryoko.afkplus.config.ConfigWrap;
-import com.sakuraryoko.afkplus.placeholders.PlaceholderUtils;
-import com.sakuraryoko.afkplus.player.AfkPlayer;
-import com.sakuraryoko.afkplus.player.AfkPlayerList;
+import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
+import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
+import com.sakuraryoko.afkplus.impl.placeholders.PlaceholderUtils;
+import com.sakuraryoko.afkplus.impl.player.AfkPlayer;
+import com.sakuraryoko.afkplus.impl.player.AfkPlayerList;
 
 /**
  * AfkPlus API

@@ -1,19 +1,20 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "com.sakuraryoko.afkplus.mixin",
-  "compatibilityLevel": "{{COMPATIBILITY_LEVEL}}",
-  "mixins": [
-    "MixinPhantomSpawner",
-    "MixinPlayerList",
-    "MixinServerGamePacketListenerImpl",
-    "MixinServerPlayer",
-    "MixinServerPlayerGameMode",
-    "MixinSleepStatus"
-  ],
-  "client": [],
-  "server": [],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.sakuraryoko.afkplus.impl.mixin",
+    "compatibilityLevel": "{{COMPATIBILITY_LEVEL}}",
+    "mixins": [
+        "MixinPhantomSpawner",
+        "MixinPlayer",
+        "MixinPlayerList",
+        "MixinServerGamePacketListenerImpl",
+        "MixinServerPlayer",
+        "MixinServerPlayerGameMode",
+        "MixinSleepStatus"
+    ],
+    "client": [],
+    "server": [],
+    "injectors": {
+        "defaultRequire": 1
   }
 }

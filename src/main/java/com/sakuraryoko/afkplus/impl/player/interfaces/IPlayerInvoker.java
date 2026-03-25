@@ -18,33 +18,22 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.impl.player.interfaces;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.api.ModInitializer;
-
-import com.sakuraryoko.afkplus.impl.modinit.AfkPlusInit;
-import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 @ApiStatus.Internal
-public class AfkPlus implements ModInitializer
+public interface IPlayerInvoker
 {
-    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+	ServerPlayer afkplus$player();
 
-    public static void debugLog(String key, Object... args)
-    {
-        if (Reference.DEBUG)
-        {
-            LOGGER.info(String.format("[DEBUG] %s", key), args);
-        }
-    }
+	MinecraftServer afkplus$server();
 
-    @Override
-    public void onInitialize()
-    {
-        ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
-    }
+	ServerGamePacketListenerImpl afkplus$connection();
+
+	void afkplus$setInvulnerable(boolean toggle);
 }

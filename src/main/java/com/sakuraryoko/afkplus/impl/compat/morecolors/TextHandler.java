@@ -18,33 +18,35 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.impl.compat.morecolors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.api.ModInitializer;
+import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.impl.modinit.AfkPlusInit;
-import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
+import com.sakuraryoko.corelib.api.text.ITextHandler;
+import com.sakuraryoko.morecolors.api.MoreColorsAPI;
 
 @ApiStatus.Internal
-public class AfkPlus implements ModInitializer
+public class TextHandler implements ITextHandler
 {
-    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
+    private static final TextHandler INSTANCE = new TextHandler();
+    public static TextHandler getInstance() { return INSTANCE; }
 
-    public static void debugLog(String key, Object... args)
+    public Component formatTextSafe(@Nonnull String str)
     {
-        if (Reference.DEBUG)
-        {
-            LOGGER.info(String.format("[DEBUG] %s", key), args);
-        }
+        return MoreColorsAPI.formatTextSafe(str);
     }
 
-    @Override
-    public void onInitialize()
+    public Component formatText(@Nonnull String str)
     {
-        ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
+        return MoreColorsAPI.formatText(str);
+    }
+
+    public Component of(@Nonnull String str)
+    {
+        return MoreColorsAPI.of(str);
     }
 }

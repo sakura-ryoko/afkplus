@@ -18,33 +18,22 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus;
+package com.sakuraryoko.afkplus.impl.placeholders;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.fabricmc.api.ModInitializer;
-
-import com.sakuraryoko.afkplus.impl.modinit.AfkPlusInit;
-import com.sakuraryoko.corelib.impl.modinit.ModInitManager;
+import com.sakuraryoko.afkplus.impl.placeholders.options.*;
 
 @ApiStatus.Internal
-public class AfkPlus implements ModInitializer
+public class PlaceholderManager
 {
-    public static Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-
-    public static void debugLog(String key, Object... args)
+    public static void register()
     {
-        if (Reference.DEBUG)
-        {
-            LOGGER.info(String.format("[DEBUG] %s", key), args);
-        }
-    }
-
-    @Override
-    public void onInitialize()
-    {
-        ModInitManager.getInstance().registerModInitHandler(AfkPlusInit.getInstance());
+        AfkPlaceholder.register();
+        DisplayNamePlaceholder.register();
+        DurationPlaceholder.register();
+        InvulnerablePlaceholder.register();
+        ReasonPlaceholder.register();
+        TimePlaceholder.register();
     }
 }
