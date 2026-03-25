@@ -70,7 +70,7 @@ dependencies {
 //		autoRuntimeOnly(mcVersion < 11900 ? "com.github.astei:lazydfu:0.1.2" : "com.github.Fallen-Breath:lazydfu:a7cfc44c0c")
 //	}
 	// [FEATURE] MIXIN_AUDITOR
-	autoRuntimeOnly "me.fallenbreath:mixin-auditor:0.2.0-${unobfuscated ? 'u' : 'o'}"
+//	autoRuntimeOnly "me.fallenbreath:mixin-auditor:0.2.0-${unobfuscated ? 'u' : 'o'}"
 
 	// dependencies
 	def fabricApiModules = []
@@ -130,22 +130,22 @@ loom {
 		vmArgs commonVmArgs
 	}
 	// [FEATURE] MIXIN_AUDITOR
-    runs {
-        def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
-        clientMixinAudit {
-            client()
-            vmArgs auditVmArgs
-            ideConfigGenerated false
-        }
-    }
-	runs {
-		def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
-		serverMixinAudit {
-			server()
-			vmArgs auditVmArgs
-			ideConfigGenerated false
-		}
-	}
+//    runs {
+//        def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
+//        clientMixinAudit {
+//            client()
+//            vmArgs auditVmArgs
+//            ideConfigGenerated false
+//        }
+//    }
+//	runs {
+//		def auditVmArgs = [*commonVmArgs, '-DmixinAuditor.audit=true']
+//		serverMixinAudit {
+//			server()
+//			vmArgs auditVmArgs
+//			ideConfigGenerated false
+//		}
+//	}
 }
 
 String modVersionSuffix = ''
