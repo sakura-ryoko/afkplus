@@ -27,7 +27,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 
 @ApiStatus.Internal
 public class AfkPlusConflicts

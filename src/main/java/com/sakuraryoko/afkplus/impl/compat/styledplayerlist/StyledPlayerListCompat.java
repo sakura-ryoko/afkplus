@@ -24,7 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
 
 @ApiStatus.Internal

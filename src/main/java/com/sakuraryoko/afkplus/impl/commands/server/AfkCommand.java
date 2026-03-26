@@ -31,7 +31,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.impl.commands.PermsWrap;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.impl.compat.vanish.VanishAPICompat;

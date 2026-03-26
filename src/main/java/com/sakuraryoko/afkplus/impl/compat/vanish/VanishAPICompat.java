@@ -31,7 +31,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.fabricmc.loader.api.FabricLoader;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 
 @ApiStatus.Internal
 public class VanishAPICompat

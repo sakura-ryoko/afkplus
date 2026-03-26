@@ -30,7 +30,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 import com.sakuraryoko.afkplus.impl.compat.styledplayerlist.StyledPlayerListCompat;
 import com.sakuraryoko.afkplus.impl.compat.vanish.VanishAPICompat;
 

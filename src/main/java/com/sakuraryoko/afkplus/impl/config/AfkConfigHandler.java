@@ -25,8 +25,8 @@ import java.nio.file.Path;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.sakuraryoko.afkplus.AfkPlus;
-import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
+import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.impl.config.data.AfkConfigData;
 import com.sakuraryoko.afkplus.impl.config.data.options.*;
 import com.sakuraryoko.afkplus.impl.modinit.AfkPlusInit;

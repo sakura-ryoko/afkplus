@@ -30,7 +30,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.level.GameType;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 import com.sakuraryoko.afkplus.impl.util.AfkPlusConflicts;
 import com.sakuraryoko.corelib.api.events.IServerEventsDispatch;
 

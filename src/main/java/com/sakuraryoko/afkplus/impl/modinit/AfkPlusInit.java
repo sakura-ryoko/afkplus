@@ -22,8 +22,8 @@ package com.sakuraryoko.afkplus.impl.modinit;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import com.sakuraryoko.afkplus.AfkPlus;
-import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
+import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.impl.commands.CommandRegister;
 import com.sakuraryoko.afkplus.impl.compat.carpet.CarpetCompat;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;

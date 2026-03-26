@@ -30,8 +30,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.server.level.ServerPlayer;
 
-import com.sakuraryoko.afkplus.AfkPlus;
-import com.sakuraryoko.afkplus.Reference;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
+import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.api.AfkPlusEvents;
 import com.sakuraryoko.afkplus.impl.commands.PermsWrap;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;

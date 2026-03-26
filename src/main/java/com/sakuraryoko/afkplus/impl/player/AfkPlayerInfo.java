@@ -27,7 +27,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 
-import com.sakuraryoko.afkplus.AfkPlus;
+import com.sakuraryoko.afkplus.impl.AfkPlus;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
 import com.sakuraryoko.afkplus.impl.placeholders.PlaceholderUtils;
