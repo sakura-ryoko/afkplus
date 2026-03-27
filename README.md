@@ -4,7 +4,7 @@
 
 ![Example](https://sakuraryoko.com/files/1260026/afkplus.jpg)
 
-[![Join Sakura's RyokoCraft Discord](https://sakuraryoko.com/files/1398873/discord-300px.png)](https://discord.gg/UPj2aU7d)
+[![Join Sakura's RyokoCraft Discord](https://sakuraryoko.com/files/1398873/discord-300px.png)](https://discord.gg/ryokocraftmc)
 
 ## Basic Description:
 - A forked project based upon AfkDisplay by beabfc.  He has given me his blessing with proceeding to create this mod, look under my Archived Issues pane.
