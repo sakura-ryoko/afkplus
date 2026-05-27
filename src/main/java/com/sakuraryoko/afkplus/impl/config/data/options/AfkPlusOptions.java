@@ -30,9 +30,11 @@ public class AfkPlusOptions implements IConfigOption
     public boolean enableAfkCommand;
     public boolean enableNoAfkCommand;
     public boolean enableAfkInfoCommand;
+    public boolean enableAfkMeCommand;
     public int afkCommandPermissions;
     public int noAfkCommandPermissions;
     public int afkInfoCommandPermissions;
+    public int afkMeCommandPermissions;
     public int afkPlusCommandPermissions;
     public int afkCommandCooldown;
     public boolean debugMode;
@@ -44,13 +46,15 @@ public class AfkPlusOptions implements IConfigOption
 
     public void defaults()
     {
-        this.afkCommandPermissions = 0;
-        this.noAfkCommandPermissions = 0;
-        this.afkInfoCommandPermissions = 2;
-        this.afkPlusCommandPermissions = 3;
         this.enableAfkCommand = true;
         this.enableNoAfkCommand = true;
         this.enableAfkInfoCommand = true;
+        this.enableAfkMeCommand = true;
+        this.afkCommandPermissions = 0;
+        this.noAfkCommandPermissions = 0;
+        this.afkInfoCommandPermissions = 2;
+        this.afkMeCommandPermissions = 0;
+        this.afkPlusCommandPermissions = 3;
         this.afkCommandCooldown = 5;
         this.debugMode = false;
     }
@@ -63,9 +67,11 @@ public class AfkPlusOptions implements IConfigOption
         this.enableAfkCommand = opts.enableAfkCommand;
         this.enableNoAfkCommand = opts.enableNoAfkCommand;
         this.enableAfkInfoCommand = opts.enableAfkInfoCommand;
+        this.enableAfkMeCommand = opts.enableAfkMeCommand;
         this.afkCommandPermissions = opts.afkCommandPermissions;
         this.noAfkCommandPermissions = opts.noAfkCommandPermissions;
         this.afkInfoCommandPermissions = opts.afkInfoCommandPermissions;
+        this.afkMeCommandPermissions = opts.afkMeCommandPermissions;
         this.afkPlusCommandPermissions = opts.afkPlusCommandPermissions;
         this.afkCommandCooldown = opts.afkCommandCooldown;
         this.debugMode = opts.debugMode;

@@ -38,6 +38,9 @@ public class AfkConfigData implements IConfigData
     @SerializedName("afk_plus")
     public AfkPlusOptions AFK_PLUS = new AfkPlusOptions();
 
+    @SerializedName("afk_me")
+    public AfkMeOptions AFK_ME = new AfkMeOptions();
+
     @SerializedName("packet")
     public PacketOptions PACKET = new PacketOptions();
 

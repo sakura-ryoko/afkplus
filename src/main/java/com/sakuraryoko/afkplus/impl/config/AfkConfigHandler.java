@@ -79,6 +79,11 @@ public class AfkConfigHandler implements IConfigDispatch
         return CONFIG.AFK_PLUS;
     }
 
+    public AfkMeOptions getAfkMeOptions()
+    {
+        return CONFIG.AFK_ME;
+    }
+
     public MessageOptions getMessageOptions()
     {
         return CONFIG.MESSAGE;
@@ -185,6 +190,7 @@ public class AfkConfigHandler implements IConfigDispatch
         // Set default values
         config.config_date = TimeFormat.RFC1123.formatNow(null);
         config.AFK_PLUS.defaults();
+        config.AFK_ME.defaults();
         config.MESSAGE.defaults();
         config.PACKET.defaults();
         config.DAMAGE.defaults();
@@ -208,6 +214,7 @@ public class AfkConfigHandler implements IConfigDispatch
 
         // Copy Incoming Config
         CONFIG.AFK_PLUS.copy(newConf.AFK_PLUS);
+        CONFIG.AFK_ME.copy(newConf.AFK_ME);
         CONFIG.MESSAGE.copy(newConf.MESSAGE);
         CONFIG.PACKET.copy(newConf.PACKET);
         CONFIG.DAMAGE.copy(newConf.DAMAGE);

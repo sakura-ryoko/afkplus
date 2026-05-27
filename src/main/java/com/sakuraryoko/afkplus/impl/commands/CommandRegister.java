@@ -22,11 +22,8 @@ package com.sakuraryoko.afkplus.impl.commands;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.sakuraryoko.afkplus.impl.commands.server.*;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
-import com.sakuraryoko.afkplus.impl.commands.server.AfkCommand;
-import com.sakuraryoko.afkplus.impl.commands.server.AfkInfoCommand;
-import com.sakuraryoko.afkplus.impl.commands.server.AfkPlusCommand;
-import com.sakuraryoko.afkplus.impl.commands.server.NoAfkCommand;
 import com.sakuraryoko.corelib.impl.commands.CommandManager;
 
 @ApiStatus.Internal
@@ -47,6 +44,11 @@ public class CommandRegister
         if (ConfigWrap.afk().enableAfkInfoCommand)
         {
             CommandManager.getInstance().registerCommandHandler(new AfkInfoCommand());
+        }
+
+        if (ConfigWrap.afk().enableAfkMeCommand)
+        {
+            CommandManager.getInstance().registerCommandHandler(new AfkMeCommand());
         }
 
         CommandManager.getInstance().registerCommandHandler(new AfkPlusCommand());

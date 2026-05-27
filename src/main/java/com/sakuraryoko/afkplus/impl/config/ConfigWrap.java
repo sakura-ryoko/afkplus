@@ -32,6 +32,11 @@ public class ConfigWrap
         return AfkConfigHandler.getInstance().getAfkPlusOptions();
     }
 
+    public static AfkMeOptions afkMe()
+    {
+        return AfkConfigHandler.getInstance().getAfkMeOptions();
+    }
+
     public static MessageOptions mess()
     {
         return AfkConfigHandler.getInstance().getMessageOptions();

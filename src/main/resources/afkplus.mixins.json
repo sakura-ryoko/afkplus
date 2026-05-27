@@ -10,11 +10,19 @@
         "MixinServerGamePacketListenerImpl",
         "MixinServerPlayer",
         "MixinServerPlayerGameMode",
-        "MixinSleepStatus"
+        "MixinSleepStatus",
+        "shadow.MixinEntity_shadowPlayer",
+        "shadow.MixinPistonMovingBlockEntity_shadowPlayer",
+        "shadow.MixinPlayer_shadowPlayer",
+        "shadow.MixinPlayerList_shadowPlayer",
+        "shadow.MixinTickRateManager_shadowPlayer"
     ],
     "client": [],
     "server": [],
     "injectors": {
         "defaultRequire": 1
-  }
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
 }
