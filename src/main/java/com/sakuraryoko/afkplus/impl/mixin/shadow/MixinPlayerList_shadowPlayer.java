@@ -119,6 +119,7 @@ public abstract class MixinPlayerList_shadowPlayer
 		//$$ {
 			//$$ ShadowServerPlayer newSp = ShadowServerPlayer.respawnShadow(server, level, profile, ci);
 			//$$ newSp.updateTimeAndReason(sp.getTimeout(), sp.getTime(), sp.getReason());
+			//$$ AfkPlayerList.getInstance().addOrGetPlayer(newSp);
 			//$$ return newSp;
 		//$$ }
 
@@ -128,6 +129,7 @@ public abstract class MixinPlayerList_shadowPlayer
 		//$$ {
 			//$$ ShadowServerPlayer newSp = ShadowServerPlayer.respawnShadow(server, level, profile);
 			//$$ newSp.updateTimeAndReason(sp.getTimeout(), sp.getTime(), sp.getReason());
+			//$$ AfkPlayerList.getInstance().addOrGetPlayer(newSp);
 			//$$ return newSp;
 		//$$ }
 

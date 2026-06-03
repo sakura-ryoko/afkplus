@@ -25,12 +25,15 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import net.minecraft.network.Connection;
 //#if MC >= 1.21.8
 //$$ import io.netty.channel.ChannelFutureListener;
-//$$ import net.minecraft.network.ProtocolInfo;
 //$$ import net.minecraft.network.PacketListener;
+//#endif
+//#if MC >= 1.20.6
+//$$ import net.minecraft.network.ProtocolInfo;
 //#endif
 //#if MC >= 1.20.2
 //$$ import javax.annotation.Nullable;
 //$$ import org.jspecify.annotations.NonNull;
+//$$ import net.minecraft.network.PacketListener;
 //$$ import net.minecraft.network.PacketSendListener;
 //$$ import net.minecraft.network.protocol.Packet;
 //#endif
@@ -67,7 +70,7 @@ public class ShadowConnection extends Connection
 	{
 	}
 
-	//#if MC >= 1.21.10
+	//#if MC >= 1.20.6
 	//$$ @Override
 	//$$ public void setListenerForServerboundHandshake(@NonNull PacketListener packetListener)
 	//$$ {
@@ -77,5 +80,11 @@ public class ShadowConnection extends Connection
 	//$$ public <T extends PacketListener> void setupInboundProtocol(@NonNull ProtocolInfo<T> protocolInfo, @NonNull T packetListener)
 	//$$ {
 	//$$ }
+	//#elseif MC >= 1.20.2
+	//$$ @Override
+	//$$ public void setListener(@NonNull PacketListener packetListener)
+	//$$ {
+	//$$ }
+	//#else
 	//#endif
 }

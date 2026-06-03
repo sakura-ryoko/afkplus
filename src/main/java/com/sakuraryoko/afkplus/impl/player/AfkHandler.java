@@ -173,6 +173,11 @@ public class AfkHandler
             this.sendAfkMessage(mess2);
         }
 
+        if (!this.player.isDamageEnabled())
+        {
+            this.enableDamage();
+        }
+
         this.player.setShadowPlayer(false);
         this.player.setShadowTimeout(-1L);
         this.unregisterAfk();

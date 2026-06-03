@@ -125,7 +125,6 @@ public class ShadowServerPlayer extends ServerPlayer
 		//$$ shadow.setChatSession(player.getChatSession());
 		//#endif
 
-		// new CommonListenerCookie(gameprofile, 0, player.clientInformation())
 		//#if MC >= 1.20.6
 		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation(), false));
 		//#elseif MC >= 1.20.2
@@ -133,6 +132,7 @@ public class ShadowServerPlayer extends ServerPlayer
 		//#else
 		server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow);
 		//#endif
+
 		shadow.setHealth(player.getHealth());
 		shadow.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
 		shadow.gameMode.changeGameModeForPlayer(player.gameMode.getGameModeForPlayer());
@@ -185,10 +185,9 @@ public class ShadowServerPlayer extends ServerPlayer
 				//#else
                 this.level.dimension());
 				//#endif
-//		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, this));
 		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, this));
-		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_GAME_MODE, this));
-		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY, this));
+//		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_GAME_MODE, this));
+//		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY, this));
 		//#if MC >= 1.19.3
 		//$$ server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, this));
 		//#endif
@@ -217,18 +216,45 @@ public class ShadowServerPlayer extends ServerPlayer
 	}
 
 	@Override
-	public @NonNull String getIpAddress()
-	{
-		return "127.0.0.1";
-	}
-
-	@Override
 	public void onEquipItem(final @NonNull EquipmentSlot slot, final @NonNull ItemStack previous, final @NonNull ItemStack stack)
 	{
 		if (!this.isUsingItem())
 		{
 			super.onEquipItem(slot, previous, stack);
 		}
+	}
+
+	@Override
+	//#if MC >= 1.21.2
+	//$$ public void kill(@NonNull ServerLevel level)
+	//#else
+	public void kill()
+	//#endif
+	{
+		this.kill(TextHandler.getInstance().formatTextSafe("Killed"));
+	}
+
+	public void kill(Component message)
+	{
+		this.dismount();
+		//#if MC >= 1.21.2
+		//$$ if (message.getContents() instanceof TranslatableContents text && text.getKey().equals("multiplayer.disconnect.duplicate_login"))
+		//$$ {
+		//$$ this.connection.onDisconnect(new DisconnectionDetails(message));
+		//$$ }
+		//$$ else
+		//$$ {
+		//$$ this.level().getServer().schedule(
+		//$$ new TickTask(this.level().getServer().getTickCount(),
+		//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
+		//$$ ));
+		//$$ }
+		//#else
+		this.server.tell(
+				new TickTask(this.server.getTickCount(),
+				             () -> this.connection.disconnect(message)
+				));
+		//#endif
 	}
 
 	@Override
@@ -318,6 +344,49 @@ public class ShadowServerPlayer extends ServerPlayer
 	}
 
 	@Override
+	public void die(@NonNull DamageSource damageSource)
+	{
+		this.dismount();
+		super.die(damageSource);
+		this.setHealth(20.0F);
+		this.foodData = new FoodData();
+		this.kill(this.getCombatTracker().getDeathMessage());
+	}
+
+	private void dismount()
+	{
+		if (this.getVehicle() != null)
+		{
+			if (this.getVehicle() instanceof Player)
+			{
+				this.stopRiding();
+			}
+
+			for (Entity entry : this.getVehicle().getPassengers())
+			{
+				if (entry instanceof Player)
+				{
+					entry.stopRiding();
+				}
+			}
+		}
+	}
+
+	@Override
+	public @NonNull String getIpAddress()
+	{
+		return "127.0.0.1";
+	}
+
+	//#if MC >= 1.20.1
+	//$$ @Override
+	//$$ protected void checkFallDamage(double y, boolean onGround, @NonNull BlockState state, @NonNull BlockPos pos)
+	//$$ {
+		//$$ this.doCheckFallDamage(0.0, y, 0.0, onGround);
+	//$$ }
+	//#endif
+
+	@Override
 	//#if MC >= 1.21.2
 	//$$ public ServerPlayer teleport(@NonNull TeleportTransition transition)
 	//$${
@@ -345,75 +414,5 @@ public class ShadowServerPlayer extends ServerPlayer
 		}
 
 		return this.connection.player;
-	}
-
-	//#if MC >= 1.20.1
-	//$$ @Override
-	//$$ protected void checkFallDamage(double y, boolean onGround, @NonNull BlockState state, @NonNull BlockPos pos)
-	//$$ {
-		//$$ this.doCheckFallDamage(0.0, y, 0.0, onGround);
-	//$$ }
-	//#endif
-
-	@Override
-	public void die(@NonNull DamageSource damageSource)
-	{
-		this.dismount();
-		super.die(damageSource);
-		this.setHealth(20.0F);
-		this.foodData = new FoodData();
-		this.kill(this.getCombatTracker().getDeathMessage());
-	}
-
-	@Override
-	//#if MC >= 1.21.2
-	//$$ public void kill(@NonNull ServerLevel level)
-	//#else
-	public void kill()
-	//#endif
-	{
-		this.kill(TextHandler.getInstance().formatTextSafe("Killed"));
-	}
-
-	public void kill(Component message)
-	{
-		this.dismount();
-		//#if MC >= 1.21.2
-		//$$ if (message.getContents() instanceof TranslatableContents text && text.getKey().equals("multiplayer.disconnect.duplicate_login"))
-		//$$ {
-			//$$ this.connection.onDisconnect(new DisconnectionDetails(message));
-		//$$ }
-		//$$ else
-		//$$ {
-			//$$ this.level().getServer().schedule(
-					//$$ new TickTask(this.level().getServer().getTickCount(),
-									//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
-			//$$ ));
-		//$$ }
-		//#else
-		this.server.tell(
-				new TickTask(this.server.getTickCount(),
-				             () -> this.connection.disconnect(message)
-		));
-		//#endif
-	}
-
-	private void dismount()
-	{
-		if (this.getVehicle() != null)
-		{
-			if (this.getVehicle() instanceof Player)
-			{
-				this.stopRiding();
-			}
-
-			for (Entity entry : this.getVehicle().getPassengers())
-			{
-				if (entry instanceof Player)
-				{
-					entry.stopRiding();
-				}
-			}
-		}
 	}
 }

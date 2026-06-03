@@ -84,6 +84,11 @@ public abstract class MixinServerLoginPacketListenerImpl_shadowPlayer
 				afkPlayer.getHandler().unregisterShadowAfk();
 			}
 
+			if (player.isInvulnerable() && player.gameMode.isSurvival())
+			{
+				player.setInvulnerable(false);
+			}
+
 			String str = "shadow replaced";
 			sp.kill(TextUtils.getInstance().formatText(str));
 			instance.remove(player);
