@@ -2,7 +2,7 @@
  * This file is part of the AfkPlus project, licensed under the
  * GNU Lesser General Public License v3.0
  *
- * Copyright (C) 2024  Sakura Ryoko and contributors
+ * Copyright (C) 2026  Sakura Ryoko and contributors
  *
  * AfkPlus is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,23 +18,20 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.impl.placeholders;
+package com.sakuraryoko.afkplus.impl.mixin.shadow;
 
-import org.jetbrains.annotations.ApiStatus;
+import io.netty.channel.Channel;
 
-import com.sakuraryoko.afkplus.impl.placeholders.options.*;
+import net.minecraft.network.Connection;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-@ApiStatus.Internal
-public class PlaceholderManager
+import com.sakuraryoko.afkplus.impl.player.shadow.IShadowConnection;
+
+@Mixin(Connection.class)
+public abstract class MixinConnection_shadowPlayer implements IShadowConnection
 {
-    public static void register()
-    {
-        AfkPlaceholder.register();
-        DisplayNamePlaceholder.register();
-        DurationPlaceholder.register();
-        InvulnerablePlaceholder.register();
-        ReasonPlaceholder.register();
-        ShadowPlaceholder.register();
-        TimePlaceholder.register();
-    }
+	@Override
+	@Accessor
+	public abstract void setChannel(Channel channel);
 }

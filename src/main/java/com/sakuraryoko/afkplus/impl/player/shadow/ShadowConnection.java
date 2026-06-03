@@ -20,12 +20,20 @@
 
 package com.sakuraryoko.afkplus.impl.player.shadow;
 
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import io.netty.channel.embedded.EmbeddedChannel;
 
 import net.minecraft.network.Connection;
-import net.minecraft.network.PacketSendListener;
-import net.minecraft.network.protocol.Packet;
+//#if MC >= 1.21.8
+//$$ import io.netty.channel.ChannelFutureListener;
+//$$ import net.minecraft.network.ProtocolInfo;
+//$$ import net.minecraft.network.PacketListener;
+//#endif
+//#if MC >= 1.20.2
+//$$ import javax.annotation.Nullable;
+//$$ import org.jspecify.annotations.NonNull;
+//$$ import net.minecraft.network.PacketSendListener;
+//$$ import net.minecraft.network.protocol.Packet;
+//#endif
 import net.minecraft.network.protocol.PacketFlow;
 
 public class ShadowConnection extends Connection
@@ -33,12 +41,21 @@ public class ShadowConnection extends Connection
 	public ShadowConnection(PacketFlow receiving)
 	{
 		super(receiving);
+		((IShadowConnection) this).setChannel(new EmbeddedChannel());
 	}
 
-	@Override
-	public void send(@NonNull Packet<?> packet, @Nullable PacketSendListener sendListener)
-	{
-	}
+	//#if MC >= 1.21.8
+	//$$ @Override
+	//$$ public void send(@NonNull Packet<?> packet, @Nullable ChannelFutureListener futureListener, boolean bl)
+	//$$ {
+	//$$ }
+	//#elseif MC >= 1.20.2
+	//$$ @Override
+	//$$ public void send(@NonNull Packet<?> packet, @Nullable PacketSendListener sendListener)
+	//$$ {
+	//$$ }
+	//#else
+	//#endif
 
 	@Override
 	public void setReadOnly()
@@ -49,4 +66,16 @@ public class ShadowConnection extends Connection
 	public void handleDisconnection()
 	{
 	}
+
+	//#if MC >= 1.21.10
+	//$$ @Override
+	//$$ public void setListenerForServerboundHandshake(@NonNull PacketListener packetListener)
+	//$$ {
+	//$$ }
+
+	//$$ @Override
+	//$$ public <T extends PacketListener> void setupInboundProtocol(@NonNull ProtocolInfo<T> protocolInfo, @NonNull T packetListener)
+	//$$ {
+	//$$ }
+	//#endif
 }

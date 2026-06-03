@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
+import com.sakuraryoko.afkplus.impl.player.AfkPlayerList;
 import com.sakuraryoko.afkplus.impl.player.shadow.ShadowGamePacketListener;
 import com.sakuraryoko.afkplus.impl.player.shadow.ShadowServerPlayer;
 
@@ -51,18 +52,25 @@ public abstract class MixinPlayerList_shadowPlayer
 {
 	@Shadow @Final private MinecraftServer server;
 
+//	@Inject(method = "load", at = @At("RETURN"))
+//	private void afkplus$onLoad(ServerPlayer player, CallbackInfoReturnable<CompoundTag> cir)
+//	{
+//		if (player instanceof ShadowServerPlayer)
+//		{
+//			// fix Starting position
+//		}
+//	}
+
 	@WrapOperation(method = "placeNewPlayer",
-	               at = @At(value = "NEW",
+	          at = @At(value = "NEW",
 	                        target = "net/minecraft/server/network/ServerGamePacketListenerImpl"
 	               )
 	)
-	private ServerGamePacketListenerImpl afkplus$spawnShadowPlayer(MinecraftServer server,
-	                                                               Connection connection,
-	                                                               ServerPlayer player,
-																   //#if MC >= 1.20.2
-                                                                   //$$ CommonListenerCookie cookie,
-                                                                   //#endif
-	                                                               Operation<ServerGamePacketListenerImpl> original)
+	//#if MC >= 1.20.2
+	//$$ private ServerGamePacketListenerImpl afkplus$spawnShadowPlayer(MinecraftServer server, Connection connection, ServerPlayer player, CommonListenerCookie cookie, Operation<ServerGamePacketListenerImpl> original)
+	//#else
+	private ServerGamePacketListenerImpl afkplus$spawnShadowPlayer(MinecraftServer server, Connection connection, ServerPlayer player, Operation<ServerGamePacketListenerImpl> original)
+	//#endif
 	{
 		//#if MC >= 1.20.2
 		//$$ if (player instanceof ShadowServerPlayer shadow)
@@ -76,6 +84,10 @@ public abstract class MixinPlayerList_shadowPlayer
 		{
 			return new ShadowGamePacketListener(this.server, connection, shadow);
 		}
+//		else
+//		{
+//			return new ServerGamePacketListenerImpl(server, connection, player);
+//		}
 
 		return original.call(server, connection, player);
 		//#endif
@@ -86,36 +98,47 @@ public abstract class MixinPlayerList_shadowPlayer
 	                        target = "net/minecraft/server/level/ServerPlayer"
 	               )
 	)
-	private ServerPlayer afkplus$respawnShadow(MinecraftServer server,
-	                                           ServerLevel level,
-	                                           GameProfile profile,
-	                                           //#if MC >= 1.20.2
-	                                           //$$ ClientInformation ci,
-											   //#elseif MC >= 1.19.3
-                                               //#else
+//#if MC >= 1.20.2
+	//$$ private ServerPlayer afkplus$respawnShadow(MinecraftServer server, ServerLevel level, GameProfile profile,
+													//$$ ClientInformation ci,
+													//$$ Operation<ServerPlayer> original,
+													//$$ @Local(argsOnly = true) ServerPlayer player)
+//#elseif MC >= 1.19.3
+	//$$ private ServerPlayer afkplus$respawnShadow(MinecraftServer server, ServerLevel level, GameProfile profile,
+													//$$ Operation<ServerPlayer> original,
+													//$$ @Local(argsOnly = true) ServerPlayer player)
+//#else
+	private ServerPlayer afkplus$respawnShadow(MinecraftServer server, ServerLevel level, GameProfile profile,
 	                                           ProfilePublicKey profilePublicKey,
-											   //#endif
 	                                           Operation<ServerPlayer> original,
 	                                           @Local(argsOnly = true) ServerPlayer player)
+//#endif
 	{
 		//#if MC >= 1.20.2
-		//$$ if (player instanceof ShadowServerPlayer)
+		//$$ if (player instanceof ShadowServerPlayer sp)
 		//$$ {
-		//$$ return ShadowServerPlayer.respawnShadow(server, level, profile, ci);
+			//$$ ShadowServerPlayer newSp = ShadowServerPlayer.respawnShadow(server, level, profile, ci);
+			//$$ newSp.updateTimeAndReason(sp.getTimeout(), sp.getTime(), sp.getReason());
+			//$$ return newSp;
 		//$$ }
 
 		//$$ return original.call(server, level, profile, ci);
 		//#elseif MC >= 1.19.3
-		//$$ if (player instanceof ShadowServerPlayer)
+		//$$ if (player instanceof ShadowServerPlayer sp)
 		//$$ {
-			//$$ return ShadowServerPlayer.respawnShadow(server, level, profile);
+			//$$ ShadowServerPlayer newSp = ShadowServerPlayer.respawnShadow(server, level, profile);
+			//$$ newSp.updateTimeAndReason(sp.getTimeout(), sp.getTime(), sp.getReason());
+			//$$ return newSp;
 		//$$ }
 
 		//$$ return original.call(server, level, profile);
 		//#else
-		if (player instanceof ShadowServerPlayer)
+		if (player instanceof ShadowServerPlayer sp)
 		{
-			return ShadowServerPlayer.respawnShadow(server, level, profile, profilePublicKey);
+			ShadowServerPlayer newSp = ShadowServerPlayer.respawnShadow(server, level, profile, profilePublicKey);
+			newSp.updateTimeAndReason(sp.getTimeout(), sp.getTime(), sp.getReason());
+			AfkPlayerList.getInstance().addOrGetPlayer(newSp);
+			return newSp;
 		}
 
 		return original.call(server, level, profile, profilePublicKey);

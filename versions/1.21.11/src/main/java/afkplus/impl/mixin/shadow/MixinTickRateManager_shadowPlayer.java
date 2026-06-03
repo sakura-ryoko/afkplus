@@ -18,39 +18,45 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.impl.mixin.shadow;
+package afkplus.impl.mixin.shadow;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import java.util.stream.Stream;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.jetbrains.annotations.ApiStatus;
-import org.objectweb.asm.Opcodes;
 
+import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import com.sakuraryoko.afkplus.impl.player.shadow.ShadowServerPlayer;
 
-@Mixin(Player.class)
+@Mixin(TickRateManager.class)
 @ApiStatus.Internal
-public abstract class MixinPlayer_shadowPlayer
+public abstract class MixinTickRateManager_shadowPlayer
 {
-	@WrapOperation(
-			//#if MC >= 1.21.11
-			//$$ method = "causeExtraKnockback",
-			//#else
-			method = "attack",
-			//#endif
-			at = @At(value = "FIELD",
-			         target = "Lnet/minecraft/world/entity/Entity;hurtMarked:Z",
-			         ordinal = 0,
-			         opcode = Opcodes.GETFIELD
-			)
-	)
-	private boolean afkplus$onKnockback(Entity instance, Operation<Boolean> original)
+	@Shadow public abstract boolean runsNormally();
+
+	@ModifyReturnValue(method = "isEntityFrozen", at = @At("TAIL"))
+	private boolean afkplus$checkIsShadowFrozen(boolean original,
+	                                            @Local(argsOnly = true) Entity entity)
 	{
-		//		boolean orig = original.call(instance);
-		return instance.hurtMarked && !(instance instanceof ShadowServerPlayer);
+		if (original) { return true; }
+		if (this.runsNormally()) { return false; }
+
+		Stream<Entity> passengers = entity.getPassengers().stream().flatMap(Entity::getSelfAndPassengers);
+
+		return isNotFake(entity) && passengers
+				.noneMatch(MixinTickRateManager_shadowPlayer::isNotFake);
+	}
+
+	@Unique
+	private static boolean isNotFake(Entity e)
+	{
+		return e instanceof Player && !(e instanceof ShadowServerPlayer);
 	}
 }

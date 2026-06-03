@@ -56,10 +56,16 @@ public class TimePlaceholder
             }
 
             //#if MC >= 26.1
-            //$$ AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.serverPlayer());
+            //$$ AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(ctx.serverPlayer());
             //#else
-            AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(ctx.player());
+            AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(ctx.player());
             //#endif
+
+            if (afkPlayer == null)
+            {
+                return PlaceholderResult.invalid("No player!");
+            }
+
             Component result = afkPlayer.isAfk()
                                ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkTimePlaceholderFormatting
                                                                                   + afkPlayer.getAfkTimeStringForPlaceholder() + "<r>")

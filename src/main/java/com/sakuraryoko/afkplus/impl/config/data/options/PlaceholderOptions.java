@@ -33,9 +33,11 @@ public class PlaceholderOptions implements IConfigOption
     public String afkPlusNamePlaceholderAfk;
     public String afkPlusNamePlaceholder;
     public String afkDurationPlaceholderFormatting;
+    public String shadowDurationPlaceholderFormatting;
     public String afkTimePlaceholderFormatting;
     public String afkReasonPlaceholderFormatting;
     public String afkInvulnerablePlaceholder;
+    public String shadowPlaceholder;
     public DurationOption duration;
     public TimeDateOption timeDate;
 
@@ -46,13 +48,15 @@ public class PlaceholderOptions implements IConfigOption
 
     public void defaults()
     {
-        this.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%]<r>";
+        this.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%]<r>";
         this.afkPlusNamePlaceholder = "%player:displayname%";
-        this.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname_unformatted%<r>";
+        this.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%] %player:displayname_unformatted%<r>";
         this.afkDurationPlaceholderFormatting = "<green>";
+        this.shadowDurationPlaceholderFormatting = "<copper>";
         this.afkTimePlaceholderFormatting = "<green>";
         this.afkReasonPlaceholderFormatting = "";
         this.afkInvulnerablePlaceholder = ":<red>I<r>";
+        this.shadowPlaceholder = ":<copper>S<r>";
         this.duration = new DurationOption();
         this.timeDate = new TimeDateOption();
     }
@@ -66,9 +70,11 @@ public class PlaceholderOptions implements IConfigOption
         this.afkPlusNamePlaceholder = opts.afkPlusNamePlaceholder;
         this.afkPlusNamePlaceholderAfk = opts.afkPlusNamePlaceholderAfk;
         this.afkDurationPlaceholderFormatting = opts.afkDurationPlaceholderFormatting;
+        this.shadowDurationPlaceholderFormatting = opts.shadowDurationPlaceholderFormatting;
         this.afkTimePlaceholderFormatting = opts.afkTimePlaceholderFormatting;
         this.afkReasonPlaceholderFormatting = opts.afkReasonPlaceholderFormatting;
         this.afkInvulnerablePlaceholder = opts.afkInvulnerablePlaceholder;
+        this.shadowPlaceholder = opts.shadowPlaceholder;
         this.duration.copy(opts.duration);
         this.timeDate.copy(opts.timeDate);
 

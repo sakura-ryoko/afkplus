@@ -35,6 +35,10 @@ import net.minecraft.network.protocol.Packet;
 //#else
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 //#endif
+//#if MC >= 1.21.2
+//$$ import net.minecraft.world.entity.PositionMoveRotation;
+//$$ import net.minecraft.world.entity.Relative;
+//#endif
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -65,23 +69,34 @@ public class ShadowGamePacketListener extends ServerGamePacketListenerImpl
 			(text.getKey().equals("multiplayer.disconnect.idling") ||
 			 text.getKey().equals("multiplayer.disconnect.duplicate_login")))
 		{
-			((ShadowServerPlayer) this.player).kill();
+			((ShadowServerPlayer) this.player).kill(message);
 		}
 	}
 
-	//#if MC >= 1.19.4
+	//#if MC >= 1.21.2
 	//$$ @Override
-	//$$ public void teleport(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> relativeSet)
+	//$$ public void teleport(@NonNull PositionMoveRotation position, @NonNull Set<Relative> relativeSet)
+	//$$ {
+		//$$ super.teleport(position, relativeSet);
+	//#elseif MC >= 1.19.4
+	//$$ @Override
+	//$$ public void teleport(double x, double y, double z, float yaw, float pitch, @NonNull Set<RelativeMovement> relativeSet)
 	//$$ {
 		//$$ super.teleport(x, y, z, yaw, pitch, relativeSet);
 	//#else
 	@Override
-	public void teleport(double x, double y, double z, float yaw, float pitch, Set<ClientboundPlayerPositionPacket.RelativeArgument> relativeSet, boolean dismountVehicle)
+	public void teleport(double x, double y, double z, float yaw, float pitch, @NonNull Set<ClientboundPlayerPositionPacket.RelativeArgument> relativeSet, boolean dismountVehicle)
 	{
 		super.teleport(x, y, z, yaw, pitch, relativeSet, dismountVehicle);
 	//#endif
 
-		//#if MC >= 1.20.1
+		//#if MC >= 1.21.8
+		//$$ if (this.player.level().getPlayerByUUID(this.player.getUUID()) != null)
+		//$$ {
+			//$$ this.resetPosition();
+			//$$ this.player.level().getChunkSource().move(this.player);
+		//$$ }
+		//#elseif MC >= 1.20.1
 		//$$ if (this.player.serverLevel().getPlayerByUUID(this.player.getUUID()) != null)
 		//$$ {
 			//$$ this.resetPosition();

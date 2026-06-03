@@ -2,7 +2,7 @@
  * This file is part of the AfkPlus project, licensed under the
  * GNU Lesser General Public License v3.0
  *
- * Copyright (C) 2024  Sakura Ryoko and contributors
+ * Copyright (C) 2026  Sakura Ryoko and contributors
  *
  * AfkPlus is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,23 +18,13 @@
  * along with AfkPlus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.sakuraryoko.afkplus.impl.placeholders;
+package com.sakuraryoko.afkplus.impl.player.shadow;
 
+import io.netty.channel.Channel;
 import org.jetbrains.annotations.ApiStatus;
 
-import com.sakuraryoko.afkplus.impl.placeholders.options.*;
-
 @ApiStatus.Internal
-public class PlaceholderManager
+public interface IShadowConnection
 {
-    public static void register()
-    {
-        AfkPlaceholder.register();
-        DisplayNamePlaceholder.register();
-        DurationPlaceholder.register();
-        InvulnerablePlaceholder.register();
-        ReasonPlaceholder.register();
-        ShadowPlaceholder.register();
-        TimePlaceholder.register();
-    }
+	void setChannel(Channel channel);
 }

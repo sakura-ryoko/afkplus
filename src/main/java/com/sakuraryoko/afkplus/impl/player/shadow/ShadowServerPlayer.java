@@ -24,9 +24,16 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.authlib.GameProfile;
+//#if MC >= 1.20.6
+//$$ import net.minecraft.world.entity.ai.attributes.Attributes;
+//#endif
 //#if MC >= 1.20.1
 //$$ import net.minecraft.core.BlockPos;
 //$$ import net.minecraft.world.level.block.state.BlockState;
+//#endif
+//#if MC >= 1.21.2
+//$$ import net.minecraft.network.DisconnectionDetails;
+//$$ import net.minecraft.network.chat.contents.TranslatableContents;
 //#endif
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.PacketFlow;
@@ -37,6 +44,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+//#if MC >= 1.21.2
+//$$ import net.minecraft.world.level.portal.TeleportTransition;
+//#elseif MC >= 1.21.0
+//$$ import net.minecraft.world.level.portal.DimensionTransition;
+//#endif
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -51,9 +63,20 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
+import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
+import com.sakuraryoko.afkplus.impl.player.AfkPlayer;
+import com.sakuraryoko.afkplus.impl.player.AfkPlayerList;
+import com.sakuraryoko.morecolors.impl.text.TextUtils;
 
 public class ShadowServerPlayer extends ServerPlayer
 {
+	private boolean freshPlayer = true;
+	private long freshHoldTime;
+	private long timeout = -1L;
+	private int time;
+	private String reason;
+	private long lastTick = -1L;
+
 	//#if MC >= 1.20.2
 	//$$ public ShadowServerPlayer(MinecraftServer server, ServerLevel level, GameProfile profile, ClientInformation ci)
 	//$$ {
@@ -71,10 +94,18 @@ public class ShadowServerPlayer extends ServerPlayer
 	}
 	//#endif
 
-	public static ShadowServerPlayer createShadow(MinecraftServer server, ServerPlayer player)
+	public static ShadowServerPlayer createShadow(MinecraftServer server, ServerPlayer player, int time, String reason)
 	{
-		player.getServer().getPlayerList().remove(player);
-		player.connection.disconnect(Component.translatable("multiplayer.disconnect.duplicate_login"));
+		Component kickMsg = TextUtils.getInstance().formatText(ConfigWrap.afkMe().shadowKickMessage);
+
+		if (kickMsg == null || kickMsg.toString().isEmpty())
+		{
+			kickMsg = Component.translatable("multiplayer.disconnect.duplicate_login");
+		}
+
+		server.getPlayerList().remove(player);
+		player.connection.disconnect(kickMsg);
+		AfkPlayerList.getInstance().removePlayer(player);
 
 		//#if MC >= 1.20.1
 		//$$ ServerLevel level = player.serverLevel();
@@ -90,8 +121,14 @@ public class ShadowServerPlayer extends ServerPlayer
 		ShadowServerPlayer shadow = new ShadowServerPlayer(server, level, profile, player.getProfilePublicKey());
 		//#endif
 
+		//#if MC >= 1.19.3
+		//$$ shadow.setChatSession(player.getChatSession());
+		//#endif
+
 		// new CommonListenerCookie(gameprofile, 0, player.clientInformation())
-		//#if MC >= 1.20.2
+		//#if MC >= 1.20.6
+		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation(), false));
+		//#elseif MC >= 1.20.2
 		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation()));
 		//#else
 		server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow);
@@ -99,25 +136,26 @@ public class ShadowServerPlayer extends ServerPlayer
 		shadow.setHealth(player.getHealth());
 		shadow.connection.teleport(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
 		shadow.gameMode.changeGameModeForPlayer(player.gameMode.getGameModeForPlayer());
-		//#if MC >= 1.19.3
-		//$$ shadow.setChatSession(player.getChatSession());
-		//#else
-		//#endif
-		//#if MC >= 1.19.4
+		//#if MC >= 1.20.6
+		//$$ shadow.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(0.6F);
+		//#elseif MC >= 1.19.4
 		//$$ shadow.setMaxUpStep(0.6F);
 		//#else
 		shadow.maxUpStep = 0.6f;
 		//#endif
 		shadow.entityData.set(DATA_PLAYER_MODE_CUSTOMISATION, player.getEntityData().get(DATA_PLAYER_MODE_CUSTOMISATION));
-
-		server.getPlayerList().broadcastAll(new ClientboundRotateHeadPacket(shadow, (byte) (player.yHeadRot * 256 / 360)),
-											//#if MC >= 1.20.1
-											//$$ shadow.serverLevel().dimension());
-		                                    //#else
-		                                    shadow.level.dimension());
-											//#endif
-		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, shadow));
 		shadow.getAbilities().flying = player.getAbilities().flying;
+
+		if (time <= 0)
+		{
+			// 90 days (Why, but ?)
+			time = 129600;
+		}
+
+		shadow.timeout = (long) (time * 60L) * 1000L;
+		shadow.time = time;
+		shadow.reason = reason;
+		shadow.freshHoldTime = System.currentTimeMillis();
 
 		return shadow;
 	}
@@ -139,6 +177,45 @@ public class ShadowServerPlayer extends ServerPlayer
 	}
 	//#endif
 
+	private void createShadowPost(MinecraftServer server)
+	{
+		server.getPlayerList().broadcastAll(new ClientboundRotateHeadPacket(this, (byte) (this.yHeadRot * 256 / 360)),
+				//#if MC >= 1.20.1
+				//$$ this.serverLevel().dimension());
+				//#else
+                this.level.dimension());
+				//#endif
+//		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, this));
+		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, this));
+		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_GAME_MODE, this));
+		server.getPlayerList().broadcastAll(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.UPDATE_LATENCY, this));
+		//#if MC >= 1.19.3
+		//$$ server.getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, shadow));
+		//#endif
+	}
+
+	public long getTimeout()
+	{
+		return this.timeout;
+	}
+
+	public int getTime()
+	{
+		return this.time;
+	}
+
+	public String getReason()
+	{
+		return this.reason;
+	}
+
+	public void updateTimeAndReason(long timeout, int time, String reason)
+	{
+		this.timeout = timeout;
+		this.time = time;
+		this.reason = reason;
+	}
+
 	@Override
 	public @NonNull String getIpAddress()
 	{
@@ -157,10 +234,31 @@ public class ShadowServerPlayer extends ServerPlayer
 	@Override
 	public void tick()
 	{
-		if (this.getServer().getTickCount() % 10 == 0)
+		//#if MC >= 1.21.8
+		//$$ MinecraftServer server = this.level().getServer();
+		//#else
+		MinecraftServer server = this.getServer();
+		//#endif
+
+		if (server.getTickCount() % 10 == 0)
 		{
+			if (this.freshPlayer)
+			{
+				final long now = System.currentTimeMillis();
+
+				// Delay sending the ADD_PLAYER packets
+				if ((now - this.freshHoldTime) >= 150L)
+				{
+					this.createShadowPost(server);
+					this.freshPlayer = false;
+				}
+			}
+
+			this.tickShadowAfk(server);
 			this.connection.resetPosition();
-			//#if MC >= 1.20.1
+			//#if MC >= 1.21.8
+			//$$ this.level().getChunkSource().move(this);
+			//#elseif MC >= 1.20.1
 			//$$ this.serverLevel().getChunkSource().move(this);
 			//#else
 			this.getLevel().getChunkSource().move(this);
@@ -176,10 +274,63 @@ public class ShadowServerPlayer extends ServerPlayer
 		catch (NullPointerException ignored) {}
 	}
 
+	private void tickShadowAfk(MinecraftServer server)
+	{
+		final long now = System.currentTimeMillis();
+
+		if (this.lastTick < 0L)
+		{
+			this.lastTick = now;
+		}
+
+		final long tickDelta = now - this.lastTick;
+		this.lastTick = now;
+		AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(this);
+
+		if (afkPlayer != null)
+		{
+			if (!afkPlayer.isShadowPlayer())
+			{
+				afkPlayer.getHandler().registerShadowAfk(this.time, this.reason);
+				afkPlayer.setShadowTimeout(this.timeout);
+			}
+			else
+			{
+				this.timeout = afkPlayer.getShadowTimeout();
+			}
+
+			if (!afkPlayer.tickShadowTimeout(tickDelta))
+			{
+				String mess = ConfigWrap.afkMe().shadowExpiredReason;
+
+				if (mess == null || mess.isEmpty())
+				{
+					mess = "Shadow Expired";
+				}
+
+				Component reason = TextUtils.getInstance().formatTextSafe(mess);
+				this.kill(reason);
+
+				server.getPlayerList().remove(this);
+				AfkPlayerList.getInstance().removePlayer(this);
+			}
+		}
+	}
+
 	@Override
+	//#if MC >= 1.21.2
+	//$$ public ServerPlayer teleport(@NonNull TeleportTransition transition)
+	//$${
+	//$$ super.teleport(transition);
+	//#elseif MC >= 1.21.0
+	//$$ public Entity changeDimension(@NonNull DimensionTransition transition)
+	//$${
+		//$$ super.changeDimension(transition);
+	//#else
 	public Entity changeDimension(@NonNull ServerLevel level)
 	{
 		super.changeDimension(level);
+	//#endif
 
 		// Handle freeing the End
 		if (this.wonGame)
@@ -215,7 +366,11 @@ public class ShadowServerPlayer extends ServerPlayer
 	}
 
 	@Override
+	//#if MC >= 1.21.2
+	//$$ public void kill(@NonNull ServerLevel level)
+	//#else
 	public void kill()
+	//#endif
 	{
 		this.kill(TextHandler.getInstance().formatTextSafe("Killed"));
 	}
@@ -223,10 +378,24 @@ public class ShadowServerPlayer extends ServerPlayer
 	public void kill(Component message)
 	{
 		this.dismount();
+		//#if MC >= 1.21.2
+		//$$ if (message.getContents() instanceof TranslatableContents text && text.getKey().equals("multiplayer.disconnect.duplicate_login"))
+		//$$ {
+			//$$ this.connection.onDisconnect(new DisconnectionDetails(message));
+		//$$ }
+		//$$ else
+		//$$ {
+			//$$ this.level().getServer().schedule(
+					//$$ new TickTask(this.level().getServer().getTickCount(),
+									//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
+			//$$ ));
+		//$$ }
+		//#else
 		this.server.tell(
 				new TickTask(this.server.getTickCount(),
 				             () -> this.connection.disconnect(message)
 		));
+		//#endif
 	}
 
 	private void dismount()

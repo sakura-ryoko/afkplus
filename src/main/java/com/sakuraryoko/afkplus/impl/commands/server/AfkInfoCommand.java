@@ -73,7 +73,7 @@ public class AfkInfoCommand implements IServerCommand
 
     private int infoAfkPlayer(CommandSourceStack src, ServerPlayer player, CommandContext<CommandSourceStack> context)
     {
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
         if (src.getPlayer() == null || afkPlayer == null)
         {

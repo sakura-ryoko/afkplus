@@ -47,7 +47,8 @@ public class MixinSleepStatus
                      shift = At.Shift.BEFORE)
     )
     private void checkSleepCount(List<ServerPlayer> players, CallbackInfoReturnable<Boolean> cir,
-                                 @Local(ordinal = 0) int i, @Local(ordinal = 1) int j,
+                                 @Local(ordinal = 0) int i,
+                                 @Local(ordinal = 1) int j,
                                  @Local ServerPlayer serverPlayerEntity)
     {
         if (PlayerEventsHandler.getInstance().onCheckSleepCount(serverPlayerEntity, i, j, this.activePlayers, this.sleepingPlayers))

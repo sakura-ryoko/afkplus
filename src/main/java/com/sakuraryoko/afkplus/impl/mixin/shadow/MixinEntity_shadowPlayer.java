@@ -24,6 +24,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.Entity;
+//#if MC >= 1.19.4
+//$$ import net.minecraft.world.entity.LivingEntity;
+//#endif
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,15 +40,27 @@ import com.sakuraryoko.afkplus.impl.player.shadow.ShadowServerPlayer;
 @ApiStatus.Internal
 public abstract class MixinEntity_shadowPlayer
 {
+	//#if MC >= 1.19.4
+	//$$ @Shadow public abstract @Nullable LivingEntity getControllingPassenger();
+	//#else
 	@Shadow public abstract @Nullable Entity getControllingPassenger();
+	//#endif
+	//#if MC >= 1.20.1
+	//$$ @Shadow private Level level;
+	//#else
 	@Shadow public Level level;
+	//#endif
 
+	//#if MC >= 1.21.5
+	//$$ @Inject(method = "isLocalInstanceAuthoritative", at = @At("HEAD"), cancellable = true)
+	//#else
 	@Inject(method = "isControlledByLocalInstance", at = @At("HEAD"), cancellable = true)
+	//#endif
 	private void afkplus$isControlledByLocalInstance(CallbackInfoReturnable<Boolean> cir)
 	{
 		if (this.getControllingPassenger() instanceof ShadowServerPlayer)
 		{
-			cir.setReturnValue(!this.level.isClientSide);
+			cir.setReturnValue(!this.level.isClientSide());
 		}
 	}
 }

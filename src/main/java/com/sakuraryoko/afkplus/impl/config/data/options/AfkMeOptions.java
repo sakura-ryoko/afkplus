@@ -28,6 +28,13 @@ import com.sakuraryoko.corelib.api.config.IConfigOption;
 public class AfkMeOptions implements IConfigOption
 {
     public boolean afkMeEnabled;
+    public int defaultShadowTimeout;
+    public String defaultShadowReason;
+    public String shadowKickMessage;
+    public String shadowExpiredReason;
+    public String shadowStarted;
+    public String shadowPunctuation;
+    public String shadowReturned;
 
     public AfkMeOptions()
     {
@@ -37,6 +44,13 @@ public class AfkMeOptions implements IConfigOption
     public void defaults()
     {
         this.afkMeEnabled = false;
+        this.defaultShadowTimeout = 60;
+        this.defaultShadowReason = "<gray>shadowing<r>";
+        this.shadowKickMessage = "<copper>Shadow activation<r>";
+        this.shadowExpiredReason = "<yellow>You didn't come back in time<r>";
+        this.shadowStarted = "<r>%player:displayname%<r> <yellow>is now shadowed<r>";
+        this.shadowPunctuation = "<yellow>,<r> ";
+        this.shadowReturned = "<r>%player:displayname%<r> <yellow>is no longer shadowed<r>";
     }
 
     @Override
@@ -45,6 +59,13 @@ public class AfkMeOptions implements IConfigOption
         AfkMeOptions opts = (AfkMeOptions) opt;
 
         this.afkMeEnabled = opts.afkMeEnabled;
+        this.defaultShadowTimeout = opts.defaultShadowTimeout;
+        this.defaultShadowReason = opts.defaultShadowReason;
+        this.shadowKickMessage = opts.shadowKickMessage;
+        this.shadowExpiredReason = opts.shadowExpiredReason;
+        this.shadowStarted = opts.shadowStarted;
+        this.shadowPunctuation = opts.shadowPunctuation;
+        this.shadowReturned = opts.shadowReturned;
 
         return this;
     }

@@ -30,20 +30,21 @@ import net.minecraft.resources.ResourceLocation;
 import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
+import com.sakuraryoko.afkplus.impl.placeholders.PlaceholderUtils;
 import com.sakuraryoko.afkplus.impl.player.AfkPlayer;
 import com.sakuraryoko.afkplus.impl.player.AfkPlayerList;
 
 @ApiStatus.Internal
-public class ReasonPlaceholder
+public class ShadowPlaceholder
 {
     public static void register()
     {
         //#if MC >= 26.1
-        //$$ Placeholders.registerServer(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "reason"), (ctx, arg) ->
+        //$$ Placeholders.registerServer(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "shadow"), (ctx, arg) ->
         //#elseif MC >= 1.21.1
-        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "reason"), (ctx, arg) ->
+        //$$ Placeholders.register(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "shadow"), (ctx, arg) ->
         //#else
-        Placeholders.register(new ResourceLocation(Reference.MOD_ID, "reason"), (ctx, arg) ->
+        Placeholders.register(new ResourceLocation(Reference.MOD_ID, "shadow"), (ctx, arg) ->
         //#endif
         {
             //#if MC >= 26.1
@@ -66,8 +67,8 @@ public class ReasonPlaceholder
                 return PlaceholderResult.invalid("No player!");
             }
 
-            Component result = afkPlayer.isAfk()
-                               ? TextHandler.getInstance().formatTextSafe(ConfigWrap.place().afkReasonPlaceholderFormatting + afkPlayer.getAfkReason() + "<r>")
+            Component result = afkPlayer.isShadowPlayer()
+                               ? PlaceholderUtils.parseText(TextHandler.getInstance().formatTextSafe(ConfigWrap.place().shadowPlaceholder + "<r>"), ctx)
                                : Component.empty();
 
             return PlaceholderResult.value(result);

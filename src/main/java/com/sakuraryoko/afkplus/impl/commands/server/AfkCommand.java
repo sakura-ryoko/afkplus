@@ -98,9 +98,8 @@ public class AfkCommand implements IServerCommand
         }
         else if ((Util.getMillis() - afkPlayer.getLastAfkTimeMs()) < (ConfigWrap.afk().afkCommandCooldown * 1000L))
         {
-            Component result = PlaceholderUtils.parseText(
-                    TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().afkCooldownGreeting),
-                    PlaceholderUtils.ofCmdSrc(src));
+            Component mess1 = TextHandler.getInstance().formatTextSafe(ConfigWrap.mess().afkCooldownGreeting);
+            Component result = PlaceholderUtils.parseText(mess1, PlaceholderUtils.ofPlayer(src.getPlayer()));
 
             //#if MC >= 12001
             //$$ context.getSource().sendSuccess(() -> result, false);

@@ -214,9 +214,14 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return;
         }
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
         int timeoutSeconds = ConfigWrap.pack().timeoutSeconds;
         long afkDuration = Util.getMillis() - player.getLastActionTime();
+
+        if (afkPlayer == null)
+        {
+            return;
+        }
 
         if (afkPlayer.isAfk() || timeoutSeconds <= 0)
         {
@@ -290,7 +295,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return;
         }
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+
+        if (afkPlayer == null)
+        {
+            return;
+        }
 
         if (afkPlayer.isAfk() && ConfigWrap.list().updateInterval > 0)
         {
@@ -379,7 +389,13 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
             if (pitch != packet.getXRot(pitch) || yaw != packet.getYRot(yaw))
             {
-                AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+                AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+
+                if (afkPlayer == null)
+                {
+                    return;
+                }
+
                 afkPlayer.setLastLookTime(Util.getMillis());
 
                 if (ConfigWrap.pack().resetOnLook)
@@ -440,8 +456,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
         //LOGGER.debug("onPlayerAttack(): player [{}/{}] --> Entity [{}]", player.getId(), player.getName().getString(), entity.getId());
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
-        afkPlayer.setLastAttackTime(Util.getMillis());
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+
+        if (afkPlayer != null)
+        {
+            afkPlayer.setLastAttackTime(Util.getMillis());
+        }
     }
 
     @ApiStatus.Internal
@@ -455,9 +475,9 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
         //LOGGER.debug("onResetLastAction(): player [{}/{}]", player.getId(), player.getName().getString());
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
-        if (afkPlayer.isAfk() && !afkPlayer.shouldIgnoreAttacks())
+        if (afkPlayer != null && afkPlayer.isAfk() && !afkPlayer.shouldIgnoreAttacks())
         {
             AfkPlus.debugLog("onResetLastAction(): Player [{}] // Reset Last Action (Remove AFK)", afkPlayer.getName());
             afkPlayer.getHandler().unregisterAfk();
@@ -479,12 +499,16 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
             if ((player.getX() != x || player.getY() != y || player.getZ() != z))
             {
-                AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
-                afkPlayer.setLastMovementTime(Util.getMillis());
+                AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
-                if (ConfigWrap.pack().resetOnMovement)
+                if (afkPlayer != null)
                 {
-                    player.resetLastActionTime();
+                    afkPlayer.setLastMovementTime(Util.getMillis());
+
+                    if (ConfigWrap.pack().resetOnMovement)
+                    {
+                        player.resetLastActionTime();
+                    }
                 }
             }
         }
@@ -493,9 +517,10 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     @ApiStatus.Internal
     public boolean onCheckIfPushable(@Nonnull ServerPlayer player, boolean value)
     {
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
-        if (afkPlayer.isAfk() && !afkPlayer.isDamageEnabled() && player.isInvulnerable())
+        if (afkPlayer != null && afkPlayer.isAfk() &&
+            !afkPlayer.isDamageEnabled() && player.isInvulnerable())
         {
             return false;
         }
@@ -514,7 +539,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return null;
         }
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+
+        if (afkPlayer == null)
+        {
+            return oldName;
+        }
 
         if (ConfigWrap.list().enableListDisplay && afkPlayer.isAfk())
         {
@@ -530,7 +560,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         }
         // replacePlayerListName
 
-        return null;
+        return oldName;
     }
 
     @ApiStatus.Internal
@@ -538,12 +568,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     {
         // checkSleepCount
         // Count AFK Players into the total, they can't be marked as Sleeping, so don't increment that value.
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
         AfkPlus.debugLog("checkSleepCount(): Current: countActive {}, countSleeping {} // total {}, sleeping {}",
                          countActive, countSleeping, totalActive, totalSleeping);
 
-        if (afkPlayer.isAfk() && ConfigWrap.pack().bypassSleepCount)
+        if (afkPlayer != null && afkPlayer.isAfk() && ConfigWrap.pack().bypassSleepCount)
         {
             AfkPlus.debugLog("AFK Player: {} is being excluded from the sleep requirements.", afkPlayer.getName());
             return true;
@@ -562,7 +592,12 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             return currentValue;
         }
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
+
+        if (afkPlayer == null)
+        {
+            return currentValue;
+        }
 
         if (afkPlayer.isAfk() && ConfigWrap.pack().bypassInsomnia)
         {
@@ -588,9 +623,9 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     {
         AfkPlus.debugLog("onVanish(): Player [{}] / Vanish [{}]", player.getName().getString(), isVanished);
 
-        AfkPlayer afkPlayer = AfkPlayerList.getInstance().addOrGetPlayer(player);
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
-        if (afkPlayer.isAfk() && isVanished)
+        if (afkPlayer != null && afkPlayer.isAfk() && isVanished)
         {
             afkPlayer.getHandler().unregisterAfkSilently();
         }

@@ -43,6 +43,11 @@ public class AfkPlayerInfo
         {
             afkStatus.append("<bold><magenta>AFK Information:");
             afkStatus.append("<r>\nPlayer: ").append(afkPlayer.getName());
+            if (afkPlayer.isShadowPlayer())
+            {
+                afkStatus.append("<r>\nShadow Expires: ").append(ConfigWrap.place().shadowDurationPlaceholderFormatting);
+                afkStatus.append(afkPlayer.getShadowTimeoutString()).append("<r> (Format: ").append(afkPlayer.getAfkDurationFormat()).append(")");
+            }
             afkStatus.append("<r>\nAfk Since: ").append(ConfigWrap.place().afkTimePlaceholderFormatting);
             afkStatus.append(afkPlayer.getAfkTimeString()).append("<r> (Format: ").append(afkPlayer.getAfkTimeFormat()).append(")");
 

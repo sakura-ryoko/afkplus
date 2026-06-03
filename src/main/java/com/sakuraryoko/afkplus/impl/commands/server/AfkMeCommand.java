@@ -22,21 +22,26 @@ package com.sakuraryoko.afkplus.impl.commands.server;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.LongArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+//#if MC >= 1.21.10
+//$$ import net.minecraft.server.players.NameAndId;
+//#endif
 
-import com.sakuraryoko.afkplus.impl.AfkPlus;
 import com.sakuraryoko.afkplus.impl.Reference;
 import com.sakuraryoko.afkplus.impl.commands.PermsWrap;
-import com.sakuraryoko.afkplus.impl.commands.arguments.RealTimeArgument;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.impl.compat.vanish.VanishAPICompat;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
+import com.sakuraryoko.afkplus.impl.player.shadow.ShadowServerPlayer;
 import com.sakuraryoko.corelib.api.commands.IServerCommand;
 
 import static net.minecraft.commands.Commands.argument;
@@ -51,13 +56,13 @@ public class AfkMeCommand implements IServerCommand
         dispatcher.register(
                 literal(this.getName())
                         .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkMeCommandPermissions))
-                        .executes(ctx -> this.setAfkMe(ctx, RealTimeArgument.DEFAULT, ""))
-                        .then(Commands.argument("time", RealTimeArgument.realTime())
+                        .executes(ctx -> this.setAfkMe(ctx, -1, ""))
+                        .then(argument("time", IntegerArgumentType.integer(0))
                                       .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkMeCommandPermissions))
-                                      .executes(ctx -> this.setAfkMe(ctx, LongArgumentType.getLong(ctx, "time"), ""))
+                                      .executes(ctx -> this.setAfkMe(ctx, IntegerArgumentType.getInteger(ctx, "time"), ""))
                                       .then(argument("reason", StringArgumentType.greedyString())
                                                     .requires(PermsWrap.check(this.getNode(), ConfigWrap.afk().afkMeCommandPermissions))
-                                                    .executes(ctx -> this.setAfkMe(ctx, LongArgumentType.getLong(ctx, "time"), StringArgumentType.getString(ctx, "reason")))
+                                                    .executes(ctx -> this.setAfkMe(ctx, IntegerArgumentType.getInteger(ctx, "time"), StringArgumentType.getString(ctx, "reason")))
                                       )
                         )
         );
@@ -75,10 +80,13 @@ public class AfkMeCommand implements IServerCommand
         return Reference.MOD_ID;
     }
 
-    private int setAfkMe(CommandContext<CommandSourceStack> context, Long time, String reason)
+    private int setAfkMe(CommandContext<CommandSourceStack> context, int time, String reason)
     {
         CommandSourceStack src = context.getSource();
-        if (src.getPlayer() == null) { return 0; }
+        if (src.getPlayer() == null)
+        {
+            return 0;
+        }
 
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(src.getPlayer()))
         {
@@ -90,14 +98,56 @@ public class AfkMeCommand implements IServerCommand
             return 1;
         }
 
-        AfkPlus.LOGGER.error("setAfkMe: Time: {}, Reason: {}", time, reason);
+        if (!ConfigWrap.afkMe().afkMeEnabled)
+        {
+            String msg = "<red>/afkme Command is not enabled<r>";
+            //#if MC >= 1.20.1
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(msg), false);
+            //#else
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(msg), false);
+            //#endif
+            return 1;
+        }
 
-        // Not yet Implemented
-        //#if MC >= 1.20.1
-        //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe("Not implemented"), false);
+        MinecraftServer server = src.getServer();
+        ServerPlayer player = src.getPlayer();
+        GameProfile profile = player.getGameProfile();
+
+        //#if MC >= 1.21.10
+        //$$ if (server.isSingleplayerOwner(new NameAndId(profile)))
         //#else
-        context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe("Not implemented"), false);
+        if (server.isSingleplayerOwner(profile))
         //#endif
+        {
+            String msg = "<red>Can't use shadow as the single player server owner<r>";
+            //#if MC >= 1.20.1
+            //$$ context.getSource().sendSuccess(() -> TextHandler.getInstance().formatTextSafe(msg), false);
+            //#else
+            context.getSource().sendSuccess(TextHandler.getInstance().formatTextSafe(msg), false);
+            //#endif
+            return 1;
+        }
+
+        if (time < 0)
+        {
+            time = ConfigWrap.afkMe().defaultShadowTimeout;
+
+            if (time < 0)
+            {
+                time = 0;
+            }
+        }
+        if (reason == null || reason.isEmpty())
+        {
+            reason = ConfigWrap.afkMe().defaultShadowReason;
+
+            if (reason == null || reason.isEmpty())
+            {
+                reason = "<r>none";
+            }
+        }
+
+        ShadowServerPlayer.createShadow(server, player, time, reason);
 
         return 1;
     }
