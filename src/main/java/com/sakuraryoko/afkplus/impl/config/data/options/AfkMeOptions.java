@@ -28,6 +28,7 @@ import com.sakuraryoko.corelib.api.config.IConfigOption;
 public class AfkMeOptions implements IConfigOption
 {
     public boolean afkMeEnabled;
+    public boolean shadowInvulnerable;
     public int defaultShadowTimeout;
     public String defaultShadowReason;
     public String shadowKickMessage;
@@ -44,6 +45,7 @@ public class AfkMeOptions implements IConfigOption
     public void defaults()
     {
         this.afkMeEnabled = false;
+        this.shadowInvulnerable = true;
         this.defaultShadowTimeout = 60;
         this.defaultShadowReason = "<gray>shadowing<r>";
         this.shadowKickMessage = "<copper>Shadow activation<r>";
@@ -59,6 +61,7 @@ public class AfkMeOptions implements IConfigOption
         AfkMeOptions opts = (AfkMeOptions) opt;
 
         this.afkMeEnabled = opts.afkMeEnabled;
+        this.shadowInvulnerable = opts.shadowInvulnerable;
         this.defaultShadowTimeout = opts.defaultShadowTimeout;
         this.defaultShadowReason = opts.defaultShadowReason;
         this.shadowKickMessage = opts.shadowKickMessage;

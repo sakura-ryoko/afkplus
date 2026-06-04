@@ -63,7 +63,11 @@ public abstract class MixinPlayerList_shadowPlayer
 
 	@WrapOperation(method = "placeNewPlayer",
 	          at = @At(value = "NEW",
+						//#if MC >= 1.20.2
+	                        //$$ target = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/Connection;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/server/network/CommonListenerCookie;)Lnet/minecraft/server/network/ServerGamePacketListenerImpl;"
+                        //#else
 	                        target = "net/minecraft/server/network/ServerGamePacketListenerImpl"
+                        //#endif
 	               )
 	)
 	//#if MC >= 1.20.2
@@ -95,7 +99,11 @@ public abstract class MixinPlayerList_shadowPlayer
 
 	@WrapOperation(method = "respawn",
 	               at = @At(value = "NEW",
+                        //#if MC >= 1.20.2
+	                        //$$ target = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/server/level/ServerLevel;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/server/level/ClientInformation;)Lnet/minecraft/server/level/ServerPlayer;"
+                        //#else
 	                        target = "net/minecraft/server/level/ServerPlayer"
+                        //#endif
 	               )
 	)
 //#if MC >= 1.20.2

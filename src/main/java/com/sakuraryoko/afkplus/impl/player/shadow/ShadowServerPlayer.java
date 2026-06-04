@@ -126,7 +126,7 @@ public class ShadowServerPlayer extends ServerPlayer
 		//#endif
 
 		//#if MC >= 1.20.6
-		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation(), false));
+		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation(), true));
 		//#elseif MC >= 1.20.2
 		//$$ server.getPlayerList().placeNewPlayer(new ShadowConnection(PacketFlow.SERVERBOUND), shadow, new CommonListenerCookie(profile, 0, player.clientInformation()));
 		//#else
@@ -226,6 +226,32 @@ public class ShadowServerPlayer extends ServerPlayer
 
 	@Override
 	//#if MC >= 1.21.2
+	//$$ public boolean hurtServer(@NonNull ServerLevel level, @NonNull DamageSource damageSource, float amount)
+	//#else
+	public boolean hurt(@NonNull DamageSource damageSource, float amount)
+	//#endif
+	{
+		AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(this);
+
+		if (afkPlayer != null && afkPlayer.isShadowPlayer() &&
+			ConfigWrap.afkMe().shadowInvulnerable)
+		{
+			// Works just like disable damage; so let's just
+			// stop the default behavior from glitching things.
+			// If you want to be able to kill shadow bots;
+			// then just disable this config.
+			return false;
+		}
+
+		//#if MC >= 1.21.2
+		//$$ return super.hurtServer(level, damageSource, amount);
+		//#else
+		return super.hurt(damageSource, amount);
+		//#endif
+	}
+
+	@Override
+	//#if MC >= 1.21.2
 	//$$ public void kill(@NonNull ServerLevel level)
 	//#else
 	public void kill()
@@ -240,14 +266,22 @@ public class ShadowServerPlayer extends ServerPlayer
 		//#if MC >= 1.21.2
 		//$$ if (message.getContents() instanceof TranslatableContents text && text.getKey().equals("multiplayer.disconnect.duplicate_login"))
 		//$$ {
-		//$$ this.connection.onDisconnect(new DisconnectionDetails(message));
+			//$$ this.connection.onDisconnect(new DisconnectionDetails(message));
 		//$$ }
 		//$$ else
 		//$$ {
-		//$$ this.level().getServer().schedule(
-		//$$ new TickTask(this.level().getServer().getTickCount(),
-		//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
-		//$$ ));
+		//#endif
+		//#if MC >= 1.21.8
+			//$$ this.level().getServer().schedule(
+				//$$ new TickTask(this.level().getServer().getTickCount(),
+						//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
+			//$$ ));
+		//$$ }
+		//#elseif MC >= 1.21.2
+			//$$ this.server.schedule(
+				//$$ new TickTask(this.server.getTickCount(),
+						//$$ () -> this.connection.onDisconnect(new DisconnectionDetails(message))
+			//$$ ));
 		//$$ }
 		//#else
 		this.server.tell(
@@ -272,8 +306,9 @@ public class ShadowServerPlayer extends ServerPlayer
 			{
 				final long now = System.currentTimeMillis();
 
-				// Delay sending the ADD_PLAYER packets
-				if ((now - this.freshHoldTime) >= 150L)
+				// Delay sending the ADD_PLAYER packets;
+				// ... because Mojang.
+				if ((now - this.freshHoldTime) >= 200L)
 				{
 					this.createShadowPost(server);
 					this.freshPlayer = false;
