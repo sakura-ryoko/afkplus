@@ -10,14 +10,7 @@
         "MixinServerGamePacketListenerImpl",
         "MixinServerPlayer",
         "MixinServerPlayerGameMode",
-        "MixinSleepStatus",
-        "shadow.MixinConnection_shadowPlayer",
-        "shadow.MixinEntity_shadowPlayer",
-        "shadow.MixinPistonMovingBlockEntity_shadowPlayer",
-        "shadow.MixinPlayer_shadowPlayer",
-        "shadow.MixinPlayerList_shadowPlayer",
-        "shadow.MixinServerLoginPacketListenerImpl_shadowPlayer",
-        "shadow.MixinTickRateManager_shadowPlayer"
+        "MixinSleepStatus"
     ],
     "client": [
         "debug.MixinClientPacketListener_debug"

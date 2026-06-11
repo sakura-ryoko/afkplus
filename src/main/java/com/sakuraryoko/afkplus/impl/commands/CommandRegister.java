@@ -46,11 +46,6 @@ public class CommandRegister
             CommandManager.getInstance().registerCommandHandler(new AfkInfoCommand());
         }
 
-        if (ConfigWrap.afk().enableAfkMeCommand)
-        {
-            CommandManager.getInstance().registerCommandHandler(new AfkMeCommand());
-        }
-
         CommandManager.getInstance().registerCommandHandler(new AfkPlusCommand());
     }
 }

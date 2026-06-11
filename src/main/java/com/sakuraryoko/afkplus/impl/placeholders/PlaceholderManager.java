@@ -34,7 +34,6 @@ public class PlaceholderManager
         DurationPlaceholder.register();
         InvulnerablePlaceholder.register();
         ReasonPlaceholder.register();
-        ShadowPlaceholder.register();
         TimePlaceholder.register();
     }
 }

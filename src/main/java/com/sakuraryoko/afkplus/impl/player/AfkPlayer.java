@@ -29,7 +29,6 @@ import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
-import com.sakuraryoko.afkplus.impl.player.shadow.ShadowServerPlayer;
 import com.sakuraryoko.corelib.api.log.AnsiLogger;
 import com.sakuraryoko.corelib.api.time.DurationFormat;
 import com.sakuraryoko.corelib.api.time.TimeFormat;
@@ -42,13 +41,11 @@ public class AfkPlayer
     private AfkHandler handler;
     private int entityId;
     private boolean afkEnabled;
-    private boolean shadowPlayer;
     private boolean damageEnabled;
     private boolean lockDamageEnabled;
     private boolean noAfkEnabled;
     private long lastPlayerTick;
     private long afkTimeMs;
-    private long shadowTimeout;
     private long lastAfkTimeMs;
     private long afkTimeEpoch;
     private long lastMovementTime;
@@ -62,12 +59,10 @@ public class AfkPlayer
         this.player = player;
         this.entityId = player.getId();
         this.afkEnabled = false;
-        this.shadowPlayer = false;
         this.damageEnabled = true;
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;
         this.afkTimeMs = 0;
-        this.shadowTimeout = 0;
         this.lastAfkTimeMs = 0;
         this.afkTimeEpoch = 0;
         this.lastPlayerTick = Util.getMillis();
@@ -114,11 +109,6 @@ public class AfkPlayer
         return this.afkEnabled;
     }
 
-    public boolean isShadowPlayer()
-    {
-        return this.shadowPlayer;
-    }
-
     public boolean isDamageEnabled()
     {
         return this.damageEnabled;
@@ -137,11 +127,6 @@ public class AfkPlayer
     public long getLastPlayerTick()
     {
         return this.lastPlayerTick;
-    }
-
-    public long getShadowTimeout()
-    {
-        return this.shadowTimeout;
     }
 
     public long getAfkTimeMs()
@@ -266,11 +251,6 @@ public class AfkPlayer
         return this.getTimeDateType().formatTo(this.getAfkTimeEpoch(), ConfigWrap.mess().timeDate.customFormat);
     }
 
-    public String getShadowTimeoutString()
-    {
-        return this.getDurationType().format((this.getShadowTimeout()), ConfigWrap.mess().duration.customFormat);
-    }
-
     public String getAfkDurationStringForPlaceholder()
     {
         return this.getDurationTypeForPlaceholder().format((Util.getMillis() - this.getAfkTimeMs()), ConfigWrap.place().duration.customFormat);
@@ -317,17 +297,6 @@ public class AfkPlayer
         this.afkEnabled = toggle;
     }
 
-    public void setShadowPlayer(boolean toggle)
-    {
-        this.setAfk(toggle);
-        this.shadowPlayer = toggle;
-    }
-
-    public void setShadowTimeout(long timeout)
-    {
-        this.shadowTimeout = Math.min(Math.max(timeout, 0L), Long.MAX_VALUE);
-    }
-
     public void setDamageEnabled(boolean toggle)
     {
         this.damageEnabled = toggle;
@@ -352,12 +321,6 @@ public class AfkPlayer
     {
         this.afkTimeMs = time;
         this.afkTimeEpoch = time > 0L ? ZonedDateTime.now().toInstant().toEpochMilli() : 0L;
-    }
-
-    public boolean tickShadowTimeout(final long tickDelta)
-    {
-        this.shadowTimeout -= tickDelta;
-        return this.shadowTimeout > 0L;
     }
 
     // todo perhaps move things here in the future?
@@ -443,12 +406,6 @@ public class AfkPlayer
     {
         this.player = player;
         this.entityId = player.getId();
-
-        if (player instanceof ShadowServerPlayer)
-        {
-            this.shadowPlayer = true;
-        }
-
         return this;
     }
 
@@ -463,7 +420,6 @@ public class AfkPlayer
     public void clearAfkValues()
     {
         this.afkTimeMs = 0;
-        this.shadowTimeout = 0;
         this.lastAfkTimeMs = 0;
         this.lastPlayerListUpdate = -1;
         this.afkReason = "";
@@ -473,7 +429,6 @@ public class AfkPlayer
     {
         this.handler.reset();
         this.afkEnabled = false;
-        this.shadowPlayer = false;
         this.damageEnabled = true;
         this.lockDamageEnabled = false;
         this.noAfkEnabled = false;

@@ -30,7 +30,6 @@ public class AfkPlusOptions implements IConfigOption
     public boolean enableAfkCommand;
     public boolean enableNoAfkCommand;
     public boolean enableAfkInfoCommand;
-    public boolean enableAfkMeCommand;
     public int afkCommandPermissions;
     public int noAfkCommandPermissions;
     public int afkInfoCommandPermissions;
@@ -49,7 +48,6 @@ public class AfkPlusOptions implements IConfigOption
         this.enableAfkCommand = true;
         this.enableNoAfkCommand = true;
         this.enableAfkInfoCommand = true;
-        this.enableAfkMeCommand = true;
         this.afkCommandPermissions = 0;
         this.noAfkCommandPermissions = 0;
         this.afkInfoCommandPermissions = 2;
@@ -67,7 +65,6 @@ public class AfkPlusOptions implements IConfigOption
         this.enableAfkCommand = opts.enableAfkCommand;
         this.enableNoAfkCommand = opts.enableNoAfkCommand;
         this.enableAfkInfoCommand = opts.enableAfkInfoCommand;
-        this.enableAfkMeCommand = opts.enableAfkMeCommand;
         this.afkCommandPermissions = opts.afkCommandPermissions;
         this.noAfkCommandPermissions = opts.noAfkCommandPermissions;
         this.afkInfoCommandPermissions = opts.afkInfoCommandPermissions;

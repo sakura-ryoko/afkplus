@@ -79,11 +79,6 @@ public class AfkConfigHandler implements IConfigDispatch
         return CONFIG.AFK_PLUS;
     }
 
-    public AfkMeOptions getAfkMeOptions()
-    {
-        return CONFIG.AFK_ME;
-    }
-
     public MessageOptions getMessageOptions()
     {
         return CONFIG.MESSAGE;
@@ -190,7 +185,6 @@ public class AfkConfigHandler implements IConfigDispatch
         // Set default values
         config.config_date = TimeFormat.RFC1123.formatNow(null);
         config.AFK_PLUS.defaults();
-        config.AFK_ME.defaults();
         config.MESSAGE.defaults();
         config.PACKET.defaults();
         config.DAMAGE.defaults();
@@ -212,23 +206,8 @@ public class AfkConfigHandler implements IConfigDispatch
         CONFIG.config_date = TimeFormat.RFC1123.formatNow(null);
         AfkPlus.debugLog("AfkConfigHandler#update(): save_date: {} --> {}", newConf.config_date, CONFIG.config_date);
 
-        // Upgrade defaulted configs to include "%afkplus:shadow%" (June 2026)
-        if (newConf.PLAYER_LIST.afkPlayerName.equals("<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>"))
-        {
-            newConf.PLAYER_LIST.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%] %player:displayname%<r>";
-        }
-        if (newConf.PLACEHOLDER.afkPlaceholder.equals("<i><gray>[AFK%afkplus:invulnerable%]<r>"))
-        {
-            newConf.PLACEHOLDER.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%]<r>";
-        }
-        if (newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk.equals("<i><gray>[AFK%afkplus:invulnerable%] %player:displayname_unformatted%<r>"))
-        {
-            newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%] %player:displayname_unformatted%<r";
-        }
-
         // Copy Incoming Config
         CONFIG.AFK_PLUS.copy(newConf.AFK_PLUS);
-        CONFIG.AFK_ME.copy(newConf.AFK_ME);
         CONFIG.MESSAGE.copy(newConf.MESSAGE);
         CONFIG.PACKET.copy(newConf.PACKET);
         CONFIG.DAMAGE.copy(newConf.DAMAGE);
