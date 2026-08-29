@@ -38,7 +38,7 @@ public class PlayerListOptions implements IConfigOption
 
     public void defaults()
     {
-        this.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>";
+        this.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%] %player:displayname%<r>";
         this.enableListDisplay = true;
         this.updateInterval = 15;
     }

@@ -28,6 +28,7 @@ import com.sakuraryoko.afkplus.impl.commands.CommandRegister;
 import com.sakuraryoko.afkplus.impl.compat.carpet.CarpetCompat;
 import com.sakuraryoko.afkplus.impl.compat.morecolors.TextHandler;
 import com.sakuraryoko.afkplus.impl.compat.styledplayerlist.StyledPlayerListCompat;
+import com.sakuraryoko.afkplus.impl.compat.unplugged_afk.UnpluggedAfkEventsCompat;
 import com.sakuraryoko.afkplus.impl.compat.vanish.VanishEventsCompat;
 import com.sakuraryoko.afkplus.impl.config.AfkConfigHandler;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
@@ -111,6 +112,11 @@ public class AfkPlusInit implements IModInitDispatcher
 
         ServerEventsManager.getInstance().registerEventDispatcher(ServerEventsHandler.getInstance());
         PlayerEventsManager.getInstance().registerPlayerEvents(PlayerEventsHandler.getInstance());
+
+        if (UnpluggedAfkEventsCompat.getInstance().hasUnpluggedAfk())
+        {
+            UnpluggedAfkEventsCompat.getInstance().registerEvents();
+        }
 
         if (VanishEventsCompat.getInstance().hasVanish())
         {

@@ -99,7 +99,14 @@ public class ServerEventsHandler implements IServerEventsDispatch
     @ApiStatus.Internal
     public void onOpenToLan(IntegratedServer server, GameType mode)
     {
-        AfkPlus.debugLog("onOpenToLan(): Server is open for LAN, {} [Game Mode: {}]", server.getServerModName(), mode.getName());
+        if (mode == null)       // Blase Essentials Mod.
+        {
+            AfkPlus.debugLog("onOpenToLan(): Server is open for LAN, {} [Game Mode: NULL]", server.getServerModName());
+        }
+        else
+        {
+            AfkPlus.debugLog("onOpenToLan(): Server is open for LAN, {} [Game Mode: {}]", server.getServerModName(), mode.getName());
+        }
     }
 
     @Override

@@ -206,6 +206,34 @@ public class AfkConfigHandler implements IConfigDispatch
         CONFIG.config_date = TimeFormat.RFC1123.formatNow(null);
         AfkPlus.debugLog("AfkConfigHandler#update(): save_date: {} --> {}", newConf.config_date, CONFIG.config_date);
 
+        // Upgrade defaulted configs to include "%afkplus:unplugged%" (August 2026)
+        if (newConf.PLAYER_LIST.afkPlayerName.equals("<i><gray>[AFK%afkplus:invulnerable%] %player:displayname%<r>"))
+        {
+            newConf.PLAYER_LIST.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%] %player:displayname%<r>";
+        }
+        if (newConf.PLACEHOLDER.afkPlaceholder.equals("<i><gray>[AFK%afkplus:invulnerable%]<r>"))
+        {
+            newConf.PLACEHOLDER.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%]<r>";
+        }
+        if (newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk.equals("<i><gray>[AFK%afkplus:invulnerable%] %player:displayname_unformatted%<r>"))
+        {
+            newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%] %player:displayname_unformatted%<r";
+        }
+
+        // Upgrade (June 2026) defaulted configs to replace it with "%afkplus:unplugged%"
+        if (newConf.PLAYER_LIST.afkPlayerName.equals("<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%] %player:displayname%<r>"))
+        {
+            newConf.PLAYER_LIST.afkPlayerName = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%] %player:displayname%<r>";
+        }
+        if (newConf.PLACEHOLDER.afkPlaceholder.equals("<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%]<r>"))
+        {
+            newConf.PLACEHOLDER.afkPlaceholder = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%]<r>";
+        }
+        if (newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk.equals("<i><gray>[AFK%afkplus:invulnerable%%afkplus:shadow%] %player:displayname_unformatted%<r>"))
+        {
+            newConf.PLACEHOLDER.afkPlusNamePlaceholderAfk = "<i><gray>[AFK%afkplus:invulnerable%%afkplus:unplugged%] %player:displayname_unformatted%<r";
+        }
+
         // Copy Incoming Config
         CONFIG.AFK_PLUS.copy(newConf.AFK_PLUS);
         CONFIG.MESSAGE.copy(newConf.MESSAGE);

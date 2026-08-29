@@ -99,6 +99,15 @@ public class AfkHandler
     }
 
     @ApiStatus.Internal
+    public void registerAfkSilently(String reason)
+    {
+        AfkPlusEvents.AFK_EVENT.invoker().onAfk(this.invoker().afkplus$player(), TextHandler.getInstance().formatTextSafe(reason));
+        this.player.setAfkTimeMs(Util.getMillis());
+        this.player.setAfkReason(reason);
+        this.player.setAfk(true);
+    }
+
+    @ApiStatus.Internal
     public void unregisterAfkSilently()
     {
         AfkPlusEvents.AFK_RETURN_EVENT.invoker().onReturn(this.invoker().afkplus$player(), Util.getMillis() - this.player.getAfkTimeMs());

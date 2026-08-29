@@ -21,6 +21,7 @@
 package com.sakuraryoko.afkplus.impl.player;
 
 import java.time.ZonedDateTime;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.Util;
 import net.minecraft.server.level.ServerPlayer;
 
+import com.sakuraryoko.afkplus.impl.compat.unplugged_afk.UnpluggedAfkAPICompat;
 import com.sakuraryoko.afkplus.impl.config.ConfigWrap;
 import com.sakuraryoko.corelib.api.log.AnsiLogger;
 import com.sakuraryoko.corelib.api.time.DurationFormat;
@@ -122,6 +124,16 @@ public class AfkPlayer
     public boolean isNoAfkEnabled()
     {
         return this.noAfkEnabled;
+    }
+
+    public boolean isUnplugged()
+    {
+        if (UnpluggedAfkAPICompat.getInstance().hasUnpluggedAfk())
+        {
+            return UnpluggedAfkAPICompat.getInstance().isUnplugged(this.getPlayer().getUUID());
+        }
+
+        return false;
     }
 
     public long getLastPlayerTick()
@@ -400,6 +412,12 @@ public class AfkPlayer
          */
 
         this.lastPlayerTick = time;
+
+        // Tick Level fix
+        if (!this.isAfk() && this.isUnplugged())
+        {
+            this.getHandler().registerAfkSilently("unplugged");
+        }
     }
 
     public AfkPlayer setPlayer(@Nonnull ServerPlayer player)
@@ -415,6 +433,11 @@ public class AfkPlayer
                 this.player.getUUID().equals(player.getUUID()) ||
                 this.player.getName().equals(player.getName()) ||
                 this.player.equals(player);
+    }
+
+    public boolean matchesByUUID(@Nonnull UUID uuid)
+    {
+        return  this.player.getUUID().equals(uuid);
     }
 
     public void clearAfkValues()

@@ -21,6 +21,9 @@
 package com.sakuraryoko.afkplus.impl.events;
 
 import java.net.SocketAddress;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.jetbrains.annotations.ApiStatus;
@@ -50,6 +53,7 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
     //private static final AnsiLogger LOGGER = new AnsiLogger(PlayerEventsHandler.class, true);
     private static final PlayerEventsHandler INSTANCE = new PlayerEventsHandler();
     public static PlayerEventsHandler getInstance() { return INSTANCE; }
+    private final Set<UUID> unpluggedPlayers = new HashSet<>();
 
     @ApiStatus.Internal
     public PlayerEventsHandler() { }
@@ -131,6 +135,11 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
             }
         }
 
+        if (afkPlayer.isUnplugged())
+        {
+            afkPlayer.getHandler().registerAfkSilently("unplugged");
+        }
+
         if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
         {
             return;
@@ -159,6 +168,11 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
 
                 AfkPlus.LOGGER.warn("PlayerManager().repsawnPlayer() -> Marking SURVIVAL player: {} as vulnerable.", afkPlayer.getName());
                 player.setInvulnerable(false);
+
+                if (afkPlayer.isUnplugged())
+                {
+                    afkPlayer.getHandler().registerAfkSilently("unplugged");
+                }
 
                 if (VanishAPICompat.hasVanish() && VanishAPICompat.isVanishedByEntity(player))
                 {
@@ -626,6 +640,55 @@ public class PlayerEventsHandler implements IPlayerEventsDispatch
         AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayer(player);
 
         if (afkPlayer != null && afkPlayer.isAfk() && isVanished)
+        {
+            afkPlayer.getHandler().unregisterAfkSilently();
+        }
+    }
+
+    @ApiStatus.Internal
+    public void onUnpluggedStart(@Nullable UUID uuid, boolean active)
+    {
+        if (uuid == null) { return; }
+        AfkPlus.debugLog("onUnpluggedStart(): UUID [{}] / isActive [{}]", uuid.toString(), active);
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayerByUUID(uuid);
+
+        if (afkPlayer != null && active)
+        {
+            afkPlayer.getHandler().registerAfkSilently("unplugged");
+        }
+    }
+
+    @ApiStatus.Internal
+    public void onUnpluggedRespawn(@Nullable UUID uuid, boolean active)
+    {
+        if (uuid == null) { return; }
+        AfkPlus.debugLog("onUnpluggedRespawn(): UUID [{}] / isActive [{}]", uuid.toString(), active);
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayerByUUID(uuid);
+
+        if (afkPlayer != null)
+        {
+            if (active)
+            {
+                afkPlayer.getHandler().registerAfkSilently("");
+            }
+            else
+            {
+                afkPlayer.getHandler().unregisterAfkSilently();
+            }
+        }
+    }
+
+    @ApiStatus.Internal
+    public void onUnpluggedEnd(@Nullable UUID uuid, boolean active)
+    {
+        if (uuid == null) { return; }
+        AfkPlus.debugLog("onUnpluggedEnd(): UUID [{}] / isActive [{}]", uuid.toString(), active);
+
+        AfkPlayer afkPlayer = AfkPlayerList.getInstance().getPlayerByUUID(uuid);
+
+        if (afkPlayer != null && !active)
         {
             afkPlayer.getHandler().unregisterAfkSilently();
         }

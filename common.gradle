@@ -101,6 +101,7 @@ dependencies {
 	autoImplementation include("com.sakuraryoko:more-color-api:${project.more_color_api_version}-mc${project.minecraft_version}")
 	autoImplementation include("me.lucko:fabric-permissions-api:${project.fabric_permissions_api_version}")
 	autoImplementation "eu.pb4:placeholder-api:${project.placeholder_api_version}"
+	autoCompileOnly "com.sakuraryoko:unplugged_afk:${project.unplugged_afk_version}-mc${project.minecraft_version}"
 	autoCompileOnly "maven.modrinth:vanish:${project.vanish_compat_version}"
 }
 

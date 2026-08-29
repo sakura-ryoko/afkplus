@@ -1,36 +1,39 @@
 {
-  "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${mod_version}",
-  "name": "${mod_name}",
-  "description": "Show which players are afk in the player list",
-  "authors": [
-    "${mod_author}"
-  ],
-  "contact": {
-    "homepage": "https://modrinth.com/mod/${mod_id}",
-    "sources": "https://github.com/${mod_author}/${mod_id}",
-    "issues": "https://github.com/${mod_author}/${mod_id}/issues"
-  },
-  "license": "MIT",
-  "icon": "assets/${mod_id}/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "server": [],
-    "client": [],
-    "main": [
-      "${maven_group}.${mod_id}.impl.AfkPlus"
-    ]
-  },
-  "mixins": [
-    "${mod_id}.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.11.4",
-    "corelib": "*",
-    "placeholder-api": "*",
-    "more-color-api": "*",
-    "fabric-permissions-api-v0": "*",
-    "minecraft": "${minecraft_dependency}"
-  }
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${mod_version}",
+    "name": "${mod_name}",
+    "description": "Show which players are afk in the player list",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/mod/${mod_id}",
+        "sources": "https://github.com/${mod_author}/${mod_id}",
+        "issues": "https://github.com/${mod_author}/${mod_id}/issues"
+    },
+    "license": "MIT",
+    "icon": "assets/${mod_id}/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "server": [],
+        "client": [],
+        "main": [
+            "${maven_group}.${mod_id}.impl.AfkPlus"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.11.4",
+        "corelib": "*",
+        "placeholder-api": "*",
+        "more-color-api": "*",
+        "fabric-permissions-api-v0": "*",
+        "minecraft": "${minecraft_dependency}"
+    },
+    "breaks": {
+        "unplugged_afk": "<0.2.5"
+    }
 }

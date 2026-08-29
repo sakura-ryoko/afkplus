@@ -22,6 +22,7 @@ package com.sakuraryoko.afkplus.impl.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -52,6 +53,19 @@ public class AfkPlayerList
         for (AfkPlayer entry : this.afkPlayers)
         {
             if (entry.matches(player))
+            {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
+    public @Nullable AfkPlayer getPlayerByUUID(@Nonnull UUID uuid)
+    {
+        for (AfkPlayer entry : this.afkPlayers)
+        {
+            if (entry.matchesByUUID(uuid))
             {
                 return entry;
             }
